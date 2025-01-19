@@ -1,12 +1,11 @@
 "use client"; // Marking as a Client Component
 
 import React, { useState } from "react";
-import { getFirebaseAuth } from "@/firebase/firebaseConfig"; 
 import { useRouter } from "next/navigation"; 
 import { FormSubmitEvent } from "@/types/customTypes";
 import { FirebaseError } from "firebase/app";
 import { Routes } from "@/constants/routes";
-import AuthForm from "@/components/AuthForm";
+import AuthForm from "@/components/forms/AuthForm";
 import { AuthErrorMessages, AuthErrors } from "@/constants/authErrorMessages";
 import TextLink from "@/components/TextLink";
 import { login } from "@/services/userService";

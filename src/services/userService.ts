@@ -1,10 +1,7 @@
-import { getFirebaseDb, getFirebaseAuth } from "@/firebase/firebaseConfig";
+import { database, auth } from "@/firebase/firebaseConfig";
 import { AddUserProps } from "@/types/customTypes";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
-
-const userDb = getFirebaseDb();
-const auth = getFirebaseAuth();
 
 const signUp = async (email: string, password: string, displayName: string) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -13,9 +10,15 @@ const signUp = async (email: string, password: string, displayName: string) => {
 };
 
 const login = async (email: string, password: string) => {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return userCredential.user;
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        return userCredential.user;
+    } catch (error) {
+        console.error("Login error:", error); // Log the error to see the exact message
+        throw error; // Rethrow the error to handle it in your LoginPage
+    }
 };
+
 
 const logout = async () => {
     await signOut(auth);
@@ -29,7 +32,7 @@ const getCurrentUser = () => {
 const addUser = async (userData: AddUserProps) => {
     console.log("IN ADD USERS")
     try {
-        const userRef = doc(userDb, "users", userData.user_id); // Specify the document ID
+        const userRef = doc(database, "users", userData.user_id); // Specify the document ID
         await setDoc(userRef, userData); 
         console.log("User added with ID: ", userData.user_id);
     } catch (error) {
@@ -39,7 +42,7 @@ const addUser = async (userData: AddUserProps) => {
 
 const getUser = async (userId: string) => {
     try {
-        const userDocRef = doc(userDb, "users", userId);
+        const userDocRef = doc(database, "users", userId);
 
         // Fetch the user document
         const userDoc = await getDoc(userDocRef);

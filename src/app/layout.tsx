@@ -1,28 +1,33 @@
-"use client"; // Marking as a Client Component
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import { AuthProvider } from "@/app/authProvider";
 import { LayoutProps } from "@/types/customTypes";
-import './globals.css';
-import { Routes } from '@/constants/routes';
-import MenuItem from '@/components/MenuItem';
+import "./globals.css";
+import Header from "@/components/Header";
+import MenuItem from "@/components/MenuItem";
+import { Routes } from "@/constants/routes";
+import UserSession from "@/components/Header";
 
-export default function Layout({ children }: LayoutProps) {
+// Main Layout component
+const Layout = ({ children }: LayoutProps) => {
+    return (
+        <html lang="en">
+            <body>
+                <AuthProvider>
+                    <header>
+                        <h1>Slo-Id</h1>
+                        <nav className="space-x-5">
+                            <MenuItem route={Routes.HOME} item="Map" />
+                            <MenuItem route={Routes.PROFILE} item="Profile" />
+                            <UserSession></UserSession>
+                        </nav>
+                    </header>
+                    <main>{children}</main>
+                </AuthProvider>
+            </body>
+        </html>
+    );
+};
 
-  return (
-    <html lang="en">
-      <body> 
-        <header>
-          <h1>Slo-Id</h1>
-          <nav>
-            <MenuItem route={Routes.HOME} item="Map"/>
-            <MenuItem route={Routes.PROFILE} item="Profile"/>
-            <MenuItem route={Routes.LOGIN} item="Login"/>
-            <MenuItem route={Routes.SIGNUP} item="Sign Up"/>
-          </nav>
-        </header>
-        <main>{children}</main> 
-      </body>
-    </html>
-  );
-}
+export default Layout;

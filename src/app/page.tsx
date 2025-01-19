@@ -14,6 +14,7 @@ export default function HomePage() {
         <li>Build sustainable habits, knowing what's safe to interact with.</li>
       </ul>
       <p>Mark sightings, one species at a time.</p>
+      <p>&#128013;</p>
     </div>
   );
 }

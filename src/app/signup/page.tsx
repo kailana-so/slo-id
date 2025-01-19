@@ -1,12 +1,10 @@
 "use client"; // Marking as a Client Component
 
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { getFirebaseAuth } from "@/firebase/firebaseConfig"; 
 import { FormSubmitEvent } from "@/types/customTypes";
 import { FirebaseError } from "firebase/app";
 import { Routes } from "@/constants/routes";
-import AuthForm from "@/components/AuthForm";
+import AuthForm from "@/components/forms/AuthForm";
 import { AuthErrorMessages, AuthErrors } from "@/constants/authErrorMessages";
 import TextLink from "@/components/TextLink";
 import { useRouter } from "next/navigation";
@@ -17,7 +15,6 @@ import { addUser, signUp } from "@/services/userService";
 export default function SignUpPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const auth = getFirebaseAuth();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [name, setName]  = useState("");
@@ -28,10 +25,6 @@ export default function SignUpPage() {
         event.preventDefault();
         setLoading(true)
         try {
-            // const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            // const user = userCredential.user;
-            // await updateProfile(user, { displayName: name });
-
             const user = await signUp(email, password, name)
             // user payload
             const userData = {

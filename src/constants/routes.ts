@@ -5,6 +5,7 @@ export enum Routes {
     NOTES = "/notes",
     TAKENOTE = "/take-note",
     LOGIN = "login",
+    LOGOUT = "logout",
     SIGNUP = "signup",
 }
   
