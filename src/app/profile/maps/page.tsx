@@ -2,15 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { getCurrentUser, getUser } from "@/services/userService";
-interface UserMapProps {
-    userData: any; // Update the type as needed
-}
+import { useProfile } from "@/providers/ProfileProviders";
 
-export default function UserMap({ userData }: UserMapProps) {
+export default function UserMap() {
+    const { userData } = useProfile();
     return (
         <div>
             <p>MAP COMPONENT</p>
-            <p>Your referrer code is: <b>{userData.friendly_id}</b></p>
+            <p>Your referrer code is: <b>{userData?.friendly_id}</b></p>
         </div>
     );
 }

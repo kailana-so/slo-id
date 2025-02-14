@@ -1,11 +1,8 @@
-// app/authProvider.tsx
-
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "@/firebase/firebaseConfig"; // Import Firebase Auth
-import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth"; // Import Firebase User type
-import { User } from "@/types/customTypes"; // Import your User type
+import { auth } from "@/firebase/firebaseConfig"; 
+import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth"; 
 import { LayoutProps } from "@/types/customTypes";
-import Spinner from "@/components/Spinner"; // Import your Spinner component
+import Spinner from "@/components/common/Spinner";
 
 interface AuthContextType {
     user: FirebaseUser | null;

@@ -1,5 +1,5 @@
 import { database, auth } from "@/firebase/firebaseConfig";
-import { AddUserProps } from "@/types/customTypes";
+import { UserProps } from "@/types/customTypes";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 
@@ -29,7 +29,7 @@ const getCurrentUser = () => {
 };
 
 
-const addUser = async (userData: AddUserProps) => {
+const addUser = async (userData: UserProps) => {
     console.log("IN ADD USERS")
     try {
         const userRef = doc(database, "users", userData.user_id); // Specify the document ID
@@ -52,6 +52,7 @@ const getUser = async (userId: string) => {
             console.log("User data: ", userData);
 
             return {
+                user_id: userData?.user_id,
                 username: userData?.username,
                 friendly_id: userData?.friendly_id,
             };

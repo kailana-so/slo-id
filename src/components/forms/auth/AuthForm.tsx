@@ -1,5 +1,5 @@
 import React from "react";
-import ActionButton from "@/components/ActionButton";
+import ActionButton from "@/components/common/ActionButton";
 import { AuthFormProps } from "@/types/customTypes";
 
 

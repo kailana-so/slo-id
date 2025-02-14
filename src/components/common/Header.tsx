@@ -1,7 +1,7 @@
 import React from "react";
-import { useAuth } from "@/app/authProvider";
+import { useAuth } from "@/providers/AuthProvider";
 import { Routes } from "@/constants/routes";
-import MenuItem from "@/components/MenuItem";
+import MenuItem from "@/components/common/MenuItem";
 import { logout } from "@/services/userService";
 
 export default function UserSession(){
