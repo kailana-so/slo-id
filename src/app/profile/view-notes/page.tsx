@@ -12,6 +12,7 @@ import { useProfile } from "@/providers/ProfileProvider";
 interface Note {
     name?: string; // Optional since not all notes might have it
     createdAt?: number;
+
     [key: string]: any; // Allows any additional keys
 }
 
@@ -39,12 +40,11 @@ export default function ViewNotes() {
     return (
         <div key='view-notes'>
             {notes.map((note) => (
-                <section className="card aligned">
+                <section className="card aligned" key={note.id}>
                     <h4>{`[${note.type}]`}</h4>
                     <p key={`${note.type||"unknown"}-${note.createdAt}`}>
                         {`${note.name||"unknown"}`} on {note.createdAt ? new Date(note.createdAt).toLocaleString() : "No Date"}
                     </p>
-                    {/* <hr></hr> */}
                 </section>
             ))}
         </div>

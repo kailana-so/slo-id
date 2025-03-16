@@ -1,4 +1,5 @@
 import React from 'react';
+import Spinner from './Spinner';
 
 interface ActionButtonProps {
     label: string;
@@ -9,7 +10,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({ label, loading }) => {
     return (
         <button type="submit" className="submit" disabled={loading}>
             {loading ? (
-                <div className="spinner"></div>
+                <Spinner/>
             ) : (
                 label
             )}

@@ -7,7 +7,7 @@
 :root {
   --green-900: rgb(4, 12, 7);
   --green-700: rgb(10, 31, 17);
-  --green-500: rgb(20, 61, 33);
+  --green-500: rgb(19, 70, 36);
   --green-100: rgb(170, 200, 180);
   --green-50: rgb(220, 235, 225);
 
@@ -19,10 +19,11 @@
 
 
   --background: #ffffff;
-  --foreground: var(--green-500);
+  --foreground: var(--green-700);
   --border-radius: 1rem;
   --margin-right: 10px;
   --padding: 5px;
+  --border-outline: 1px solid var(--foreground);
   --primary-brown: rgb(135, 57, 9, 1);
   --secondary-brown: rgb(135, 57, 9, 0.5);
   --primary-green: var(--green-100);
@@ -42,12 +43,12 @@ body {
   h1 {
     @apply font-bricolage-grotesque font-bold;
     font-size: 48px;
-    color: var(--green-900);
+    color: var(--green-500);
   }
-
   h2 {
     @apply font-bricolage-grotesque font-bold;
     font-size: 30px;
+    /* color: var(--green-500); */
   }
   h3 {
     @apply font-bricolage-grotesque font-bold;
@@ -56,6 +57,7 @@ body {
   h4 {
     @apply font-bricolage-grotesque font-bold;
     font-size: 16px;
+    color: var(--green-500);
   }
 
   p, li, button, form, input {
@@ -74,17 +76,37 @@ body {
 
   input {
     @apply font-montserrat;
-    border: 1px solid var(--green-900);
+    border: var(--border-outline);
     border-radius: var(--border-radius);
     /* margin-left: var(--margin-left); */
     padding: var(--padding);
   }
   
+  input:focus {
+    border: 2px solid var(--green-500);
+    outline: none;
+  }
+
+  input:focus-visible  {
+    border: 2px solid var(--green-500);
+    outline: none;
+  }
+
   select {
     margin-left: var(--margin-left);
-    border: 1px solid var(--green-900);
+    border: var(--border-outline);
     border-radius: var(--border-radius); 
     padding: var(--padding);
+  }
+
+  select:focus {
+    border: 2px solid var(--green-500);
+    outline: none;
+  }
+
+  select:focus-visible  {
+    border: 2px solid var(--green-500);
+    outline: none;
   }
 
 }
@@ -96,9 +118,7 @@ body {
 }
 
 .nav-layout {
-  /* background-color: var(--green-50); */
   padding: var(--padding);
-  /* border-radius: var(--border-radius); */
   display: flex;
   justify-content: space-between;
 }
@@ -109,22 +129,21 @@ body {
 
 .submit {
   padding: 3px 7px;
-  margin: 2px;
-  border-radius: var(--border-radius); /* Use the border radius variable */
-  background-color: var(--secondary-green);
-  color: var(--foreground);
+  border-radius: var(--border-radius);
+  background-color: var(--brown-50);
+  color: var(--brown-900);
   transition: all 0.2s ease-in-out;
 }
 
 .submit:hover {
-  background-color: var(--foreground);
-  color: var(--background);
+  background-color: var(--brown-500);
+  color: var(--brown-50);
   transform: translateY(1px);
 }
 
 .submit:active {
-  background-color: var(--foreground);
-  color: var(--background);
+  background-color: var(--brown-500);
+  color: var(--brown-50);
   transform: translateY(-1px);
 }
 
@@ -140,11 +159,11 @@ body {
   font-weight: 900;
 }
 
-
 .badge-item { 
   padding: 3px 7px;
-  margin: 2px;
+  margin: 5px;
   border-radius: var(--border-radius);
+  border: 1px solid var(--foreground);
 }
 
 .badge-item.selected {
@@ -160,9 +179,9 @@ body {
   width: 1rem;
   height: 1rem;
   border: 2px solid transparent;
-  border-top: 2px solid var(--primary-green);
+  border-top: 2px solid var(--background);
   border-radius: var(--border-radius);
-  margin: var(--border-radius);
+  margin: var(--padding);
   animation: spin 1s linear infinite;
 }
 
@@ -212,7 +231,7 @@ body {
 }
  
 input:checked + .slider::before {
-  background-color: var(--primary-green);
+  background-color: var(--green-500);
 }
  
 input:checked + .slider {
@@ -220,7 +239,7 @@ input:checked + .slider {
 }
  
 input:focus + .slider {
-  box-shadow: 0 0 1px var(--primary-green);
+  box-shadow: 0 0 1px var(--green-500);
 }
  
 input:checked + .slider:before {
@@ -231,7 +250,7 @@ input:checked + .slider:before {
   margin-top: 1rem; /* Equivalent to mt-4 */
   padding: 0.5rem; /* Equivalent to p-2 */
   border-radius: var(--border-radius);
-  border: 1px solid var(--foreground);
+  border: var(--border-outline);
 }
 
 .aligned {
@@ -240,8 +259,8 @@ input:checked + .slider:before {
 }
 
 .color-box {
-  width: 2.5rem; 
-  height: 1.5rem; 
+  width: 3rem; 
+  height: 2rem; 
   border-width: 1px; 
   border-radius: var(--border-radius)
 }
