@@ -35,11 +35,13 @@ export default function TakeNote() {
         try {
             if (userData) {
                 console.warn("No user data found. Log in again");
-                // let imageResult = await uploadClient(formData.imageFiles)
-                // console.log(imageResult, "imageResult")
+                if(formData.imageFiles) {
+                    let imageResult = await uploadClient(formData.imageFiles)
+                    console.log(imageResult, "imageResult")
+                }
 
                 await addIdentificationNote(userData, formData);
-                router.push(Routes.NOTES);
+                // router.push(Routes.NOTES);
                 return;
             }
         } catch (error) {

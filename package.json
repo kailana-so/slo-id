@@ -9,12 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-lambda": "^3.758.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.7",
     "@mui/material": "^6.4.7",
     "aws-sdk": "^2.1692.0",
     "browser-image-compression": "^2.0.2",
+    "dotenv": "^16.4.7",
     "firebase": "^10.13.2",
     "heic2any": "^0.0.4",
     "next": "14.2.13",

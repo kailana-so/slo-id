@@ -156,7 +156,9 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                 </label>
             </div>
             <ImageSelector setFormData={setFormData}/>
-            <ActionButton label="Mark" loading={loading}/>
+            <div className="pt-2">
+                <ActionButton label="Mark" loading={loading}/>
+            </div>
         </form>
     );
 };

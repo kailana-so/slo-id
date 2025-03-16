@@ -9,6 +9,7 @@ import { Routes } from "@/constants/routes";
 import UserSession from "@/components/common/Header";
 import Link from "next/link";
 import { ProfileProvider } from "@/providers/ProfileProvider";
+import GrassIcon from '@mui/icons-material/Grass';
 
 // Main Layout component
 const Layout = ({ children }: LayoutProps) => {
@@ -21,7 +22,9 @@ const Layout = ({ children }: LayoutProps) => {
                         <div className="min-w-40">
                             <Link href="/">
                                 <h1>
-                                    Slo-Id
+                                    Slo
+                                    <GrassIcon className="mt-2"></GrassIcon>
+                                    Id
                                 </h1>
                             </Link>
                         </div>
