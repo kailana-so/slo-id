@@ -1,5 +1,4 @@
 
-import { UUID } from 'crypto';
 import { ReactNode } from 'react';
 
 export type ChildrenType = ReactNode;
@@ -10,13 +9,19 @@ export type LayoutProps = {
     children: ChildrenType;
 };
 
-export type AddUserProps = {
+export type UserProps = {
     user_id: string;
     username: string | null;
     email: string | null;
     friendly_id: string;
     created_at: Date;
     updated_at: Date;
+}
+
+export type ProfileProps = {
+    user_id: string;
+    username: string;
+    friendly_id: string;
 }
 
 export type  AuthFormProps = {
@@ -36,3 +41,33 @@ export type  AuthFormProps = {
 export interface UserDataProps {
     userData: any; // Update the type as needed
 }
+
+export interface OptionField {
+    name: string
+    hex?: string
+}
+
+export interface IdentificationFormField {
+    name: string;
+    label: string;
+    type: string;
+    required: boolean;
+    conditional?: string;
+    options?: OptionField[]; 
+}
+
+export interface IdentificationFormProps {
+    schema: IdentificationFormField[];
+    handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+    setFormData: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+    formData: Record<string, any>;
+    loading: boolean
+}
+
+export type FormType = keyof typeof identificationFormSchema;
+
+// types/userTypes.ts
+import { User as FirebaseUser } from "firebase/auth"; // Import Firebase User type
+import { identificationFormSchema } from '@/components/forms/identification/IdentificationFormSchema';
+
+export type User = FirebaseUser | null; // The user can be a Firebase user or null

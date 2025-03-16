@@ -10,7 +10,7 @@ export enum AuthErrorMessages {
 
 export enum AuthErrors {
     INVALID_EMAIL = "auth/invalid-email",
-    INVALID_CRED = "invalid-credential",
+    INVALID_CRED = "auth/invalid-credential",
     WEAK_PASSWORD = "auth/weak-password",
     USER_NOT_FOUND = "auth/user-not-found",
     WRONG_PASSWORD = "auth/wrong-password",

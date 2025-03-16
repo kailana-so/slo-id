@@ -1,14 +1,13 @@
 "use client"; // Marking as a Client Component
 
 import React, { useState } from "react";
-import { getFirebaseAuth } from "@/firebase/firebaseConfig"; 
 import { useRouter } from "next/navigation"; 
 import { FormSubmitEvent } from "@/types/customTypes";
 import { FirebaseError } from "firebase/app";
 import { Routes } from "@/constants/routes";
-import AuthForm from "@/components/AuthForm";
+import AuthForm from "@/components/forms/auth/AuthForm";
 import { AuthErrorMessages, AuthErrors } from "@/constants/authErrorMessages";
-import TextLink from "@/components/TextLink";
+import TextLink from "@/components/common/TextLink";
 import { login } from "@/services/userService";
 
 export default function LoginPage() {
@@ -38,6 +37,9 @@ export default function LoginPage() {
                         break;
                     case AuthErrors.WRONG_PASSWORD:
                         errorMessage = AuthErrorMessages.WRONG_PASSWORD;
+                        break;
+                    case AuthErrors.INVALID_CRED:
+                        errorMessage = AuthErrorMessages.INVALID_CRED;
                         break;
                     default:
                         errorMessage = AuthErrorMessages.UNKNOWN_ERROR;

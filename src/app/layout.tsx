@@ -1,28 +1,43 @@
-"use client"; // Marking as a Client Component
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import { AuthProvider } from "@/providers/AuthProvider";
 import { LayoutProps } from "@/types/customTypes";
-import './globals.css';
-import { Routes } from '@/constants/routes';
-import MenuItem from '@/components/MenuItem';
+import "./globals.css";
+import MenuItem from "@/components/common/MenuItem";
+import { Routes } from "@/constants/routes";
+import UserSession from "@/components/common/Header";
+import Link from "next/link";
+import { ProfileProvider } from "@/providers/ProfileProvider";
 
-export default function Layout({ children }: LayoutProps) {
+// Main Layout component
+const Layout = ({ children }: LayoutProps) => {
+    return (
+        <html lang="en">
+            <body>
+                <AuthProvider>
+                <ProfileProvider>
+                    <header className="flex items-center justify-between mx-2 mt-4">
+                        <div className="min-w-40">
+                            <Link href="/">
+                                <h1>
+                                    Slo-Id
+                                </h1>
+                            </Link>
+                        </div>
+                        <nav>
+                            <MenuItem route={Routes.PROFILE} item="Profile" />
+                            <UserSession></UserSession> 
+                        </nav>
+                    </header>
+                    <main className="px-2">  
+                        {children}
+                    </main>
+                </ProfileProvider>
+                </AuthProvider>
+            </body>
+        </html>
+    );
+};
 
-  return (
-    <html lang="en">
-      <body> 
-        <header>
-          <h1>Slo-Id</h1>
-          <nav>
-            <MenuItem route={Routes.HOME} item="Map"/>
-            <MenuItem route={Routes.PROFILE} item="Profile"/>
-            <MenuItem route={Routes.LOGIN} item="Login"/>
-            <MenuItem route={Routes.SIGNUP} item="Sign Up"/>
-          </nav>
-        </header>
-        <main>{children}</main> 
-      </body>
-    </html>
-  );
-}
+export default Layout;

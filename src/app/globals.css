@@ -1,25 +1,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Montserrat:wght@100;200;300;400;500;600;700&display=swap');
 
 @tailwind base;
-@tailwind components;
+/* @tailwind components; */
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --border-radius: 5px; /* Declare a border radius variable */
-  --margin-right: 10px;
-}
+  --green-900: rgb(4, 12, 7);
+  --green-700: rgb(10, 31, 17);
+  --green-500: rgb(20, 61, 33);
+  --green-100: rgb(170, 200, 180);
+  --green-50: rgb(220, 235, 225);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --brown-900: rgb(50, 21, 3);
+  --brown-700: rgb(90, 38, 6);
+  --brown-500: rgb(135, 57, 9);
+  --brown-100: rgb(210, 170, 140);
+  --brown-50: rgb(235, 215, 195);
+
+
+  --background: #ffffff;
+  --foreground: var(--green-500);
+  --border-radius: 1rem;
+  --margin-right: 10px;
+  --padding: 5px;
+  --primary-brown: rgb(135, 57, 9, 1);
+  --secondary-brown: rgb(135, 57, 9, 0.5);
+  --primary-green: var(--green-100);
+  --secondary-green: var(--green-50);
+  --primary-grey: rgba(160,159,159,1);
+  --secondary-grey: rgba(160,159,159,0.5);
+  --margin-left: 10px;
 }
 
 body {
-  color: var(--foreground);
+  color: var(--brown-900);
   background: var(--background);
   padding: 2.5% 5%; 
 }
@@ -27,19 +41,24 @@ body {
 @layer base {
   h1 {
     @apply font-bricolage-grotesque font-bold;
-    font-size: 42px;
+    font-size: 48px;
+    color: var(--green-900);
   }
 
   h2 {
     @apply font-bricolage-grotesque font-bold;
-    font-size: 24px;
+    font-size: 30px;
   }
   h3 {
+    @apply font-bricolage-grotesque font-bold;
+    font-size: 18px;
+  }
+  h4 {
     @apply font-bricolage-grotesque font-bold;
     font-size: 16px;
   }
 
-  p, li, button {
+  p, li, button, form, input {
     @apply font-montserrat;
     font-weight: 300;
     font-size: 16px;
@@ -54,10 +73,20 @@ body {
   }
 
   input {
-    border: 1px solid #f0f0f0;
-    border-radius: var(--border-radius); /* Use the border radius variable */
-    padding: 4px;
+    @apply font-montserrat;
+    border: 1px solid var(--green-900);
+    border-radius: var(--border-radius);
+    /* margin-left: var(--margin-left); */
+    padding: var(--padding);
   }
+  
+  select {
+    margin-left: var(--margin-left);
+    border: 1px solid var(--green-900);
+    border-radius: var(--border-radius); 
+    padding: var(--padding);
+  }
+
 }
 
 @layer utilities {
@@ -66,36 +95,74 @@ body {
   }
 }
 
+.nav-layout {
+  /* background-color: var(--green-50); */
+  padding: var(--padding);
+  /* border-radius: var(--border-radius); */
+  display: flex;
+  justify-content: space-between;
+}
+
 .page-padding {
   padding: 2%; /* Add 2% padding to all page components */
 }
 
 .submit {
-  padding: 2.5px 7px;
+  padding: 3px 7px;
+  margin: 2px;
   border-radius: var(--border-radius); /* Use the border radius variable */
-  background-color: #e0e0e0; /* Light background to emphasize the raised effect */
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 3px rgba(185, 207, 250, 0.1); /* Raised effect */
+  background-color: var(--secondary-green);
+  color: var(--foreground);
+  transition: all 0.2s ease-in-out;
 }
 
 .submit:hover {
-  background-color: rgb(147 197 253); /* text-blue-300	 */
-  box-shadow: 0 3px 4px rgba(105, 122, 249, 0.15); /* Make the shadow larger on hover */
-  transform: translateY(-1px); /* Adds a lifting effect */
+  background-color: var(--foreground);
+  color: var(--background);
+  transform: translateY(1px);
 }
 
 .submit:active {
-  box-shadow: 0 3px 5px rgba(105, 122, 249, 0.15); 
-  transform: translateY(0);
+  background-color: var(--foreground);
+  color: var(--background);
+  transform: translateY(-1px);
+}
+
+.menu-item {
+  padding: 2px 5px 2px 0px;
+  margin-right: 2px;
+  color: var(--foreground);
+  transition: all 0.2s ease-in-out;
+}
+
+.menu-item.selected {
+  border-bottom: 2px solid var(--brown-100);
+  font-weight: 900;
+}
+
+
+.badge-item { 
+  padding: 3px 7px;
+  margin: 2px;
+  border-radius: var(--border-radius);
+}
+
+.badge-item.selected {
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+.badge-item.unselected {
+  background-color: var(--secondary-green);
 }
 
 .spinner {
   width: 1rem;
   height: 1rem;
   border: 2px solid transparent;
-  border-top: 2px solid rgb(37 99 235);  /* text-blue-600	 */
-  border-radius: 50%;
+  border-top: 2px solid var(--primary-green);
+  border-radius: var(--border-radius);
+  margin: var(--border-radius);
   animation: spin 1s linear infinite;
 }
 
@@ -104,6 +171,81 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-.menuItem {
-  color:  rgb(147 197 253);
+
+.switch {
+  font-size: 10px;
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+ 
+.switch input {
+  display: none;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+ 
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--secondary-grey);
+  transition: .2s;
+  border-radius: 30px;
+}
+ 
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border-radius: 20px;
+  left: 0.2em;
+  bottom: 0.2em;
+  background-color: var(--primary-grey);
+  transition: .4s;
+}
+ 
+input:checked + .slider::before {
+  background-color: var(--primary-green);
+}
+ 
+input:checked + .slider {
+  background-color: var(--secondary-green);
+}
+ 
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--primary-green);
+}
+ 
+input:checked + .slider:before {
+  transform: translateX(1.9em);
+}
+
+.card {
+  margin-top: 1rem; /* Equivalent to mt-4 */
+  padding: 0.5rem; /* Equivalent to p-2 */
+  border-radius: var(--border-radius);
+  border: 1px solid var(--foreground);
+}
+
+.aligned {
+  display: flex;
+  gap: 1rem; 
+}
+
+.color-box {
+  width: 2.5rem; 
+  height: 1.5rem; 
+  border-width: 1px; 
+  border-radius: var(--border-radius)
+}
+
+.ring-highlight {
+  box-shadow: 0 0 0 2px var(--secondary-grey)
 }
