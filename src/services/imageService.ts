@@ -24,6 +24,7 @@ interface UploadPayload {
       });
   
       const data = await response.json();
+      console.log(data, "data")
       if (response.ok) {
         console.log("Image uploaded successfully:", data);
         return data.result; // Lambda response

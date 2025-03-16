@@ -36,6 +36,7 @@ export default function TakeNote() {
             if (userData) {
                 console.warn("No user data found. Log in again");
                 if(formData.imageFiles) {
+                    console.log(formData.imageFiles, "formData.imageFiles")
                     let imageResult = await uploadClient(formData.imageFiles)
                     console.log(imageResult, "imageResult")
                 }
