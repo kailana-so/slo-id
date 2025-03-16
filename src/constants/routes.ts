@@ -3,8 +3,8 @@ export enum Routes {
     MAP = "/profile/maps",
     NOTES = "/profile/view-notes",
     TAKENOTE = "/profile/take-note",
-    LOGIN = "login",
-    LOGOUT = "logout",
-    SIGNUP = "signup",
+    LOGIN = "/login",
+    LOGOUT = "/logout",
+    SIGNUP = "/signup",
 }
   

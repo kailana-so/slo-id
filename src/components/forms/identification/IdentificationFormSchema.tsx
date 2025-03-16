@@ -4,14 +4,27 @@ const commonFields = [
         label: "Terrain",
         type: "select",
         required: false,
-        options: ["Bushland", "Grassland", "Wetland", "Desert", "Urban"],
+        options: [
+            { name: "Bushland" },
+            { name: "Grassland" },
+            { name: "Wetland" },
+            { name: "Desert" },
+            { name: "Urban" }
+        ]
     },
     {
         name: "weather",
         label: "Weather",
         type: "select",
         required: false,
-        options: ["Sun", "Rain", "Cloud", "Wind", "Snow", "Frost"],
+        options: [
+            { name: "Sun" },
+            { name: "Rain" },
+            { name: "Cloud" },
+            { name: "Wind" },
+            { name: "Snow" },
+            { name: "Frost" }
+        ]
     },
 ];
 
@@ -20,7 +33,16 @@ const commonSize = {
     label: "Size (cm)",
     type: "select",
     required: true,
-    options: ["<1", "1-5", "5-10", "10-20", "20-30", "30-40", "40-50", "50-100", ">150"],
+    options:[
+        { name: "<1" },
+        { name: "1-5" },
+        { name: "5-10" },
+        { name: "10-20" },
+        { name: "20-30" },
+        { name: "30-40" },
+        { name: "50-100" },
+        { name: ">150"},
+    ]
 }
 
 const commonColours = {
@@ -28,7 +50,18 @@ const commonColours = {
     label: "Main Colour",
     type: "color-buttons",
     required: true,
-    options: ["Green", "Brown", "Gray", "Black", "Yellow", "Blue", "Orange", "Red", "Pink", "Gold"], 
+    options: [
+        { name: "Green", hex: "#85A947" },
+        { name: "Brown", hex: "#7D451B" },
+        { name: "Gray", hex: "#9FA4A9" },
+        { name: "Black", hex: "#332E3C" },
+        { name: "Yellow", hex: "#FFC857" },
+        { name: "Blue", hex: "#3777FF" },
+        { name: "Orange", hex: "#F7630F" },
+        { name: "Red", hex: "#BF3100" },
+        { name: "Pink", hex: "#FFB7C3" },
+        { name: "Gold", hex: "#D2A825" }
+    ],
 }
 
 const commonPattern = {
@@ -37,7 +70,14 @@ const commonPattern = {
     type: "select",
     required: true,
     conditional: "hasPatterns",
-    options: ["Striped", "Spotted", "Checkered", "Diamond", "Solid", "Marbled"],
+    options: [
+        { name: "Striped" },
+        { name: "Spotted" },
+        { name: "Checkered" },
+        { name: "Diamond" },
+        { name: "Solid" },
+        { name: "Marbled" }
+    ]
 }
 
 const commonName = {
@@ -46,6 +86,14 @@ const commonName = {
     type: "text",
     required: false,
 }
+
+const commonShape =  [
+    { name: "Oval" },
+    { name: "Round" },
+    { name: "Elongated" },
+    { name: "Segmented" },
+    { name: "Clustered" }
+];
 
 export const identificationFormSchema = {
     insect: [
@@ -57,7 +105,7 @@ export const identificationFormSchema = {
             label: "Body Shape",
             type: "select",
             required: true,
-            options: ["Oval", "Round", "Elongated", "Segmented"],
+            options: commonShape
         },
         {
             name: "hasPatterns",
@@ -85,7 +133,7 @@ export const identificationFormSchema = {
             label: "Leaf Shape",
             type: "select",
             required: true,
-            options: ["Oval", "Lanceolate", "Palmate", "Linear"],
+            options: commonShape,
         },
         {
             name: "hasFruits",
@@ -94,7 +142,7 @@ export const identificationFormSchema = {
             required: false,
         },
         {
-            name: "fruitDescription",
+            name: "fruitColour",
             label: "Fruit Colour",
             type: "color-buttons",
             required: false,
@@ -107,7 +155,7 @@ export const identificationFormSchema = {
             type: "select",
             required: false,
             conditional: "hasFruits",
-            options: ["Round", "Oval", "Elongated", "Clustered"],
+            options: commonShape
         },
         ...commonFields,
     ],

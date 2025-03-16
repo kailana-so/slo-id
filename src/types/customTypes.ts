@@ -42,14 +42,18 @@ export interface UserDataProps {
     userData: any; // Update the type as needed
 }
 
+export interface OptionField {
+    name: string
+    hex?: string
+}
 
 export interface IdentificationFormField {
     name: string;
     label: string;
     type: string;
     required: boolean;
-    conditional?: string; // Name of the field that acts as a condition
-    options?: string[];
+    conditional?: string;
+    options?: OptionField[]; 
 }
 
 export interface IdentificationFormProps {

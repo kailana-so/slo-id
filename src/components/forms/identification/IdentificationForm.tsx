@@ -1,14 +1,20 @@
 import ActionButton from "@/components/common/ActionButton";
-import { IdentificationFormField, IdentificationFormProps } from "@/types/customTypes";
+import ImageSelector from "@/components/ImageSelector";
+import { OptionField, IdentificationFormField, IdentificationFormProps } from "@/types/customTypes";
 import React, { useState } from "react";
 
-const IdentificationForm: React.FC<IdentificationFormProps> = ({ schema, handleSubmit, setFormData, formData, loading }) => {
+const IdentificationForm: React.FC<IdentificationFormProps> = ({ 
+    schema, 
+    handleSubmit, 
+    setFormData, 
+    formData, 
+    loading,
+}) => {
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         const { name, value, type } = e.target;
-
         if (type === "checkbox") {
             const target = e.target as HTMLInputElement;
             const isChecked = target.checked;
@@ -19,7 +25,6 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({ schema, handleS
                     ...prev,
                     [name]: isChecked,
                 };
-
                 // If unchecked, remove all dependent fields
                 if (!isChecked) {
                     schema.forEach((field) => {
@@ -85,9 +90,10 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({ schema, handleS
                         onChange={handleChange}
                     >
                         <option value=""></option>
+
                         {field.options?.map((option) => (
-                            <option key={option} value={option}>
-                                {option}
+                            <option key={option.name} value={option.name}>
+                                {option.name}
                             </option>
                         ))}
                     </select>
@@ -97,13 +103,11 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({ schema, handleS
                     <div>
                         {field.options?.map((color) => (
                             <button
-                                key={color}
+                                key={color.name}
                                 type="button"
-                                className={`w-10 h-10 border rounded ${
-                                    formData[field.name] === color ? "ring-2" : ""
-                                }`}
-                                style={{ backgroundColor: color }}
-                                onClick={() => handleColorSelection(field.name, color)}
+                                className={`color-box ${formData[field.name] === color.name ? "ring-highlight" : ""}`}
+                                style={{ backgroundColor: color.hex }}
+                                onClick={() => handleColorSelection(field.name, color.name)}
                             />
                         ))}
                     </div>
@@ -111,6 +115,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({ schema, handleS
             default:
                 return (
                     <input
+                    className="ml-3"
                         type={field.type}
                         name={field.name}
                         required={field.required}
@@ -123,13 +128,6 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({ schema, handleS
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <label key="photo-upload">
-                <input
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                />
-            </label>
             {/* Filter schema to only show main fields or conditional fields when the condition is met */}
             {schema
                 .filter((field) => !field.conditional || formData[field.conditional])
@@ -157,6 +155,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({ schema, handleS
                     </label>
                 </label>
             </div>
+            <ImageSelector setFormData={setFormData}/>
             <ActionButton label="Mark" loading={loading}/>
         </form>
     );

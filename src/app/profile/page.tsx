@@ -31,6 +31,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
     return (
         <div>
             <h3>Hi {userData?.username ? userData.username : "there"}</h3> 
+            <p>Your referrer code is: <b>{userData?.friendly_id}</b></p>
         </div>
     );
 }

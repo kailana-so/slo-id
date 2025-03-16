@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { getIdentificationNotes } from "@/services/identificationService";
 import { useAuth } from "@/providers/AuthProvider";
 import { getUser } from "@/services/userService";
-import { useProfile } from "@/providers/ProfileProviders";
+import { useProfile } from "@/providers/ProfileProvider";
 
 
 interface Note {
@@ -39,13 +39,13 @@ export default function ViewNotes() {
     return (
         <div key='view-notes'>
             {notes.map((note) => (
-                <>
+                <section className="card aligned">
                     <h4>{`[${note.type}]`}</h4>
                     <p key={`${note.type||"unknown"}-${note.createdAt}`}>
-                        {`${note.name||"unknown"}`} seen at {note.createdAt ? new Date(note.createdAt).toLocaleString() : "No Date"}
+                        {`${note.name||"unknown"}`} on {note.createdAt ? new Date(note.createdAt).toLocaleString() : "No Date"}
                     </p>
-                    <hr></hr>
-                </>
+                    {/* <hr></hr> */}
+                </section>
             ))}
         </div>
     );

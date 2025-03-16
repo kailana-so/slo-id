@@ -1,15 +1,13 @@
-"use client"; // Marking as a Client Component
+"use client";
 
-import React, { useEffect, useState } from "react";
-import { getCurrentUser, getUser } from "@/services/userService";
-import { useProfile } from "@/providers/ProfileProviders";
+import React from "react";
+import { useProfile } from "@/providers/ProfileProvider";
 
 export default function UserMap() {
-    const { userData } = useProfile();
+    // const { userData } = useProfile();
     return (
-        <div>
+        <div className="card">
             <p>MAP COMPONENT</p>
-            <p>Your referrer code is: <b>{userData?.friendly_id}</b></p>
         </div>
     );
 }

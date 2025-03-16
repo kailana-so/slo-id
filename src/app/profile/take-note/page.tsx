@@ -1,12 +1,15 @@
 "use client"; // Marking as a Client Component
 import React, { useEffect, useReducer, useState } from "react";
-import { FormSubmitEvent, FormType, UserDataProps } from "@/types/customTypes";
+import { FormSubmitEvent, FormType } from "@/types/customTypes";
 import { identificationFormSchema } from "@/components/forms/identification/IdentificationFormSchema";
 import { Routes } from "@/constants/routes";
 import { useRouter } from "next/navigation";
 import { addIdentificationNote } from "@/services/identificationService";
 import IdentificationForm from "@/components/forms/identification/IdentificationForm";
-import { useProfile } from "@/providers/ProfileProviders";
+import { useProfile } from "@/providers/ProfileProvider";
+import { uploadClient } from "@/services/imageService";
+import ActionButton from "@/components/common/ActionButton";
+import MenuItem from "@/components/common/MenuItem";
 
 
 export default function TakeNote() {
@@ -16,6 +19,8 @@ export default function TakeNote() {
     const [loading, setLoading] = useState<boolean>(false);
 
     const router = useRouter()
+
+    console.log(formData.imageFiles, "imageFiles")
 
     // Reset form data when formType changes
     useEffect(() => {
@@ -30,6 +35,9 @@ export default function TakeNote() {
         try {
             if (userData) {
                 console.warn("No user data found. Log in again");
+                // let imageResult = await uploadClient(formData.imageFiles)
+                // console.log(imageResult, "imageResult")
+
                 await addIdentificationNote(userData, formData);
                 router.push(Routes.NOTES);
                 return;
@@ -41,20 +49,17 @@ export default function TakeNote() {
     };
 
     return (
-        <>
-            <div className="grid grid-cols-3">
-                {Object.keys(identificationFormSchema).map((idType) => (
-                    <label key={idType} className="flex items-center">
-                        <input
-                            className="mr-2"
-                            type="radio"
-                            name="formType"
-                            value={idType}
-                            onChange={(e) => setFormType(e.target.value as FormType)}
-                        />
-                        {idType.charAt(0).toUpperCase() + idType.slice(1)}
-                    </label>
-                ))}
+        <section className="card">
+            <div className="pb-4">
+            {Object.keys(identificationFormSchema).map((idType) => (
+                <button
+                    key={idType}
+                    className={`badge-item ${formType === idType ? "selected" : "unselected"}`}
+                    onClick={() => setFormType(idType as FormType)}
+                >
+                    {idType.charAt(0).toUpperCase() + idType.slice(1)}
+                </button>
+            ))}
             </div>
             {/* Render the form based on selected form type */}
             {formType && identificationFormSchema[formType] ? (
@@ -69,8 +74,10 @@ export default function TakeNote() {
                     />
                 </>
             ) : (
-                <p>Please select an ID type.</p>
+                <div>
+                    <p>Please select an ID type.</p>
+                </div>
             )}
-        </>
+        </section>
     );
 }

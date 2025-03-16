@@ -3,6 +3,8 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
+import LogoutIcon from '@mui/icons-material/Logout';
+import FaceIcon from '@mui/icons-material/Face';
 
 interface MenuItemProps {
   route?: string;
@@ -20,12 +22,20 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, item, handler }) => {
     if (route) router.push(route); // Change the route without reloading
   };
 
+  const handleItemRender = (item: string) => {
+    if(item === "Log Out") {
+        return <LogoutIcon className="ml-2"/>
+    }
+    if(item === "Profile") {
+        return <FaceIcon className="ml-2"/>
+    }
+    return item
+  }
+
   return (
-        <button onClick={handleClick}>
-            <button className={isActive ? "menuItem" : "inherit"}>
-                {item}
-            </button> 
-        </button>
+        <button onClick={handleClick}  className={`menu-item ${isActive ? 'selected': "inherit"}`}>
+            {handleItemRender(item)}
+        </button> 
     );
 };
 

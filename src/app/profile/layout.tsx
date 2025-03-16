@@ -4,23 +4,27 @@ import React from "react";
 import { LayoutProps } from "@/types/customTypes";
 import MenuItem from "@/components/common/MenuItem";
 import { Routes } from "@/constants/routes";
-import { ProfileProvider } from "@/providers/ProfileProviders";
+import { useProfile } from "@/providers/ProfileProvider";
 
 // Main Layout component
 const Layout = ({ children }: LayoutProps) => {
+    const { userData } = useProfile();
     return (
             <>
-                <ProfileProvider>
-                        <nav className="space-x-3">
-                            <MenuItem route={Routes.MAP} item="My Maps" />
-                            <MenuItem route={Routes.NOTES} item="View Notes" />
-                            <MenuItem route={Routes.TAKENOTE} item="Take Note" />
+                {/* <ProfileProvider> */}
+                {userData?.username ? (
+                    <section>
+                        <nav className="nav-layout">
+                        <MenuItem route={Routes.MAP} item="Maps" />
+                        <MenuItem route={Routes.NOTES} item="All Notes" />
+                        <MenuItem route={Routes.TAKENOTE} item="Take Note" />
                         </nav>
-                        <hr></hr>
-                    <section className="bg-stone-50 p-4 mt-4">  
-                        {children}
+                        <section className="mt-4">  
+                            {children}
+                        </section>
                     </section>
-                </ProfileProvider>
+                ): "Sign up to create a profile"}
+                {/* </ProfileProvider> */}
             </>
     );
 };

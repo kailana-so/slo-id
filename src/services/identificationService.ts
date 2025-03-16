@@ -1,7 +1,7 @@
-import { database, auth } from "@/firebase/firebaseConfig";
+import { database, auth } from "@/adapters/firebase";
 import { IdentificationFormProps, ProfileProps, UserProps } from "@/types/customTypes";
 import { setDoc, doc, getDoc, collection, addDoc, getDocs } from "firebase/firestore";
-import { timestampFields } from "./enums";
+import { timestampFields } from "../enums/enums";
 
 const addIdentificationNote = async (
     userData: ProfileProps,
@@ -52,4 +52,4 @@ const getIdentificationNotes = async (
 export {
     addIdentificationNote,
     getIdentificationNotes
-    };
+};

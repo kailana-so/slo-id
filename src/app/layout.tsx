@@ -8,6 +8,7 @@ import MenuItem from "@/components/common/MenuItem";
 import { Routes } from "@/constants/routes";
 import UserSession from "@/components/common/Header";
 import Link from "next/link";
+import { ProfileProvider } from "@/providers/ProfileProvider";
 
 // Main Layout component
 const Layout = ({ children }: LayoutProps) => {
@@ -15,21 +16,24 @@ const Layout = ({ children }: LayoutProps) => {
         <html lang="en">
             <body>
                 <AuthProvider>
-                    <header className="flex items-center justify-between px-4 py-2">
-                        <Link href="/">
-                            <h1>
-                                Slo-Id
-                            </h1>
-                        </Link>
+                <ProfileProvider>
+                    <header className="flex items-center justify-between mx-2 mt-4">
+                        <div className="min-w-40">
+                            <Link href="/">
+                                <h1>
+                                    Slo-Id
+                                </h1>
+                            </Link>
+                        </div>
                         <nav>
                             <MenuItem route={Routes.PROFILE} item="Profile" />
-                            <UserSession></UserSession>
-                            <hr></hr>
+                            <UserSession></UserSession> 
                         </nav>
                     </header>
-                    <main className="pt-4 ml-4">  
+                    <main className="px-2">  
                         {children}
                     </main>
+                </ProfileProvider>
                 </AuthProvider>
             </body>
         </html>
