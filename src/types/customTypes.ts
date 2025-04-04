@@ -9,6 +9,20 @@ export type LayoutProps = {
     children: ChildrenType;
 };
 
+export interface Note {
+    name?: string; // Optional since not all notes might have it
+    createdAt?: number;
+
+    [key: string]: any; // Allows any additional keys
+}
+
+export interface NotePin {
+    name: string; 
+    latitude: number;
+    longitude: number;
+    createdAt: number;
+}
+
 export type UserProps = {
     user_id: string;
     username: string | null;

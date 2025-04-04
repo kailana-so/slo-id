@@ -1,51 +1,70 @@
-import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
-// Initialize Lambda client using v3
-const lambda = new LambdaClient({ region: process.env.AWS_REGION || "ap-southeast-2" });
+const s3 = new S3Client({
+  region: process.env.AWS_REGION || "ap-southeast-2",
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
+});
+
+const BUCKET = process.env.AWS_BUCKET || "slo-id-images";
 
 export async function POST(req: Request) {
-  try {
-    const body = await req.json(); // Parse JSON from request body
+    try {
+        const { userId, thumbnailImageFile, fullImageFile } = await req.json();
 
-    console.log("AWS_UPLOAD_LAMBDA:", process.env.AWS_UPLOAD_LAMBDA); // Debugging
-    console.log("Received payload:", body); // Debugging
+        if (!userId || !thumbnailImageFile || !fullImageFile) {
+        return new Response(
+            JSON.stringify({ error: "Missing userId or image files" }),
+            { status: 400 }
+        );
+        }
 
-    if (!body) {
-      return new Response(JSON.stringify({ error: "Request body is missing" }), { status: 400 });
+        const baseKey = `${userId}/${crypto.randomUUID()}`;
+
+        const thumbnailKey = `thumbnail/${baseKey}_thumbnail.png`;
+        const fullKey = `full/${baseKey}_full.png`;
+
+        // Convert base64 to Buffer
+        const thumbnailBuffer = Buffer.from(thumbnailImageFile, "base64");
+        const fullBuffer = Buffer.from(fullImageFile, "base64");
+
+        await Promise.all([
+        s3.send(
+            new PutObjectCommand({
+            Bucket: BUCKET,
+            Key: thumbnailKey,
+            Body: thumbnailBuffer,
+            ContentType: "image/png",
+            })
+        ),
+        s3.send(
+            new PutObjectCommand({
+            Bucket: BUCKET,
+            Key: fullKey,
+            Body: fullBuffer,
+            ContentType: "image/png",
+            })
+        ),
+        ]);
+
+        return new Response(
+        JSON.stringify({
+            message: "Image uploaded successfully",
+            result: {
+            thumbnailKey,
+            fullKey,
+            },
+        }),
+        { status: 200 }
+        );
+    } catch (error: any) {
+        console.error("Error uploading images to S3:", error);
+
+        return new Response(
+        JSON.stringify({ error: error.message || "Upload failed" }),
+        { status: 500 }
+        );
     }
-
-    // Ensure FunctionName is not empty
-    const functionName = process.env.AWS_UPLOAD_LAMBDA;
-    if (!functionName) {
-      return new Response(JSON.stringify({ error: "AWS_UPLOAD_LAMBDA is not set" }), { status: 500 });
-    }
-
-    const params = {
-      FunctionName: functionName,
-      Payload: JSON.stringify({ body: JSON.stringify(body) }), // Ensure payload is properly formatted
-    };
-
-    const command = new InvokeCommand(params);
-    const response = await lambda.send(command);
-
-    // Decode response payload
-    const responseData = JSON.parse(new TextDecoder().decode(response.Payload));
-
-    console.log("Lambda response:", responseData);
-
-    return new Response(
-      JSON.stringify({
-        message: "Image uploaded successfully",
-        result: responseData,
-      }),
-      { status: response.StatusCode }
-    );
-  } catch (error) {
-    console.error("Error invoking Lambda:", error);
-
-    return new Response(
-      JSON.stringify(error),
-      { status: 500 }
-    );
-  }
 }

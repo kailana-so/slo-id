@@ -49,7 +49,6 @@ const getUser = async (userId: string) => {
 
         if (userDoc.exists()) {
             const userData = userDoc.data();
-            console.log("User data: ", userData);
 
             return {
                 user_id: userData?.user_id,

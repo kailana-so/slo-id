@@ -11,7 +11,6 @@ import Link from "next/link";
 import { ProfileProvider } from "@/providers/ProfileProvider";
 import GrassIcon from '@mui/icons-material/Grass';
 
-// Main Layout component
 const Layout = ({ children }: LayoutProps) => {
     return (
         <html lang="en">

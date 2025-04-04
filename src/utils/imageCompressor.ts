@@ -1,9 +1,6 @@
 import imageCompression from "browser-image-compression";
-import { v4 as uuidv4 } from "uuid"; 
 
-export const compressImage = async (file: File) => {
-  const uuid = uuidv4();
-
+export const compressImage = async (file: File, imageId: string) => {
   // Compress full image
   const fullImage = await imageCompression(file, { maxSizeMB: 10, maxWidthOrHeight: 1024 });
   const fullImageBase64 = await fileToBase64(fullImage);
@@ -14,12 +11,12 @@ export const compressImage = async (file: File) => {
 
   return {
     fullImageFile: {
-      name: `${uuid}_full.${file.type.split('/')[1]}`,
+      name: `${imageId}_full.${file.type.split('/')[1]}`,
       type: file.type,
       content: fullImageBase64
     },
     thumbnailImageFile: {
-      name: `${uuid}_thumbnail.${file.type.split('/')[1]}`,
+      name: `${imageId}_thumbnail.${file.type.split('/')[1]}`,
       type: file.type,
       content: thumbnailBase64
     }

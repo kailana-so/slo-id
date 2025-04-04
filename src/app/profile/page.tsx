@@ -1,13 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import TextLink from "@/components/common/TextLink";
-import { Routes } from "@/constants/routes";
 import { getUser } from "@/services/userService";
 import { useAuth } from "@/providers/AuthProvider";
-import MenuItem from "@/components/common/MenuItem";
-import TakeNote from "@/components/TakeNote";
-import ViewNotes from "@/components/ViewNotes";
 
 export default function Page({ children }: { children: React.ReactNode }) {
     const [userData, setUserData] = useState<any>(null);
@@ -28,10 +23,23 @@ export default function Page({ children }: { children: React.ReactNode }) {
 
     console.log(userData, "userData - layout");
 
+    const renderPage = () => {
+        if (userData?.username) {
+            return (
+                <div>
+                    <h3>Hi {userData.username}</h3> 
+                    <p>Your referrer code is: <b>{userData.friendly_id}</b></p>
+                </div>
+            );
+        }
+        return (
+            <div>
+                <p>Create a profile to start noticing.</p>
+            </div>
+        )
+    }
+
     return (
-        <div>
-            <h3>Hi {userData?.username ? userData.username : "there"}</h3> 
-            <p>Your referrer code is: <b>{userData?.friendly_id}</b></p>
-        </div>
+        renderPage()
     );
 }

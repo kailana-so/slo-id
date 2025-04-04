@@ -131,8 +131,10 @@ body {
   padding: 3px 7px;
   border-radius: var(--border-radius);
   background-color: var(--brown-50);
-  color: var(--brown-900);
+  color: var(--brown-700);
+  font-weight: 500;
   transition: all 0.2s ease-in-out;
+  box-shadow: rgba(93, 77, 50, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
 .submit:hover {
@@ -251,6 +253,10 @@ input:checked + .slider:before {
   padding: 0.5rem; /* Equivalent to p-2 */
   border-radius: var(--border-radius);
   border: var(--border-outline);
+}
+
+.card-selected {
+  border: 2px solid var(--brown-100);
 }
 
 .aligned {

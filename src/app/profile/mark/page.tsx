@@ -8,9 +8,6 @@ import { addIdentificationNote } from "@/services/identificationService";
 import IdentificationForm from "@/components/forms/identification/IdentificationForm";
 import { useProfile } from "@/providers/ProfileProvider";
 import { uploadClient } from "@/services/imageService";
-import ActionButton from "@/components/common/ActionButton";
-import MenuItem from "@/components/common/MenuItem";
-
 
 export default function TakeNote() {
     const { userData } = useProfile();
@@ -20,7 +17,7 @@ export default function TakeNote() {
 
     const router = useRouter()
 
-    console.log(formData.imageFiles, "imageFiles")
+    console.log(formData, "formDAta")
 
     // Reset form data when formType changes
     useEffect(() => {
@@ -29,28 +26,38 @@ export default function TakeNote() {
 
     const handleSubmit = async (event: FormSubmitEvent) => {
         event.preventDefault();
-        setLoading(true)
-        formData["type"] = formType
-        console.log(`[TakeNote] ${formType} data`, formData);
+        setLoading(true);
+      
         try {
-            if (userData) {
-                console.warn("No user data found. Log in again");
-                if(formData.imageFiles) {
-                    console.log(formData.imageFiles, "formData.imageFiles")
-                    let imageResult = await uploadClient(formData.imageFiles)
-                    console.log(imageResult, "imageResult")
-                }
-
-                await addIdentificationNote(userData, formData);
-                // router.push(Routes.NOTES);
-                return;
-            }
+          if (!userData) {
+            console.warn("No user data found. Log in again");
+            return;
+          }
+      
+          const { imageFiles, ...rest } = formData;
+          const noteData: Record<string, any> = {
+            ...rest,
+            type: formType,
+          };
+      
+          if (imageFiles) {
+            console.log(imageFiles, "imageFiles");
+            const imageResult = await uploadClient(imageFiles, userData.user_id);
+            console.log(imageResult, "imageResult");
+      
+            noteData.imageId = imageResult.thumbnailKey.split("/").pop()?.split("_")[0];
+          }
+      
+          await addIdentificationNote(userData, noteData);
+          router.push(Routes.NOTES);
         } catch (error) {
-            console.error("[TakeNote] Error taking note:", error);
+          console.error("[TakeNote] Error taking note:", error);
+        } finally {
+          setLoading(false);
         }
-        setLoading(false)
     };
-
+      
+    
     return (
         <section className="card">
             <div className="pb-4">
