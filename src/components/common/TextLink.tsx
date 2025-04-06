@@ -10,7 +10,7 @@ const TextLink: React.FC<TextLinkProps> = ({linkText, route }) => {
     const router = useRouter();
 
     return (
-        <button className="hover:text-blue-300 ps-2 underline" onClick={() => router.push(route)}>{linkText}</button>
+        <button className="menu-item pl-2" onClick={() => router.push(route)}>{linkText}</button>
     )
 }
 export default TextLink;

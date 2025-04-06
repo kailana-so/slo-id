@@ -40,6 +40,8 @@ export default function Page({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        renderPage()
+        <div className="card">
+            {renderPage()}
+        </div>
     );
 }

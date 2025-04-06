@@ -2,11 +2,11 @@ import dynamic from "next/dynamic";
 
 const UserMap = dynamic(
     async () => {
-        await new Promise(res => setTimeout(res, 1000)); // simulate load
+        await new Promise(res => setTimeout(res, 100)); // simulate load
         return import("@/components/UserMap");
     },
     {
-        ssr: false,
+        ssr: true,
         loading: () => <p>Loading map...</p>,
     }
 );

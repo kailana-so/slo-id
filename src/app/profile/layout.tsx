@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { LayoutProps } from "@/types/customTypes";
+import { LayoutProps } from "@/types/types";
 import MenuItem from "@/components/common/MenuItem";
 import { Routes } from "@/constants/routes";
 import { useProfile } from "@/providers/ProfileProvider";
@@ -13,15 +13,20 @@ const Layout = ({ children }: LayoutProps) => {
             {userData?.username ? (
                 <section>
                     <nav className="nav-layout">
-                    <MenuItem route={Routes.MAP} item="Maps" />
-                    <MenuItem route={Routes.NOTES} item="All Notes" />
-                    <MenuItem route={Routes.TAKENOTE} item="Take Note" />
+                        {/* <MenuItem route={Routes.MAP} item="Map" /> */}
+                        <MenuItem route={Routes.TAKENOTE} item="Note" />
+                        <MenuItem route={Routes.NOTES} item="Notes" />
+                        <MenuItem route={Routes.ID} item="Identifications" />
                     </nav>
                     <section className="mt-4">  
                         {children}
                     </section>
                 </section>
-            ): "Sign up to create a profile"}
+            ): (
+                <p>
+					Sign up to create a profile
+				</p>
+            )}
         </>
     );
 };

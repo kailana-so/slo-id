@@ -57,5 +57,4 @@ const fetchImageUrls = async (
 	return urls;
 };
   
-
-  export { fetchImageUrls, uploadClient}
+export { fetchImageUrls, uploadClient}

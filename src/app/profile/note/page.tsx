@@ -1,6 +1,6 @@
-"use client"; // Marking as a Client Component
-import React, { useEffect, useReducer, useState } from "react";
-import { FormSubmitEvent, FormType } from "@/types/customTypes";
+"use client";
+import React, { useEffect, useState } from "react";
+import { FormSubmitEvent, FormType } from "@/types/types";
 import { identificationFormSchema } from "@/components/forms/identification/IdentificationFormSchema";
 import { Routes } from "@/constants/routes";
 import { useRouter } from "next/navigation";
@@ -41,7 +41,6 @@ export default function TakeNote() {
           };
       
           if (imageFiles) {
-            console.log(imageFiles, "imageFiles");
             const imageResult = await uploadClient(imageFiles, userData.user_id);
             console.log(imageResult, "imageResult");
       

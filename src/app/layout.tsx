@@ -2,7 +2,7 @@
 
 import React from "react";
 import { AuthProvider } from "@/providers/AuthProvider";
-import { LayoutProps } from "@/types/customTypes";
+import { LayoutProps } from "@/types/types";
 import "./globals.css";
 import MenuItem from "@/components/common/MenuItem";
 import { Routes } from "@/constants/routes";
@@ -28,11 +28,15 @@ const Layout = ({ children }: LayoutProps) => {
                             </Link>
                         </div>
                         <nav>
+                            <MenuItem route={Routes.MAP} item="Map" />
                             <MenuItem route={Routes.PROFILE} item="Profile" />
                             <UserSession></UserSession> 
                         </nav>
                     </header>
                     <main className="px-2">  
+                        {/* <nav className="nav-layout">
+                            <MenuItem route={Routes.MAP} item="Map" />
+                        </nav> */}
                         {children}
                     </main>
                 </ProfileProvider>

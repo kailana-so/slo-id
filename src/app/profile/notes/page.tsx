@@ -3,17 +3,22 @@ import React, { useEffect, useRef, useState } from "react";
 import { getIdentificationNotes } from "@/services/identificationService";
 import { useProfile } from "@/providers/ProfileProvider";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
-import { Note } from "@/types/customTypes";
+import { Note } from "@/types/types";
 import Spinner from "@/components/common/Spinner";
 import Image from 'next/image'
 import { format } from 'date-fns';
 import { fetchImageUrls } from "@/services/imageService";
+import { NoteExtendedDetails } from "@/components/NoteDetails";
+import { useRouter } from "next/navigation";
+import { Routes } from "@/constants/routes";
 
 
 export default function ViewNotes() {
     const { userData } = useProfile();
           
     const hasFetched = useRef(false);
+
+    const router = useRouter();
 
     const [notes, setNotes] = useState<Note[]>([]);
     const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
@@ -64,12 +69,18 @@ export default function ViewNotes() {
         getNotes();
     }, []);
 
-    console.log(thumbnailMap, "thumbnailMap")
+    const handleClose = () => {
+		setSelectedNote(null)
+	}
+
+    const handleRoute = () => {
+		router.push(Routes.ID); // Change the route without reloading
+	};
 
     return (
         <div key='view-notes'>
             {notes.map((note) => (
-                <div className={`card ${selectedNote?.id === note.id ? "card-selected": ""}`}>
+                <div key={note.id} className={`card ${selectedNote?.id === note.id ? "card-selected": ""}`}>
                 <section 
                     className="aligned content-center"
                     key={`${note.id}-${note.type}${note.createdAt}`}
@@ -86,19 +97,15 @@ export default function ViewNotes() {
                     <div>
                         <h4>{`${note.type}`}</h4>
                         <p key={`${note.type||"unknown"}-${note.createdAt}`}>
-                            {`${note.name} - ${note.createdAt ? format(note.createdAt, "dd MMM yyyy HH:mm a") : "No Date"}`}
+                            {note.createdAt ? format(note.createdAt, "dd MMM yyyy HH:mm a") : "No Date"}
                         </p>
                     </div>
                 </section>
                 {selectedNote?.id === note.id && (
-                    <>
-                        <pre className="text-sm overflow-auto whitespace-pre-wrap">
-                        {JSON.stringify(selectedNote, null, 2)}
-                        </pre>
-                        <button className="mt-2 btn" onClick={() => setSelectedNote(null)}>
-                        X
-                        </button>
-                    </>
+                    <NoteExtendedDetails 
+                        note={note} 
+                        handleClose={handleClose}
+                        handleRoute={handleRoute}/>
                 )}
                 </div>
             ))}

@@ -1,5 +1,5 @@
 import { database } from "@/adapters/firebase";
-import { ProfileProps, Note, NotePin } from "@/types/customTypes";
+import { ProfileProps, Note, NotePin } from "@/types/types";
 import { collection, addDoc, getDocs, orderBy, query, limit, startAfter, QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 import { timestampFields } from "../enums/enums";
 
@@ -52,10 +52,21 @@ const getIdentificationNotes = async (
         const notesQuery = query(notesRef, ...constraints);
         const snapshot = await getDocs(notesQuery);
 
-        const notes = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
+        const notes: Note[] = snapshot.docs
+            .map(doc => {
+                const data = doc.data();
+                    if (!data.type) {
+                    console.warn("Skipping note with missing 'type'", data);
+                    return null;
+                }
+
+                return {
+                    id: doc.id,
+                    ...data,
+                } as Note;
+            })
+            .filter((note): note is Note => note !== null);
+
 
         const lastVisible = snapshot.docs.at(-1) ?? null;
 

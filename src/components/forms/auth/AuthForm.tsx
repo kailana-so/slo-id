@@ -1,6 +1,6 @@
 import React from "react";
 import ActionButton from "@/components/common/ActionButton";
-import { AuthFormProps } from "@/types/customTypes";
+import { AuthFormProps } from "@/types/types";
 
 
 export default function AuthForm({ 
@@ -8,8 +8,7 @@ export default function AuthForm({
 ) {
     return (
         <>
-            <h2 className="pb-2">{title}</h2>
-            <form onSubmit={handleSubmit} className="columns-1 space-y-2">
+            <form onSubmit={handleSubmit} className="columns-1 space-y-4">
                 {isSignUp && (
                     <div>
                     <input
@@ -43,7 +42,6 @@ export default function AuthForm({
                     <ActionButton label={title} loading={loading}/>
                 </div>
             </form>
-            {error && <p className="text-red-500 text-sm">{error}</p>}
         </>
     );
 };
