@@ -5,6 +5,8 @@ import { LayoutProps } from "@/types/types";
 import MenuItem from "@/components/common/MenuItem";
 import { Routes } from "@/constants/routes";
 import { useProfile } from "@/providers/ProfileProvider";
+import Link from "next/link";
+import NavItem from "@/components/common/NavItem";
 
 const Layout = ({ children }: LayoutProps) => {
     const { userData } = useProfile();
@@ -12,11 +14,10 @@ const Layout = ({ children }: LayoutProps) => {
         <>
             {userData?.username ? (
                 <section>
-                    <nav className="nav-layout">
-                        {/* <MenuItem route={Routes.MAP} item="Map" /> */}
-                        <MenuItem route={Routes.TAKENOTE} item="Note" />
-                        <MenuItem route={Routes.NOTES} item="Notes" />
-                        <MenuItem route={Routes.ID} item="Identifications" />
+                    <nav className="nav-layout">  
+                        <NavItem route={Routes.TAKENOTE} item="Note" />
+                        <NavItem route={Routes.NOTES} item="Notes" />
+                        <NavItem route={Routes.IDS} item="Identifications" />
                     </nav>
                     <section className="mt-4">  
                         {children}

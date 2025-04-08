@@ -51,6 +51,7 @@ export default function ViewNotes() {
                 imageUrls.map(({ filename, url }: { filename: string; url: string }) => [filename, url])
             );
             setThumbnailMap(imageUrlMap)
+            
 
         } catch (error) {
             console.error("[ViewNotes] Error getting notes:", error);
@@ -74,7 +75,7 @@ export default function ViewNotes() {
 	}
 
     const handleRoute = () => {
-		router.push(Routes.ID); // Change the route without reloading
+		router.push(Routes.IDS); 
 	};
 
     return (

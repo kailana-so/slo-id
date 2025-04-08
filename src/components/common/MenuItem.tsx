@@ -4,7 +4,6 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import LogoutIcon from '@mui/icons-material/Logout';
-import FaceIcon from '@mui/icons-material/Face';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import MapIcon from '@mui/icons-material/Map';
 
@@ -26,13 +25,13 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, item, handler }) => {
 
   const handleItemRender = (item: string) => {
     if(item === "Log Out") {
-        return <LogoutIcon className="ml-2"/>
+        return <LogoutIcon className="ml-1 mb-1"/>
     }
     if(item === "Profile") {
-        return <PersonOutlineIcon className="ml-2"/>
+        return <PersonOutlineIcon className="ml-1 mb-1"/>
     }
     if(item === "Map") {
-      return <MapIcon className="ml-2"/>
+      return <MapIcon className="ml-1 mb-1"/>
   }
     return item
   }

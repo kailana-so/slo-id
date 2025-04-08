@@ -17,19 +17,23 @@ export default function Page({ children }: { children: React.ReactNode }) {
         }
     }, [user]);
 
-    const handleMenuClick = (menu: string) => {
-        setActiveMenu(menu);
-    };
-
-    console.log(userData, "userData - layout");
-
     const renderPage = () => {
         if (userData?.username) {
             return (
-                <div>
-                    <h3>Hi {userData.username}</h3> 
-                    <p>Your referrer code is: <b>{userData.friendly_id}</b></p>
-                </div>
+                <section>
+                    <div className="card">
+                        <h3>Hi {userData.username}</h3> 
+                        <p>Ref code: <b>{userData.friendly_id}</b></p>
+                    </div>
+                    <div className="card">
+                        <h3>Trends</h3> 
+                        <section className="grid grid-cols-3 gap-2 justify-items-stretch">
+                            <div className="card"> notes </div>
+                            <div className="card"> ids </div>
+                            <div className="card"> distance </div>
+                        </section>
+                    </div>
+                </section>
             );
         }
         return (
@@ -40,7 +44,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="card">
+        <div>
             {renderPage()}
         </div>
     );

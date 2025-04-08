@@ -10,6 +10,7 @@ import UserSession from "@/components/common/Header";
 import Link from "next/link";
 import { ProfileProvider } from "@/providers/ProfileProvider";
 import GrassIcon from '@mui/icons-material/Grass';
+import NavItem from "@/components/common/NavItem";
 
 const Layout = ({ children }: LayoutProps) => {
     return (

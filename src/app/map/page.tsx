@@ -1,27 +1,25 @@
 "use client";
-
-import { useEffect } from "react";
 import { useProfile } from "@/providers/ProfileProvider";
 import { getNotesLocations } from "@/services/identificationService";
-import { getMapInstance } from "@/utils/mapInstance";
-import { addMarkers } from "@/components/mapLayers/MarkersLayer";
-import { BaseMap } from "@/components/mapLayers/BaseMap";
+import dynamic from "next/dynamic";
+import { NotePin } from "@/types/types";
+import L from "leaflet";
+import { useCallback } from "react";
+import { addNoteMarkers } from "@/utils/addNoteMarkers";
+
+const BaseMap = dynamic(() => import("../../components/BaseMap"), {
+  	ssr: false,
+});
 
 export default function MapsPage() {
 	const { userData } = useProfile();
 
-	useEffect(() => {
+	const handleMapReady = useCallback(async (map: L.Map) => {
 		if (!userData) return;
 
-		getNotesLocations(userData.user_id).then(({ notes }) => {
-			const map = getMapInstance();
-			if (map) {
-				addMarkers(map, notes);
-			} else {
-				console.warn("Map not ready");
-			}
-		});
+		const { notes }: { notes: NotePin[] } = await getNotesLocations(userData.user_id);
+		addNoteMarkers(map, notes);
 	}, [userData]);
 
-	return <BaseMap></BaseMap>;
+	return <BaseMap onMapReady={handleMapReady} />;
 }
