@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { getUser } from "@/services/userService";
 import { useAuth } from "@/providers/AuthProvider";
-import { ProfileProps } from "@/types/customTypes";
+import { ProfileProps } from "@/types/types";
 
 
 type ProfileContextType = {

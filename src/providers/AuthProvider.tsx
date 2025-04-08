@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "@/adapters/firebase"; 
 import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth"; 
-import { LayoutProps } from "@/types/customTypes";
+import { LayoutProps } from "@/types/types";
 import Spinner from "@/components/common/Spinner";
 
 interface AuthContextType {

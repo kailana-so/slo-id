@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation"; 
-import { FormSubmitEvent } from "@/types/customTypes";
+import { FormSubmitEvent } from "@/types/types";
 import { FirebaseError } from "firebase/app";
 import { Routes } from "@/constants/routes";
 import AuthForm from "@/components/forms/auth/AuthForm";
@@ -67,6 +67,7 @@ export default function LoginPage() {
                 Don't have an account?
                 <TextLink route={Routes.SIGNUP} linkText="Sign Up"/>
             </p>
+            {error && <p className="text-red-500 text-sm pt-4">{error}</p>}
         </>
     );
 };

@@ -9,6 +9,22 @@ export type LayoutProps = {
     children: ChildrenType;
 };
 
+export interface Note {
+    id: string;
+    name?: string; // Optional since not all notes might have it
+    createdAt?: number;
+    type: string;
+
+    [key: string]: any; // Allows any additional keys
+}
+
+export interface NotePin {
+    name: string; 
+    latitude: number;
+    longitude: number;
+    createdAt: number;
+}
+
 export type UserProps = {
     user_id: string;
     username: string | null;
@@ -65,6 +81,8 @@ export interface IdentificationFormProps {
 }
 
 export type FormType = keyof typeof identificationFormSchema;
+export type NoteType = keyof typeof identificationFormSchema;
+
 
 // types/userTypes.ts
 import { User as FirebaseUser } from "firebase/auth"; // Import Firebase User type

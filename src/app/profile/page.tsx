@@ -1,13 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import TextLink from "@/components/common/TextLink";
-import { Routes } from "@/constants/routes";
 import { getUser } from "@/services/userService";
 import { useAuth } from "@/providers/AuthProvider";
-import MenuItem from "@/components/common/MenuItem";
-import TakeNote from "@/components/TakeNote";
-import ViewNotes from "@/components/ViewNotes";
 
 export default function Page({ children }: { children: React.ReactNode }) {
     const [userData, setUserData] = useState<any>(null);
@@ -22,16 +17,35 @@ export default function Page({ children }: { children: React.ReactNode }) {
         }
     }, [user]);
 
-    const handleMenuClick = (menu: string) => {
-        setActiveMenu(menu);
-    };
-
-    console.log(userData, "userData - layout");
+    const renderPage = () => {
+        if (userData?.username) {
+            return (
+                <section>
+                    <div className="card">
+                        <h3>Hi {userData.username}</h3> 
+                        <p>Ref code: <b>{userData.friendly_id}</b></p>
+                    </div>
+                    <div className="card">
+                        <h3>Trends</h3> 
+                        <section className="grid grid-cols-3 gap-2 justify-items-stretch">
+                            <div className="card"> notes </div>
+                            <div className="card"> ids </div>
+                            <div className="card"> distance </div>
+                        </section>
+                    </div>
+                </section>
+            );
+        }
+        return (
+            <div>
+                <p>Create a profile to start noticing.</p>
+            </div>
+        )
+    }
 
     return (
         <div>
-            <h3>Hi {userData?.username ? userData.username : "there"}</h3> 
-            <p>Your referrer code is: <b>{userData?.friendly_id}</b></p>
+            {renderPage()}
         </div>
     );
 }

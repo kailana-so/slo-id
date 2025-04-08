@@ -1,6 +1,8 @@
 import { compressImage } from "@/utils/imageCompressor";
 import { convertImage } from "@/utils/imageConverter";
 import React from "react";
+import { v4 as uuidv4 } from "uuid"; 
+
 
 type ImageSelectorProps = {
     setFormData: React.Dispatch<React.SetStateAction<Record<string, any>>>;
@@ -9,18 +11,21 @@ type ImageSelectorProps = {
 const ImageSelector = ({ setFormData }: ImageSelectorProps) => {
 
     const handleImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const imageId = uuidv4();
+
         if (!event.target.files) return;
         let file = event.target.files[0];
     
         file = await convertImage(file) // Convert HEIC if needed
         console.log(file, "convertedFile")
     
-        let { fullImageFile, thumbnailImageFile } = await compressImage(file); // Compress image
+        let { fullImageFile, thumbnailImageFile } = await compressImage(file, imageId); // Compress image
         console.log(thumbnailImageFile, fullImageFile, "thumbnailImageFile, fullImageFile")
         // setImageFile(file)
         setFormData((prev) => ({
             ...prev,
             imageFiles: { fullImageFile, thumbnailImageFile },
+            imageId
         }));
     };
 

@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Montserrat:wght@100;200;300;400;500;600;700&display=swap');
 
 @tailwind base;
-/* @tailwind components; */
+@tailwind components;
 @tailwind utilities;
 
 :root {
   --green-900: rgb(4, 12, 7);
   --green-700: rgb(10, 31, 17);
-  --green-500: rgb(20, 61, 33);
+  --green-500: rgb(19, 70, 36);
   --green-100: rgb(170, 200, 180);
   --green-50: rgb(220, 235, 225);
 
@@ -17,235 +17,185 @@
   --brown-100: rgb(210, 170, 140);
   --brown-50: rgb(235, 215, 195);
 
-
   --background: #ffffff;
-  --foreground: var(--green-500);
-  --border-radius: 1rem;
-  --margin-right: 10px;
+  --foreground: var(--green-700);
+  --border-radius: 0.8rem;
   --padding: 5px;
-  --primary-brown: rgb(135, 57, 9, 1);
-  --secondary-brown: rgb(135, 57, 9, 0.5);
+  --margin-left: 10px;
+  --margin-right: 10px;
+  --border-outline: 1px solid var(--foreground);
+  --primary-brown: var(--brown-700);
+  --secondary-brown: var( --brown-700);
   --primary-green: var(--green-100);
   --secondary-green: var(--green-50);
   --primary-grey: rgba(160,159,159,1);
   --secondary-grey: rgba(160,159,159,0.5);
-  --margin-left: 10px;
 }
 
 body {
-  color: var(--brown-900);
-  background: var(--background);
-  padding: 2.5% 5%; 
+  @apply text-[var(--brown-900)] bg-[var(--background)] px-[5%] py-[2.5%];
 }
 
 @layer base {
-  h1 {
+  h1, h2, h3, h4, button {
     @apply font-bricolage-grotesque font-bold;
+  }
+
+  h1 {
     font-size: 48px;
-    color: var(--green-900);
+    color: var(--green-500);
   }
 
   h2 {
-    @apply font-bricolage-grotesque font-bold;
     font-size: 30px;
   }
+
   h3 {
-    @apply font-bricolage-grotesque font-bold;
     font-size: 18px;
   }
+
   h4 {
-    @apply font-bricolage-grotesque font-bold;
     font-size: 16px;
+    color: var(--green-500);
   }
 
-  p, li, button, form, input {
-    @apply font-montserrat;
-    font-weight: 300;
-    font-size: 16px;
-  }
-
-  button {
-    margin-right: var(--margin-right);
+  p, li, form, input, button {
+    @apply font-montserrat text-base font-light;
   }
 
   main {
     padding: 20px 0 10px 0;
   }
 
-  input {
-    @apply font-montserrat;
-    border: 1px solid var(--green-900);
-    border-radius: var(--border-radius);
-    /* margin-left: var(--margin-left); */
-    padding: var(--padding);
-  }
-  
-  select {
-    margin-left: var(--margin-left);
-    border: 1px solid var(--green-900);
-    border-radius: var(--border-radius); 
-    padding: var(--padding);
+  input, select {
+    @apply font-montserrat border border-[var(--foreground)] rounded-[var(--border-radius)] px-[var(--padding)] py-[var(--padding)] focus:outline-none focus-visible:outline-none focus:border-2 focus:border-green-500;
   }
 
+  select {
+    margin-left: var(--margin-left);
+  }
+}
+
+@layer components {
+  .submit {
+    @apply px-2 py-1 rounded-[var(--border-radius)] text-[var(--brown-700)] font-medium transition-all;
+    background-color: var(--brown-50);
+    box-shadow: rgba(93, 77, 50, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  }
+
+  .submit:hover {
+    background-color: var(--brown-500);
+    color: var(--brown-50);
+    transform: translateY(1px);
+  }
+
+  .submit:active {
+    background-color: var(--brown-500);
+    color: var(--brown-50);
+    transform: translateY(-1px);
+  }
+
+  .nav-layout {
+    @apply flex justify-between px-[var(--padding)];
+  }
+
+  .page-padding {
+    @apply p-[2%];
+  }
+
+  .menu-item {
+    @apply pr-1 mr-1 text-[var(--foreground)] transition-all;
+    @apply font-bricolage-grotesque font-bold;
+
+  }
+
+  .menu-item.selected {
+    @apply border-b-2 border-[var(--brown-100)] font-extrabold;
+  }
+
+  .badge-item {
+    @apply px-2 py-1 m-1 rounded-[var(--border-radius)] border border-[var(--foreground)];
+  }
+
+  .badge-item.selected {
+    @apply bg-[var(--foreground)] text-[var(--background)];
+  }
+
+  .badge-item.unselected {
+    @apply bg-[var(--secondary-green)];
+  }
+
+  .spinner {
+    @apply w-4 h-4 border-2 border-transparent border-t-[var(--background)] rounded-[var(--border-radius)] m-[var(--padding)] animate-spin;
+  }
+
+  .switch {
+    @apply relative inline-block w-10 h-5 text-[10px];
+  }
+
+  .switch input {
+    @apply hidden;
+  }
+
+  .slider {
+    @apply absolute inset-0 cursor-pointer bg-[var(--secondary-grey)] transition rounded-full;
+  }
+
+  .slider::before {
+    @apply absolute content-[''] h-4 w-4 bg-[var(--primary-grey)] left-[0.2em] bottom-[0.2em] rounded-full transition;
+  }
+
+  input:checked + .slider::before {
+    background-color: var(--green-500);
+    transform: translateX(1.9em);
+  }
+
+  input:checked + .slider {
+    background-color: var(--secondary-green);
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px var(--green-500);
+  }
+
+  .card {
+    @apply mt-4 p-2 rounded-[var(--border-radius)];
+    border: var(--border-outline); /* raw CSS using your custom var */
+  }
+  
+  .card-selected {
+    border: 2px solid var(--brown-100); /* raw CSS for the override */
+  }
+
+  .aligned {
+    @apply flex gap-4;
+  }
+
+  .color-box {
+    @apply w-12 h-8 border rounded-[var(--border-radius)];
+    margin-right: var(--margin-right);
+  }
+
+  .ring-highlight {
+    box-shadow: 0 0 0 2px var(--secondary-grey);
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
 
-.nav-layout {
-  /* background-color: var(--green-50); */
-  padding: var(--padding);
-  /* border-radius: var(--border-radius); */
-  display: flex;
-  justify-content: space-between;
-}
-
-.page-padding {
-  padding: 2%; /* Add 2% padding to all page components */
-}
-
-.submit {
-  padding: 3px 7px;
-  margin: 2px;
-  border-radius: var(--border-radius); /* Use the border radius variable */
-  background-color: var(--secondary-green);
-  color: var(--foreground);
-  transition: all 0.2s ease-in-out;
-}
-
-.submit:hover {
-  background-color: var(--foreground);
-  color: var(--background);
-  transform: translateY(1px);
-}
-
-.submit:active {
-  background-color: var(--foreground);
-  color: var(--background);
-  transform: translateY(-1px);
-}
-
-.menu-item {
-  padding: 2px 5px 2px 0px;
-  margin-right: 2px;
-  color: var(--foreground);
-  transition: all 0.2s ease-in-out;
-}
-
-.menu-item.selected {
-  border-bottom: 2px solid var(--brown-100);
-  font-weight: 900;
-}
-
-
-.badge-item { 
-  padding: 3px 7px;
-  margin: 2px;
-  border-radius: var(--border-radius);
-}
-
-.badge-item.selected {
-  background-color: var(--foreground);
-  color: var(--background);
-}
-
-.badge-item.unselected {
-  background-color: var(--secondary-green);
-}
-
-.spinner {
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid transparent;
-  border-top: 2px solid var(--primary-green);
-  border-radius: var(--border-radius);
-  margin: var(--border-radius);
-  animation: spin 1s linear infinite;
+  .note-divider {
+    border-top: 2px dotted var(--brown-100);
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
+  0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-
-.switch {
-  font-size: 10px;
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 20px;
-}
- 
-.switch input {
-  display: none;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
- 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--secondary-grey);
-  transition: .2s;
-  border-radius: 30px;
-}
- 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  border-radius: 20px;
-  left: 0.2em;
-  bottom: 0.2em;
-  background-color: var(--primary-grey);
-  transition: .4s;
-}
- 
-input:checked + .slider::before {
-  background-color: var(--primary-green);
-}
- 
-input:checked + .slider {
-  background-color: var(--secondary-green);
-}
- 
-input:focus + .slider {
-  box-shadow: 0 0 1px var(--primary-green);
-}
- 
-input:checked + .slider:before {
-  transform: translateX(1.9em);
-}
-
-.card {
-  margin-top: 1rem; /* Equivalent to mt-4 */
-  padding: 0.5rem; /* Equivalent to p-2 */
-  border-radius: var(--border-radius);
-  border: 1px solid var(--foreground);
-}
-
-.aligned {
-  display: flex;
-  gap: 1rem; 
-}
-
-.color-box {
-  width: 2.5rem; 
-  height: 1.5rem; 
-  border-width: 1px; 
-  border-radius: var(--border-radius)
-}
-
-.ring-highlight {
-  box-shadow: 0 0 0 2px var(--secondary-grey)
+svg[class*="MuiSvgIcon-root"] {
+  color: var(--green-500);
 }

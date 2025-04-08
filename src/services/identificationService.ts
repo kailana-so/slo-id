@@ -1,7 +1,15 @@
-import { database, auth } from "@/adapters/firebase";
-import { IdentificationFormProps, ProfileProps, UserProps } from "@/types/customTypes";
-import { setDoc, doc, getDoc, collection, addDoc, getDocs } from "firebase/firestore";
+import { database } from "@/adapters/firebase";
+import { ProfileProps, Note, NotePin } from "@/types/types";
+import { collection, addDoc, getDocs, orderBy, query, limit, startAfter, QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 import { timestampFields } from "../enums/enums";
+
+type GetNotesResult = {
+    notes: Note[];
+    lastDoc: QueryDocumentSnapshot<DocumentData> | null;
+};
+type GetNotePinsResult = {
+    notes: NotePin[];
+};
 
 const addIdentificationNote = async (
     userData: ProfileProps,
@@ -26,30 +34,85 @@ const addIdentificationNote = async (
     }
 };
 
+
 const getIdentificationNotes = async (
     userId: string,
-) => {
+    lastDoc?: QueryDocumentSnapshot
+): Promise<GetNotesResult> => {
     try {
         const notesRef = collection(database, "identifications", userId, "notes");
+        const PAGE_SIZE = 6;
 
-        // Fetch all notes in the "notes" subcollection
-        const notesSnapshot = await getDocs(notesRef);
+        const constraints = [
+            orderBy("createdAt", "desc"),
+            ...(lastDoc ? [startAfter(lastDoc.get("createdAt"))] : []),
+            limit(PAGE_SIZE)
+        ];
 
-        // Convert Firestore documents to an array of objects
-        const notes = notesSnapshot.docs.map(doc => ({
-            id: doc.id, // Include document ID
-            ...doc.data() // Spread document data
-        }));
+        const notesQuery = query(notesRef, ...constraints);
+        const snapshot = await getDocs(notesQuery);
 
-        console.log("Fetched Notes:", notes);
-        return notes;
+        const notes: Note[] = snapshot.docs
+            .map(doc => {
+                const data = doc.data();
+                    if (!data.type) {
+                    console.warn("Skipping note with missing 'type'", data);
+                    return null;
+                }
+
+                return {
+                    id: doc.id,
+                    ...data,
+                } as Note;
+            })
+            .filter((note): note is Note => note !== null);
+
+
+        const lastVisible = snapshot.docs.at(-1) ?? null;
+
+        return { notes, lastDoc: lastVisible };
     } catch (error) {
-        console.error("Error fetching identification notes:", error);
-        return [];
+        console.error("Error fetching notes:", error);
+        return { notes: [], lastDoc: null };
     }
 };
 
+const getNotesLocations = async (
+    userId: string
+  ): Promise<GetNotePinsResult> => {
+    try {
+      const notesRef = collection(database, "identifications", userId, "notes");
+      const snapshot = await getDocs(notesRef);
+  
+      const notes: NotePin[] = snapshot.docs
+        .map((doc) => {
+          const data = doc.data();
+          if (
+            typeof data.latitude !== "number" ||
+            typeof data.longitude !== "number" ||
+            typeof data.createdAt !== "number"
+          ) return null;
+  
+          return {
+            id: doc.id,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            createdAt: data.createdAt,
+            name: data.name,
+          };
+        })
+        .filter(Boolean) as NotePin[];
+  
+      return { notes };
+    } catch (error) {
+      console.error("Error fetching notes with location:", error);
+      return { notes: [] };
+    }
+};
+   
+
 export {
     addIdentificationNote,
-    getIdentificationNotes
+    getIdentificationNotes,
+    getNotesLocations
 };

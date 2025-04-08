@@ -1,4 +1,6 @@
 import React from 'react';
+import Spinner from './Spinner';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 interface ActionButtonProps {
     label: string;
@@ -7,13 +9,10 @@ interface ActionButtonProps {
 
 const ActionButton: React.FC<ActionButtonProps> = ({ label, loading }) => {
     return (
-        <button type="submit" className="submit" disabled={loading}>
-            {loading ? (
-                <div className="spinner"></div>
-            ) : (
-                label
-            )}
-        </button>
+        <div className="content-center gap-4">
+                <button type="submit" disabled={loading}><h4>{label}</h4></button>
+                <NavigateNextIcon></NavigateNextIcon>
+		</div>
     );
 };
 

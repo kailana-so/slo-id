@@ -1,5 +1,5 @@
 import { database, auth } from "@/adapters/firebase";
-import { UserProps } from "@/types/customTypes";
+import { UserProps } from "@/types/types";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 
@@ -49,7 +49,6 @@ const getUser = async (userId: string) => {
 
         if (userDoc.exists()) {
             const userData = userDoc.data();
-            console.log("User data: ", userData);
 
             return {
                 user_id: userData?.user_id,

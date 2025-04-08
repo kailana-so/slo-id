@@ -1,7 +1,7 @@
 "use client"; // Marking as a Client Component
 
 import React, { useState } from "react";
-import { FormSubmitEvent } from "@/types/customTypes";
+import { FormSubmitEvent } from "@/types/types";
 import { FirebaseError } from "firebase/app";
 import { Routes } from "@/constants/routes";
 import AuthForm from "@/components/forms/auth/AuthForm";
@@ -82,6 +82,7 @@ export default function SignUpPage() {
                 Already have an account?
                 <TextLink route={Routes.LOGIN} linkText="Log In"/>
             </p>
+            {error && <p className="text-red-500 text-sm pt-4">{error}</p>}
         </>
     );
 };

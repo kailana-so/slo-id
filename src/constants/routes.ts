@@ -1,8 +1,9 @@
 export enum Routes {
     PROFILE = "/profile",
-    MAP = "/profile/maps",
-    NOTES = "/profile/view-notes",
-    TAKENOTE = "/profile/take-note",
+    MAP = "/map",
+    NOTES = "/profile/notes",
+    TAKENOTE = "/profile/note",
+    IDS = "/profile/identifications",
     LOGIN = "/login",
     LOGOUT = "/logout",
     SIGNUP = "/signup",
