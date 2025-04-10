@@ -24,9 +24,12 @@ const Layout = ({ children }: LayoutProps) => {
                     </section>
                 </section>
             ): (
-                <p>
-					Sign up to create a profile
-				</p>
+                <div className="flex flex-row align-center gap-2 pt-4">
+                    <p className="text-sm">
+                        Log in to view your Profile.                   
+                    </p>
+                    <MenuItem route={Routes.LOGIN} item="Log In"/>
+                </div>
             )}
         </>
     );

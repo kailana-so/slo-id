@@ -41,7 +41,7 @@ const getIdentificationNotes = async (
 ): Promise<GetNotesResult> => {
     try {
         const notesRef = collection(database, "identifications", userId, "notes");
-        const PAGE_SIZE = 6;
+        const PAGE_SIZE = 2;
 
         const constraints = [
             orderBy("createdAt", "desc"),
@@ -77,7 +77,7 @@ const getIdentificationNotes = async (
     }
 };
 
-const getNotesLocations = async (
+const getUserNoteLocations = async (
     userId: string
   ): Promise<GetNotePinsResult> => {
     try {
@@ -114,5 +114,5 @@ const getNotesLocations = async (
 export {
     addIdentificationNote,
     getIdentificationNotes,
-    getNotesLocations
+    getUserNoteLocations
 };

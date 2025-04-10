@@ -38,7 +38,9 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, item, handler }) => {
 
   return (
         <button onClick={handleClick}  className={`menu-item ${isActive ? 'selected': "inherit"}`}>
-            {handleItemRender(item)}
+            <h4>
+              {handleItemRender(item)}
+            </h4>
         </button> 
     );
 };

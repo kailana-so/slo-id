@@ -1,6 +1,6 @@
 "use client";
 import { useProfile } from "@/providers/ProfileProvider";
-import { getNotesLocations } from "@/services/identificationService";
+import { getUserNoteLocations } from "@/services/identificationService";
 import dynamic from "next/dynamic";
 import { NotePin } from "@/types/types";
 import L from "leaflet";
@@ -12,13 +12,13 @@ const BaseMap = dynamic(() => import("../../components/BaseMap"), {
 });
 
 export default function MapsPage() {
-	const { userData } = useProfile();
+	const userData = {};
 
 	const handleMapReady = useCallback(async (map: L.Map) => {
-		if (!userData) return;
+		// if (!userData) return;
 
-		const { notes }: { notes: NotePin[] } = await getNotesLocations(userData.user_id);
-		addNoteMarkers(map, notes);
+		// const { notes }: { notes: NotePin[] } = await getUserNoteLocations(userData.user_id);
+		// addNoteMarkers(map, notes);
 	}, [userData]);
 
 	return <BaseMap onMapReady={handleMapReady} />;

@@ -11,65 +11,41 @@ import { fetchImageUrls } from "@/services/imageService";
 import { NoteExtendedDetails } from "@/components/NoteDetails";
 import { useRouter } from "next/navigation";
 import { Routes } from "@/constants/routes";
+import { usePaginatedNotes } from "@/hooks/usePaginatedNotes";
 
 
 export default function ViewNotes() {
     const { userData } = useProfile();
-          
-    const hasFetched = useRef(false);
+	const router = useRouter();
+	const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
-    const router = useRouter();
+	const {
+		data,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		isLoading,
+		error
+	} = usePaginatedNotes(userData?.user_id);
 
-    const [notes, setNotes] = useState<Note[]>([]);
-    const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [thumbnailMap, setThumbnailMap] = useState<Record<string, string>>({});
-    const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+	if (!userData) return null;
+	if (isLoading) return <Spinner />;
+	if (error) return (
+        <div key="errro-getting-notes" className="card">
+            <p>Error loading notes</p>
+        </div>
+    );
 
+    console.log(data, "data")
 
-    if (!userData) {
-      console.warn("No user data found. Log in again");
-      return;
+	const allNotes = data?.pages.flatMap((p) => p.notes) ?? [];
+    const allThumbnails = Object.assign({}, ...(data?.pages.map(p => p.thumbnails) ?? []));
+
+    const handleSelectNote = (note: Note) => {
+        
+        setSelectedNote(note)
     }
-
-    const getNotes = async (cursor?: QueryDocumentSnapshot) => {
-        setLoading(true);
-      
-        try {
-            const { notes: newNotes, lastDoc: newLastDoc } =
-            await getIdentificationNotes(userData.user_id, cursor);
-      
-            setNotes(prev => [...prev, ...newNotes]);
-            setLastDoc(newLastDoc);
-
-            const filenames = newNotes
-                .map(note => note.imageId)
-                .filter(Boolean);
-        
-            let imageUrls = await fetchImageUrls(userData.user_id, filenames);           
-            const imageUrlMap: Record<string, string> = Object.fromEntries(
-                imageUrls.map(({ filename, url }: { filename: string; url: string }) => [filename, url])
-            );
-            setThumbnailMap(imageUrlMap)
-            
-
-        } catch (error) {
-            console.error("[ViewNotes] Error getting notes:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        if (hasFetched.current) {
-            return
-        } else {
-            hasFetched.current = true;
-        }
-        
-        getNotes();
-    }, []);
-
+ 
     const handleClose = () => {
 		setSelectedNote(null)
 	}
@@ -80,16 +56,16 @@ export default function ViewNotes() {
 
     return (
         <div key='view-notes'>
-            {notes.map((note) => (
+            {allNotes.map((note) => (
                 <div key={note.id} className={`card ${selectedNote?.id === note.id ? "card-selected": ""}`}>
                 <section 
                     className="aligned content-center"
                     key={`${note.id}-${note.type}${note.createdAt}`}
-                    onClick={() => setSelectedNote(note)}
+                    onClick={() => handleSelectNote(note)}
                 >
-                    {thumbnailMap[note.imageId] && (
+                    {allThumbnails[note.imageId] && (
                         <Image
-                            src={thumbnailMap[note.imageId]}
+                            src={allThumbnails[note.imageId]}
                             width={50}
                             height={50}
                             alt={`picture of ${note.name}`}
@@ -110,19 +86,13 @@ export default function ViewNotes() {
                 )}
                 </div>
             ))}
-            <div className="pt-4 justify-items-center">
-                <div>
-                    {lastDoc && (
-                        <button
-                            type="submit" className="submit"
-                            onClick={() => getNotes(lastDoc)}
-                            disabled={loading}
-                        >
-                            {loading ? <Spinner/> : "Load More"}
-                        </button>
-                    )}
-                </div>
-            </div>
+            {hasNextPage && (
+				<div className="pt-4 justify-items-center">
+					<button className="submit" onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+						{isFetchingNextPage ? <Spinner /> : "Load More"}
+					</button>
+				</div>
+			)}
         </div>
     );
 }

@@ -1,4 +1,4 @@
-"use client"; // Marking as a Client Component
+"use client"
 
 import React, { useState } from "react";
 import { FormSubmitEvent } from "@/types/types";
@@ -6,10 +6,10 @@ import { FirebaseError } from "firebase/app";
 import { Routes } from "@/constants/routes";
 import AuthForm from "@/components/forms/auth/AuthForm";
 import { AuthErrorMessages, AuthErrors } from "@/constants/authErrorMessages";
-import TextLink from "@/components/common/TextLink";
 import { useRouter } from "next/navigation";
 import { generateFriendlyId } from "@/utils/helpers";
 import { addUser, signUp } from "@/services/userService";
+import MenuItem from "@/components/common/MenuItem";
 
 
 export default function SignUpPage() {
@@ -78,10 +78,12 @@ export default function SignUpPage() {
                 name={name}
                 setName={setName}
             />
-            <p className="pt-6 text-sm">
-                Already have an account?
-                <TextLink route={Routes.LOGIN} linkText="Log In"/>
-            </p>
+            <div className="flex flex-row gap-2 pt-4">
+                <p className="text-sm">
+                    Already have an account?
+                </p>
+                <MenuItem route={Routes.LOGIN} item="Log In"/>
+            </div>
             {error && <p className="text-red-500 text-sm pt-4">{error}</p>}
         </>
     );
