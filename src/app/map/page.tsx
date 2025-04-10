@@ -12,14 +12,8 @@ const BaseMap = dynamic(() => import("../../components/BaseMap"), {
 });
 
 export default function MapsPage() {
-	const userData = {};
-
 	const handleMapReady = useCallback(async (map: L.Map) => {
-		// if (!userData) return;
-
-		// const { notes }: { notes: NotePin[] } = await getUserNoteLocations(userData.user_id);
-		// addNoteMarkers(map, notes);
-	}, [userData]);
+	}, []);
 
 	return <BaseMap onMapReady={handleMapReady} />;
 }

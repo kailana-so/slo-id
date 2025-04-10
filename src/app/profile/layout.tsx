@@ -18,6 +18,7 @@ const Layout = ({ children }: LayoutProps) => {
                         <NavItem route={Routes.TAKENOTE} item="Note" />
                         <NavItem route={Routes.NOTES} item="Notes" />
                         <NavItem route={Routes.IDS} item="Identifications" />
+                        <NavItem route={Routes.USERMAP} item="Map" />
                     </nav>
                     <section className="mt-4">  
                         {children}
