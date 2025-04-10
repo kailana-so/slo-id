@@ -12,20 +12,32 @@ export default function BaseMap({ onMapReady }: BaseMapProps) {
 	const mapRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
+
 		const init = async () => {
-		const { latitude, longitude } = await getLocation();
+		
+			let viewLat = -33.6688233;
+			let viewLng = 150.323443;
+			
+			try {
+				const { latitude, longitude } = await getLocation();
+				viewLat = latitude;
+				viewLng = longitude;
+			} catch (err) {
+				console.log("Using default location:", err);
+			}
 
-		if (!mapRef.current || mapRef.current.dataset.initialized) return;
-		mapRef.current.dataset.initialized = "true";
+			if (!mapRef.current || mapRef.current.dataset.initialized) return;
+			mapRef.current.dataset.initialized = "true";
 
-		const map = L.map(mapRef.current).setView([latitude, longitude], 13);
 
-		L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-			maxZoom: 19,
-			attribution: '&copy; OpenStreetMap contributors',
-		}).addTo(map);
+			const map = L.map(mapRef.current).setView([viewLat, viewLng], 13);
 
-		onMapReady?.(map);
+			L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+				maxZoom: 19,
+				attribution: '&copy; OpenStreetMap contributors',
+			}).addTo(map);
+
+			onMapReady?.(map);
 		};
 
 		init();

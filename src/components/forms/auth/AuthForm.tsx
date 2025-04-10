@@ -7,8 +7,8 @@ export default function AuthForm({
     title, email, setEmail, password, setPassword, handleSubmit, error, loading, isSignUp, name, setName}: AuthFormProps
 ) {
     return (
-        <>
-            <form onSubmit={handleSubmit} className="columns-1 space-y-4">
+        <div>
+            <form onSubmit={handleSubmit} className="columns-1 space-y-4 py-4">
                 {isSignUp && (
                     <div>
                     <input
@@ -42,7 +42,7 @@ export default function AuthForm({
                     <ActionButton label={title} loading={loading}/>
                 </div>
             </form>
-        </>
+        </div>
     );
 };
 

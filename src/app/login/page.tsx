@@ -7,8 +7,8 @@ import { FirebaseError } from "firebase/app";
 import { Routes } from "@/constants/routes";
 import AuthForm from "@/components/forms/auth/AuthForm";
 import { AuthErrorMessages, AuthErrors } from "@/constants/authErrorMessages";
-import TextLink from "@/components/common/TextLink";
 import { login } from "@/services/userService";
+import MenuItem from "@/components/common/MenuItem";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -63,10 +63,12 @@ export default function LoginPage() {
                 error={error}
                 loading={loading}
             />
-            <p className="pt-6 text-sm">
-                Don't have an account?
-                <TextLink route={Routes.SIGNUP} linkText="Sign Up"/>
-            </p>
+            <div className="flex flex-row gap-2 pt-4">
+                <p className="text-sm">
+                    Don't have an account?
+                </p>
+                <MenuItem route={Routes.SIGNUP} item="Sign Up"/>
+            </div>
             {error && <p className="text-red-500 text-sm pt-4">{error}</p>}
         </>
     );

@@ -18,15 +18,19 @@ const Layout = ({ children }: LayoutProps) => {
                         <NavItem route={Routes.TAKENOTE} item="Note" />
                         <NavItem route={Routes.NOTES} item="Notes" />
                         <NavItem route={Routes.IDS} item="Identifications" />
+                        <NavItem route={Routes.USERMAP} item="Map" />
                     </nav>
                     <section className="mt-4">  
                         {children}
                     </section>
                 </section>
             ): (
-                <p>
-					Sign up to create a profile
-				</p>
+                <div className="flex flex-row align-center gap-2 pt-4">
+                    <p className="text-sm">
+                        Log in to view your Profile.                   
+                    </p>
+                    <MenuItem route={Routes.LOGIN} item="Log In"/>
+                </div>
             )}
         </>
     );

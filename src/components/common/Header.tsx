@@ -32,7 +32,7 @@ export default function UserSession(){
                 </MenuItem>
             ) : (
                 // If not logged in, show "Login" and "Sign Up"
-                <MenuItem route={Routes.LOGIN} item="Login" />
+                <MenuItem route={Routes.LOGIN} item="Log In" />
             )}
         </>
     );

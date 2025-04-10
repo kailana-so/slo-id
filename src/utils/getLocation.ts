@@ -10,7 +10,7 @@ const options = {
   }
   
   function error(err: GeolocationPositionError) {
-    throw new Error(`Geolocation error: ${err.message}`);
+    return new Error(`Geolocation error: ${err.message}`);
   }
   
   export const getLocation = (): Promise<{
