@@ -1,6 +1,6 @@
 "use client"
 
-import { Routes } from '@/constants/routes';
+import { Routes } from '@/enums/routes';
 import { useProfile } from '@/providers/ProfileProvider';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useRouter } from "next/navigation";

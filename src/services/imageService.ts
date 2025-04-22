@@ -1,3 +1,5 @@
+import { commonHeaders } from "@/lib/commonHeaders";
+
 interface UploadImage {
 	name: string;
 	type: string;
@@ -19,7 +21,11 @@ const uploadClient = async (
 	try {
 		const response = await fetch("/api/uploadImage", {
 		method: "POST",
-		headers: { "Content-Type": "application/json" },
+		headers: { 
+			"Content-Type": "application/json",
+			...commonHeaders()
+			
+		},
 		body: JSON.stringify({
 			userId,
 			thumbnailImageFile: thumbnailImageFile.content,
@@ -38,14 +44,19 @@ const uploadClient = async (
 };
 	  
 
-const fetchImageUrls = async (
+const getImageURLs = async (
 	userId: string,
-	filenames: string[]
+	filenames: string[],
+	imageType: string,
 ): Promise<{ filename: string; url: string }[]> => {
-	const res = await fetch("/api/thumbnails", {
+
+	const res = await fetch("/api/images", {
 		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ userId, filenames }),
+		headers: { 
+			"Content-Type": "application/json",
+			...commonHeaders()
+		},
+		body: JSON.stringify({ userId, filenames, imageType }),
 	});
 
 	if (!res.ok) {
@@ -56,5 +67,6 @@ const fetchImageUrls = async (
 	const { urls } = await res.json();
 	return urls;
 };
+
   
-export { fetchImageUrls, uploadClient}
+export { getImageURLs, uploadClient}

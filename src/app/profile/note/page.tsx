@@ -1,10 +1,11 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
-import { FormSubmitEvent, FormType } from "@/types/types";
+import { FormSubmitEvent, FormType } from "@/types/form";
 import { identificationFormSchema } from "@/components/forms/identification/IdentificationFormSchema";
-import { Routes } from "@/constants/routes";
+import { Routes } from "@/enums/routes";
 import { useRouter } from "next/navigation";
-import { addIdentificationNote } from "@/services/identificationService";
+import { addSighting } from "@/app/identification/identificationService";
 import IdentificationForm from "@/components/forms/identification/IdentificationForm";
 import { useProfile } from "@/providers/ProfileProvider";
 import { uploadClient } from "@/services/imageService";
@@ -27,36 +28,39 @@ export default function TakeNote() {
     const handleSubmit = async (event: FormSubmitEvent) => {
         event.preventDefault();
         setLoading(true);
+        
       
         try {
-          if (!userData) {
-            console.warn("No user data found. Log in again");
-            return;
-          }
+            if (!userData) {
+                console.warn("[handleSubmit] No user data found. Log in again");
+                return;
+            }
+        
+            const { imageFiles, ...rest } = formData;
+            const noteData: Record<string, any> = {
+                ...rest,
+                type: formType,
+                userId: userData.userId
+            };
+        
+            if (imageFiles) {
+                const imageResult = await uploadClient(imageFiles, userData.userId);
+                console.log(imageResult, "imageResult");
+                noteData.imageId = imageResult.thumbnailKey.split("/").pop()?.split("_")[0];
+            }
+
+            console.log("[handleSubmit] noteData:", noteData)
       
-          const { imageFiles, ...rest } = formData;
-          const noteData: Record<string, any> = {
-            ...rest,
-            type: formType,
-          };
-      
-          if (imageFiles) {
-            const imageResult = await uploadClient(imageFiles, userData.user_id);
-            console.log(imageResult, "imageResult");
-      
-            noteData.imageId = imageResult.thumbnailKey.split("/").pop()?.split("_")[0];
-          }
-      
-          await addIdentificationNote(userData, noteData);
-          router.push(Routes.NOTES);
+            await addSighting(noteData);
+            router.push(Routes.NOTES);
+            
         } catch (error) {
-          console.error("[TakeNote] Error taking note:", error);
+            console.error("[TakeNote] Error taking note:", error);
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
     };
-      
-    
+
     return (
         <section className="card">
             <div className="pb-4">

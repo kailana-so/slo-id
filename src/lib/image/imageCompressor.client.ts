@@ -1,3 +1,5 @@
+"use client"
+
 import imageCompression from "browser-image-compression";
 
 export const compressImage = async (file: File, imageId: string) => {

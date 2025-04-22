@@ -1,21 +1,28 @@
-import { database, auth } from "@/adapters/firebase";
-import { UserProps } from "@/types/types";
+import { database, auth } from "@/lib/adapters/firebase.client";
+import { UserProps } from "@/types/user";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 
-const signUp = async (email: string, password: string, displayName: string) => {
+const signUp = async (
+    email: string, 
+    password: string, 
+    displayName: string,
+) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(userCredential.user, { displayName });
     return userCredential.user;
 };
 
-const login = async (email: string, password: string) => {
+const login = async (
+    email: string, 
+    password: string,
+) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         return userCredential.user;
     } catch (error) {
-        console.error("Login error:", error); // Log the error to see the exact message
-        throw error; // Rethrow the error to handle it in your LoginPage
+        console.error("Login error:", error);
+        throw error;
     }
 };
 
@@ -29,18 +36,23 @@ const getCurrentUser = () => {
 };
 
 
-const addUser = async (userData: UserProps) => {
-    console.log("IN ADD USERS")
+const addUser = async (
+    userData: UserProps,
+) => {
+    console.log("[addUser] Adding User")
     try {
-        const userRef = doc(database, "users", userData.user_id); // Specify the document ID
+        const userRef = doc(database, "users", userData.userId);
         await setDoc(userRef, userData); 
-        console.log("User added with ID: ", userData.user_id);
+        console.log("[addUser] User added with ID: ", userData.userId);
     } catch (error) {
-        console.error("Error adding user: ", error);
+        console.error("[addUser] Error adding user: ", error);
     }
 };
 
-const getUser = async (userId: string) => {
+const getUser = async (
+    userId: string,
+) => {
+    console.log("[getUser] Getting user")
     try {
         const userDocRef = doc(database, "users", userId);
 
@@ -51,16 +63,16 @@ const getUser = async (userId: string) => {
             const userData = userDoc.data();
 
             return {
-                user_id: userData?.user_id,
+                userId: userData?.userId,
                 username: userData?.username,
-                friendly_id: userData?.friendly_id,
+                friendlyId: userData?.friendlyId,
             };
         } else {
-            console.log("No user found with id: ", userId);
+            console.log("[getUser] No user found with id: ", userId);
             return null;
         }
     } catch (error) {
-        console.error("Error getting user: ", error);
+        console.error("[getUser] Error getting user: ", error);
         return null;
     }
 };

@@ -18,7 +18,10 @@ const NavItem: React.FC<MenuItemProps> = ({ route, item }) => {
 
 
   return (
-        <Link href={route} className={`menu-item ${isActive ? 'selected': "inherit"}`}>
+        <Link 
+          href={route} 
+          className={`menu-item ${isActive ? 'selected': "inherit"}`}
+          >
             {item}
         </Link> 
     );

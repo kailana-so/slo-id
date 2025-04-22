@@ -10,6 +10,8 @@ export async function GET(req: Request): Promise<Response> {
 		);
 	}
 
+	console.log(process.env.OPENCAGE_API_KEY, "process.env.OPENCAGE_API_KEY")
+
 	try {
 		const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lng}&key=${process.env.OPENCAGE_API_KEY}`;
 		const response = await fetch(url);

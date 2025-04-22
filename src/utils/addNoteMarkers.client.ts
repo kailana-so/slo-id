@@ -1,7 +1,7 @@
-import { NotePin } from "@/types/types";
+import { MapPin } from "@/types/user";
 import { format } from "date-fns";
 
-export const addNoteMarkers = async (map: L.Map, notes: NotePin[]) => {
+export const addNoteMarkers = async (map: L.Map, notes: MapPin[]) => {
 	const { default: L } = await import("leaflet");
 
 	const icon = L.icon({

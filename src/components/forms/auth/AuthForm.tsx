@@ -1,6 +1,6 @@
 import React from "react";
 import ActionButton from "@/components/common/ActionButton";
-import { AuthFormProps } from "@/types/types";
+import { AuthFormProps } from "@/types/user";
 
 
 export default function AuthForm({ 

@@ -1,11 +1,11 @@
 "use client"
 
 import React, { useState } from "react";
-import { FormSubmitEvent } from "@/types/types";
+import { FormSubmitEvent } from "@/types/user";
 import { FirebaseError } from "firebase/app";
-import { Routes } from "@/constants/routes";
+import { Routes } from "@/enums/routes";
 import AuthForm from "@/components/forms/auth/AuthForm";
-import { AuthErrorMessages, AuthErrors } from "@/constants/authErrorMessages";
+import { AuthErrorMessages, AuthErrors } from "@/enums/authErrorMessages";
 import { useRouter } from "next/navigation";
 import { generateFriendlyId } from "@/utils/helpers";
 import { addUser, signUp } from "@/services/userService";
@@ -28,12 +28,12 @@ export default function SignUpPage() {
             const user = await signUp(email, password, name)
             // user payload
             const userData = {
-                user_id: user?.uid,
+                userId: user?.uid,
                 username: name,
                 email: user?.email,
-                friendly_id: generateFriendlyId(name),
-                created_at: new Date(),
-                updated_at: new Date(),
+                friendlyId: generateFriendlyId(name),
+                createdAt: new Date(),
+                updatedAt: new Date(),
             };
             
             //  user service
