@@ -13,11 +13,11 @@ const BUCKET = process.env.AWS_BUCKET;
 export async function POST(req: Request): Promise<Response> {	
 	try {
 		const body = await req.json();
-		const { userId, filenames } = body;
+		const { userId, filenames, imageType } = body;
 
-		if (!userId || !Array.isArray(filenames)) {
+		if (!userId || !Array.isArray(filenames) || !imageType) {
 			return new Response(
-				JSON.stringify({ message: "Missing userId or filenames[]" }),
+				JSON.stringify({ message: "Missing userId or filenames[] or type" }),
 				{ status: 400 }
 			);
 		}
@@ -26,7 +26,7 @@ export async function POST(req: Request): Promise<Response> {
 			filenames.map(async (filename: string) => {
 				const command = new GetObjectCommand({
 					Bucket: BUCKET,
-					Key: `thumbnail/${userId}/${filename}_thumbnail.png`,
+					Key: `${imageType}/${userId}/${filename}_${imageType}.png`,
 				});
 
 				const url = await getSignedUrl(s3, command, { expiresIn: 600 });

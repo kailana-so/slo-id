@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { getLocation } from "@/utils/getLocation";
+import { getLocation } from "@/utils/getLocation.client";
 
 interface BaseMapProps {
   onMapReady?: (map: L.Map) => void;

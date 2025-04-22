@@ -1,6 +1,6 @@
 import React from "react";
 import { useAuth } from "@/providers/AuthProvider";
-import { Routes } from "@/constants/routes";
+import { Routes } from "@/enums/routes";
 import MenuItem from "@/components/common/MenuItem";
 import { logout } from "@/services/userService";
 import { useRouter } from "next/navigation";

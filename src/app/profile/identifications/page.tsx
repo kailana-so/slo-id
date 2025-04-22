@@ -1,12 +1,88 @@
 "use client"
 
+import Spinner from "@/components/common/Spinner";
+import { usePaginatedIds } from "@/hooks/usePaginationCache";
+import { useProfile } from "@/providers/ProfileProvider";
+import { sentenceCase } from "@/utils/helpers";
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Image from "next/image";
+import { SightingStatus } from "@/lib/db/dbHelpers";
+import DrawIcon from '@mui/icons-material/Draw';
+
 export default function Identify() {
+    const { userData } = useProfile();
+	const router = useRouter();
+
+	const {
+		data,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		isLoading,
+		error
+	} = usePaginatedIds(userData?.userId);
+
+	if (!userData) return null;
+	if (isLoading) return <Spinner />;
+	if (error) return (
+        <div key="error-getting-notes" className="card">
+            <p>Error loading notes</p>
+        </div>
+    );
+
+    const allNotes = data?.pages.flatMap(page => page.identifications) ?? [];
+    console.log(data, "data")
+    const totalCount = data?.pages[0]?.count ?? 0;
+    const fullImages = Object.assign({}, ...(data?.pages.map(p => p.fullImages) ?? []));
+
+    const validFetchMore = allNotes.length < totalCount
+    const renderIsDraft = (status: string) => {
+        if (status == SightingStatus.DRAFT) return <DrawIcon></DrawIcon>
+    }
+
     return (
         <section>
-            <div className="card">
+            <div className="card-alt mb-4">
                 <h4> Use tools to accurately identify your notes.</h4>
                 <p> In keeping with the slow method, 1 active drafts limit.</p>
             </div>
+            <div key='view-ids'>
+            {allNotes.map((note) => (
+                <div key={note.id} className="card">
+                <section 
+                    className="aligned content-center"
+                    key={`${note.id}-${note.type}${note.createdAt}-${note.status}`}
+                >
+                    {fullImages[note.imageId] && (
+                        <Image
+                            src={fullImages[note.imageId]}
+                            width={500}
+                            height={500}
+                            alt={`picture of ${note.name}`}
+                            className="object-cover rounded-sm" 
+                        />
+                    )}
+                    <div>
+                        {renderIsDraft(note.status)}
+                        <h4>{`${sentenceCase(note.type)}`}</h4>
+                        <p key={`${note.type||"unknown"}-${note.createdAt}`}>
+                            {note.createdAt ? format(note.createdAt, "dd MMM yyyy HH:mm a") : "No Date"}
+                        </p>
+                    </div>
+                </section>
+                </div>
+            ))}
+            {hasNextPage && validFetchMore && (
+				<div className="pt-4 flex justify-center">
+					<button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+						{isFetchingNextPage ? <Spinner /> : <ExpandMoreIcon></ExpandMoreIcon>}
+					</button>
+				</div>
+			)}
+            
+        </div>
         </section>
     )
 }

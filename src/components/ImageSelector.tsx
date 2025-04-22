@@ -1,5 +1,7 @@
-import { compressImage } from "@/utils/imageCompressor";
-import { convertImage } from "@/utils/imageConverter";
+"use client"
+
+import { compressImage } from "@/lib/image/imageCompressor.client";
+import { convertImage } from "@/lib/image/imageConverter.client";
 import React from "react";
 import { v4 as uuidv4 } from "uuid"; 
 

@@ -2,10 +2,9 @@ import React from "react";
 import ActionButton from "@/components/common/ActionButton";
 import ImageSelector from "@/components/ImageSelector";
 import {
-  OptionField,
   IdentificationFormField,
   IdentificationFormProps,
-} from "@/types/types";
+} from "@/types/form";
 
 const IdentificationForm: React.FC<IdentificationFormProps> = ({
   schema,
@@ -109,7 +108,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                     key={color.name}
                     type="button"
                     className={`color-box ${
-                    value === color.name ? "ring-highlight" : ""
+                        value === color.name ? "ring-highlight" : ""
                     }`}
                     style={{ backgroundColor: color.hex }}
                     onClick={() => handleColorSelection(field.name, color.name)}
@@ -156,7 +155,6 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
             </div>
 
             <ImageSelector setFormData={setFormData} />
-
             <div className="pt-2 justify-items-end">
                 <ActionButton label="Mark" loading={loading} />
             </div>

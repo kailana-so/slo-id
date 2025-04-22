@@ -1,3 +1,5 @@
+"use client"
+
 import heic2any from "heic2any";
 
 export const convertImage = async (file: File) => {

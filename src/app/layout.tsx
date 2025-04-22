@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
+import { montserrat, bricolage } from './fonts'
 import { AuthProvider } from "@/providers/AuthProvider";
-import { LayoutProps } from "@/types/types";
+import { LayoutProps } from "@/types/layout";
 import "./globals.css";
 import MenuItem from "@/components/common/MenuItem";
-import { Routes } from "@/constants/routes";
-import UserSession from "@/components/common/Header";
+import { Routes } from "@/enums/routes";
+import UserSession from "@/components/common/UserSession";
 import Link from "next/link";
 import { ProfileProvider } from "@/providers/ProfileProvider";
 import GrassIcon from '@mui/icons-material/Grass';
@@ -18,11 +19,11 @@ const queryClient = new QueryClient()
 const Layout = ({ children }: LayoutProps) => {
     return (
         <html lang="en">
-            <body>
+            <body className={`${montserrat.variable} ${bricolage.variable}`}>
                 <QueryClientProvider client={queryClient}>
                     <AuthProvider>
                         <ProfileProvider>
-                            <header className="flex items-center justify-between mx-2 mt-4">
+                            <header className="flex items-center justify-between mx-2 mt-4  card-alt">
                                 <div className="min-w-40">
                                     <Link href="/">
                                         <h1>

@@ -1,0 +1,44 @@
+
+import { identificationFormSchema } from '@/components/forms/identification/IdentificationFormSchema';
+
+export type FormSubmitEvent = React.FormEvent<HTMLFormElement>;
+
+export type  AuthFormProps = {
+    title: string;
+    email: string;
+    setEmail: (email: string) => void;
+    password: string;
+    setPassword: (password: string) => void;
+    handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+    error?: string;
+    loading: boolean;
+    isSignUp?: boolean;
+    name?: string;
+    setName?: (name: string) => void;
+}
+
+
+export interface OptionField {
+    name: string
+    hex?: string
+}
+
+export interface IdentificationFormField {
+    name: string;
+    label: string;
+    type: string;
+    required: boolean;
+    conditional?: string;
+    options?: OptionField[]; 
+}
+
+export interface IdentificationFormProps {
+    schema: IdentificationFormField[];
+    handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+    setFormData: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+    formData: Record<string, any>;
+    loading: boolean
+}
+
+export type FormType = keyof typeof identificationFormSchema;
+

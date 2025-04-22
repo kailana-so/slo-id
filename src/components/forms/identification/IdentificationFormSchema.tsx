@@ -207,7 +207,7 @@ export const identificationFormSchema = {
         commonPattern,
         ...commonFields,
     ],
-    rock:[
+    mineral:[
         commonName,
         commonSize,
         commonColours,

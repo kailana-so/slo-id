@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Montserrat:wght@100;200;300;400;500;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Montserrat:wght@100;200;300;400;500;600;700&display=swap'); */
 
 @tailwind base;
 @tailwind components;
@@ -10,12 +10,14 @@
   --green-500: rgb(19, 70, 36);
   --green-100: rgb(170, 200, 180);
   --green-50: rgb(220, 235, 225);
+  --green-10: rgb(246, 248, 247);
 
   --brown-900: rgb(50, 21, 3);
   --brown-700: rgb(90, 38, 6);
   --brown-500: rgb(135, 57, 9);
   --brown-100: rgb(210, 170, 140);
   --brown-50: rgb(235, 215, 195);
+  --brown-10: rgb(244, 241, 237);
 
   --background: #ffffff;
   --foreground: var(--green-700);
@@ -28,17 +30,18 @@
   --secondary-brown: var( --brown-700);
   --primary-green: var(--green-100);
   --secondary-green: var(--green-50);
-  --primary-grey: rgba(160,159,159,1);
+  --primary-grey: rgb(230, 230, 230);
   --secondary-grey: rgba(160,159,159,0.5);
 }
 
 body {
-  @apply text-[var(--brown-900)] bg-[var(--background)] px-[5%] py-[2.5%];
+  @apply text-[var(--brown-900)] bg-[var(--background)] px-[2.5%] py-[2.5%];
+
 }
 
 @layer base {
   h1, h2, h3, h4, button {
-    @apply font-bricolage-grotesque font-bold;
+    @apply font-bricolage font-bold;
   }
 
   h1 {
@@ -63,9 +66,9 @@ body {
     @apply font-montserrat text-base font-light;
   }
 
-  main {
-    padding: 20px 0 10px 0;
-  }
+  /* main {
+    padding: 10px 0 0 0;
+  } */
 
   input, select {
     @apply font-montserrat border border-[var(--foreground)] rounded-[var(--border-radius)] px-[var(--padding)] py-[var(--padding)] focus:outline-none focus-visible:outline-none focus:border-2 focus:border-green-500;
@@ -105,7 +108,7 @@ body {
 
   .menu-item {
     @apply pr-1 mr-1 text-[var(--foreground)] transition-all;
-    @apply font-bricolage-grotesque font-bold;
+    @apply font-bricolage font-bold;
 
   }
 
@@ -114,19 +117,23 @@ body {
   }
 
   .badge-item {
-    @apply px-2 py-1 m-1 rounded-[var(--border-radius)] border border-[var(--foreground)];
+    @apply px-2 py-1 m-1 rounded-[var(--border-radius)] border border-[var(--green-100)];
   }
 
   .badge-item.selected {
-    @apply bg-[var(--foreground)] text-[var(--background)];
+    @apply bg-[var(--green-100)] text-[var(--foreground)];
   }
 
   .badge-item.unselected {
-    @apply bg-[var(--secondary-green)];
+    @apply bg-[var(--green-50)];
+  }
+
+  .badge-item-alt {
+    @apply px-2 py-1 m-1 rounded-[var(--border-radius)] border border-[var(--green-100)];
   }
 
   .spinner {
-    @apply w-4 h-4 border-2 border-transparent border-t-[var(--background)] rounded-[var(--border-radius)] m-[var(--padding)] animate-spin;
+    @apply w-4 h-4 border-2 border-[var(--green-500)] border-t-[var(--background)] rounded-[var(--border-radius)] m-[var(--padding)] animate-spin;
   }
 
   .switch {
@@ -159,12 +166,17 @@ body {
   }
 
   .card {
-    @apply mt-4 p-2 rounded-[var(--border-radius)];
-    border: var(--border-outline); /* raw CSS using your custom var */
+    @apply mb-4 p-4 rounded-[var(--border-radius)];
+    background-color: var(--green-10)
   }
   
   .card-selected {
-    border: 2px solid var(--brown-100); /* raw CSS for the override */
+    background-color: var(--brown-10)
+  }
+
+  .card-alt {
+    @apply p-4 rounded-[var(--border-radius)];
+    background-color: var(--brown-10)
   }
 
   .aligned {

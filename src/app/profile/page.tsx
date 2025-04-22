@@ -1,21 +1,22 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { getUser } from "@/services/userService";
-import { useAuth } from "@/providers/AuthProvider";
+import React from "react";
+import { SightingStatus } from "@/lib/db/dbHelpers";
+import { useProfile } from "@/providers/ProfileProvider";
+import { useStatusCount } from "@/hooks/useCountStatus";
+import DrawIcon from '@mui/icons-material/Draw';
+import SearchIcon from '@mui/icons-material/Search';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 export default function Page({ children }: { children: React.ReactNode }) {
-    const [userData, setUserData] = useState<any>(null);
-    const [activeMenu, setActiveMenu] = useState<string | null>(null);
-    
-    const authContext = useAuth();
-    const user = authContext?.user;
+    const { userData } = useProfile();
 
-    useEffect(() => {
-        if (user) {
-            getUser(user.uid).then(setUserData);
-        }
-    }, [user]);
+    const {
+            data: draftCount,
+            error
+        } = useStatusCount(SightingStatus.DRAFT, userData?.userId );
+    console.log(draftCount, "draftCount")
+    console.log(error, "error")
 
     const renderPage = () => {
         if (userData?.username) {
@@ -23,14 +24,27 @@ export default function Page({ children }: { children: React.ReactNode }) {
                 <section>
                     <div className="card">
                         <h3>Hi {userData.username}</h3> 
-                        <p>Ref code: <b>{userData.friendly_id}</b></p>
+                        <p>Ref code: <b>{userData.friendlyId}</b></p>
                     </div>
                     <div className="card">
                         <h3>Trends</h3> 
-                        <section className="grid grid-cols-3 gap-2 justify-items-stretch">
-                            <div className="card"> notes </div>
-                            <div className="card"> ids </div>
-                            <div className="card"> distance </div>
+                        <section className="grid grid-cols-3 gap-4 justify-items-stretch mt-2">
+                            <div className="card-alt flex flex-col items-center justify-center gap-1 m-4">
+                                <SearchIcon></SearchIcon>
+                                <p>Notes</p>
+                                <h4>{draftCount?.count}</h4>
+                            </div>
+                            <div className="card-alt flex flex-col items-center justify-center gap-1 m-4">
+                                <DrawIcon></DrawIcon>
+                                <p>Drafts</p>
+                                <h4>{draftCount?.count}</h4>
+                            </div>
+                            <div className="card-alt flex flex-col items-center justify-center gap-1 m-4">
+                                <CheckCircleIcon></CheckCircleIcon>
+                                <p>Ids</p>
+                                <h4>{draftCount?.count}</h4>
+                            </div>
+                            <div className="card"> <h4>{draftCount?.count}km</h4> </div>
                         </section>
                     </div>
                 </section>
