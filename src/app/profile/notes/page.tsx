@@ -1,7 +1,7 @@
 "use client"; 
 import React, {  useState } from "react";
 import { useProfile } from "@/providers/ProfileProvider";
-import { Note } from "@/types/sighting";
+import { Note } from "@/types/note";
 import Spinner from "@/components/common/Spinner";
 import Image from 'next/image'
 import { format } from 'date-fns';

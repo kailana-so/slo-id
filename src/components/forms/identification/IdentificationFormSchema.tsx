@@ -1,32 +1,16 @@
-const commonFields = [
-    {
-        name: "terrain",
-        label: "Terrain",
-        type: "select",
-        required: false,
-        options: [
-            { name: "Bushland" },
-            { name: "Grassland" },
-            { name: "Wetland" },
-            { name: "Desert" },
-            { name: "Urban" }
-        ]
-    },
-    {
-        name: "weather",
-        label: "Weather",
-        type: "select",
-        required: false,
-        options: [
-            { name: "Sun" },
-            { name: "Rain" },
-            { name: "Cloud" },
-            { name: "Wind" },
-            { name: "Snow" },
-            { name: "Frost" }
-        ]
-    },
-];
+const commonTerrain = {
+    name: "terrain",
+    label: "Terrain",
+    type: "select",
+    required: false,
+    options: [
+        { name: "Bushland" },
+        { name: "Grassland" },
+        { name: "Wetland" },
+        { name: "Desert" },
+        { name: "Urban" }
+    ]
+};
 
 const commonSize = {
     name: "size",
@@ -95,9 +79,27 @@ const commonShape =  [
     { name: "Clustered" }
 ];
 
+
+// Id data
+const commonLifeStage = [
+    { name: "adult" },
+    { name: "teneral" },
+    { name: "pupa" },
+    { name: "nymph" },
+    { name: "larva" },
+    { name: "egg" },
+    { name: "juvenile" },
+    { name: "subimago"}
+]
+
+const commonLifeStatus = [
+    { name: "alive" },
+    { name: "dead" },
+]
+
 export const identificationFormSchema = {
     insect: [
-        commonName,
+        // commonName,
         commonSize,
         commonColours,
         {
@@ -122,10 +124,10 @@ export const identificationFormSchema = {
             options: commonColours.options,
         },
         commonPattern,
-        ...commonFields,
+        commonTerrain,
     ],
     plant: [
-        commonName,
+        // commonName,
         commonSize,
         commonColours,
         {
@@ -136,7 +138,9 @@ export const identificationFormSchema = {
             options: commonShape,
         },
         {
+            // Plant Phenology
             name: "hasFruits",
+            //  flowering, fruiting, flower budding
             label: "Has Fruits?",
             type: "checkbox",
             required: false,
@@ -157,10 +161,10 @@ export const identificationFormSchema = {
             conditional: "hasFruits",
             options: commonShape
         },
-        ...commonFields,
+        commonTerrain,
     ],
     reptile: [
-        commonName,
+        // commonName,
         commonSize,
         commonColours,
         {
@@ -184,10 +188,10 @@ export const identificationFormSchema = {
             type: "checkbox",
             required: false,
         },
-        ...commonFields,
+        commonTerrain,
     ],
     bird:[
-        commonName,
+        // commonName,
         commonSize,
         commonColours,
         {
@@ -205,10 +209,10 @@ export const identificationFormSchema = {
             options: commonColours.options,
         },
         commonPattern,
-        ...commonFields,
+        commonTerrain,
     ],
     mineral:[
-        commonName,
+        // commonName,
         commonSize,
         commonColours,
         {
@@ -226,6 +230,6 @@ export const identificationFormSchema = {
             options: commonColours.options,
         },
         commonPattern,
-        ...commonFields,
+        commonTerrain,
     ],
 };

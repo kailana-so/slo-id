@@ -29,7 +29,6 @@ const fetchLocationFromCoords = async (
 	const { city, state_code } =  await res.json(); // expected { city:string, state_code: string }
 	locationCache.set(key, { city, state: state_code }); // store in cache
 
-
     return { 
         city: city, 
         state: state_code

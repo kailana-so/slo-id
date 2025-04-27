@@ -1,6 +1,17 @@
-import { Note, MapPin } from "@/types/sighting";
-import { addDoc, getDocs, orderBy, query, limit, startAfter, QueryDocumentSnapshot, DocumentData, doc, getDoc, where, updateDoc, QueryConstraint, getCountFromServer } from "firebase/firestore";
-import { sightingsCollection, SightingFields, DocumentTimestamp, SightingStatus, sightingsDoc } from "@/lib/db/dbHelpers";
+import { MapPin } from "@/types/map";
+import { Note } from "@/types/note";
+import { 
+    addDoc, getDocs, updateDoc, 
+    orderBy, query, limit, startAfter, where,
+    QueryDocumentSnapshot, DocumentData, 
+    QueryConstraint, getCountFromServer } from "firebase/firestore";
+import { 
+    sightingsCollection, 
+    SightingFields, 
+    DocumentTimestamp, 
+    SightingStatus, 
+    sightingsDoc } from "@/lib/db/dbHelpers";
+import { FormData } from "@/types/note";
 
 type GetNotesResult = {
     notes: Note[];
@@ -22,7 +33,7 @@ type GetMapPinsResult = {
 const PAGE_SIZE = 3;
 
 const addSighting = async (
-    sighting: Record<string, any>
+    sighting: FormData
 ) => {
 
     sighting[DocumentTimestamp.CREATED_AT] = Date.now();
@@ -41,7 +52,7 @@ const updateSighting = async (
     noteId: string
 ) => {
 
-    let updates = {
+    const updates = {
         [DocumentTimestamp.UPDATED_AT]: Date.now(),
         [SightingFields.Status]: SightingStatus.DRAFT
     }
@@ -60,7 +71,7 @@ const getSightings = async (
 ): Promise<GetNotesResult> => {
     console.log("[getSightings] Fetching sightings")
     
-    let sightingType = SightingStatus.SIGHTING
+    const sightingType = SightingStatus.SIGHTING
 
     try {
 
@@ -160,7 +171,7 @@ const getIdentifications = async (
 
     console.log("[getIdentifications] Fetching Ids")
 
-    let idTypes = [SightingStatus.DRAFT, SightingStatus.IDENTIFICATION]
+    const idTypes = [SightingStatus.DRAFT, SightingStatus.IDENTIFICATION]
     
     try {
         const baseConstraints: QueryConstraint[] = [

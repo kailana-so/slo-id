@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }: LayoutProps) => {
             setLoading(false);
         });
         return () => unsubscribe();
-    }, [auth]);
+    }, []);
 
     if (loading) {
         return <Spinner/>; 

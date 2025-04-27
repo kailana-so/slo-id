@@ -6,11 +6,9 @@ import MenuItem from "@/components/common/MenuItem";
 import { Routes } from "@/enums/routes";
 import { useProfile } from "@/providers/ProfileProvider";
 import NavItem from "@/components/common/NavItem";
-import { usePathname } from "next/navigation";
 
 const Layout = ({ children }: LayoutProps) => {
     const { userData } = useProfile();
-    const pathname = usePathname();
 
     if (!userData?.username) {
         return (
@@ -20,8 +18,6 @@ const Layout = ({ children }: LayoutProps) => {
             </div>
         );
     }
-
-    const isNoteDraft = /^\/profile\/notes\/[^/]+$/.test(pathname);
 
     return (
         <div className="flex h-screen flex-col md:flex-row mt-4">

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FormSubmitEvent, FormType } from "@/types/form";
+import { FormSubmitEvent } from "@/types/form";
 import { identificationFormSchema } from "@/components/forms/identification/IdentificationFormSchema";
 import { Routes } from "@/enums/routes";
 import { useRouter } from "next/navigation";
@@ -9,11 +9,13 @@ import { addSighting } from "@/app/identification/identificationService";
 import IdentificationForm from "@/components/forms/identification/IdentificationForm";
 import { useProfile } from "@/providers/ProfileProvider";
 import { uploadClient } from "@/services/imageService";
+import { FormData, FormType, UploadPayload } from "@/types/note";
+
 
 export default function TakeNote() {
     const { userData } = useProfile();
     const [formType, setFormType] = useState<FormType | "">("");
-    const [formData, setFormData] = useState<Record<string, any>>({});
+    const [formData, setFormData] = useState<FormData>({} as FormData);;
     const [loading, setLoading] = useState<boolean>(false);
 
     const router = useRouter()
@@ -22,7 +24,7 @@ export default function TakeNote() {
 
     // Reset form data when formType changes
     useEffect(() => {
-        setFormData({});
+        setFormData({} as FormData);
     }, [formType]);
 
     const handleSubmit = async (event: FormSubmitEvent) => {
@@ -37,14 +39,14 @@ export default function TakeNote() {
             }
         
             const { imageFiles, ...rest } = formData;
-            const noteData: Record<string, any> = {
+            const noteData: FormData = {
                 ...rest,
                 type: formType,
                 userId: userData.userId
             };
         
             if (imageFiles) {
-                const imageResult = await uploadClient(imageFiles, userData.userId);
+                const imageResult = await uploadClient(imageFiles as UploadPayload, userData.userId);
                 console.log(imageResult, "imageResult");
                 noteData.imageId = imageResult.thumbnailKey.split("/").pop()?.split("_")[0];
             }

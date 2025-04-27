@@ -80,7 +80,7 @@ export default function LoginPage() {
             />
             <div className="flex flex-row gap-2 pt-4">
                 <p className="text-sm">
-                    Don't have an account?
+                    Don&apos;t have an account?
                 </p>
                 <MenuItem route={Routes.SIGNUP} item="Sign Up"/>
             </div>

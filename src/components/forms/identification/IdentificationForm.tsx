@@ -5,6 +5,8 @@ import {
   IdentificationFormField,
   IdentificationFormProps,
 } from "@/types/form";
+import { safeValue } from "@/types/typeGuards";
+import InfoIcon from "@/components/common/infoIcon";
 
 const IdentificationForm: React.FC<IdentificationFormProps> = ({
   schema,
@@ -52,18 +54,19 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
 
     const getLocationData = () => {
         navigator.geolocation.getCurrentPosition(
-        (pos) => {
-            const { latitude, longitude } = pos.coords;
-            setFormData((prev) => ({
-            ...prev,
-            latitude,
-            longitude,
-            }));
-        },
-        () => {
-            alert("Geolocation not supported or denied.");
-        }
+            (pos) => {
+                const { latitude, longitude } = pos.coords;
+                setFormData((prev) => ({
+                ...prev,
+                latitude,
+                longitude,
+                }));
+            },
+            () => {
+                alert("Geolocation not supported or denied.");
+            }
         );
+        //  grab weather infomation
     };
 
     const renderField = (field: IdentificationFormField) => {
@@ -88,7 +91,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
             <select
                 name={field.name}
                 required={field.required}
-                value={value || ""}
+                value={safeValue(value)}
                 onChange={handleChange}
             >
                 <option value=""></option>
@@ -124,7 +127,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                 type={field.type}
                 name={field.name}
                 required={field.required}
-                value={value || ""}
+                value={safeValue(value)}
                 onChange={handleChange}
             />
             );
@@ -146,7 +149,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
 
             <div className="flex-row">
                 <label className="block">
-                    Get Geolocation
+                    Get location data <InfoIcon></InfoIcon>
                 <label className="switch ml-4">
                     <input type="checkbox" onChange={getLocationData} />
                     <span className="slider" />

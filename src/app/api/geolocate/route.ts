@@ -1,3 +1,5 @@
+import ErrorResponse from "@/utils/errorResponse";
+
 export async function GET(req: Request): Promise<Response> {
 	const { searchParams } = new URL(req.url);
 	const lat = searchParams.get("lat");
@@ -32,10 +34,7 @@ export async function GET(req: Request): Promise<Response> {
 			JSON.stringify({ city, state_code }),
 			{ status: 200 }
 		);
-	} catch (err: any) {
-		return new Response(
-			JSON.stringify({ error: "Failed to fetch geolocation", message: err.message }),
-			{ status: 500 }
-		);
+	} catch (err: unknown) {
+		return ErrorResponse("Failed to fetch geolocation", err, 500);
 	}
 }

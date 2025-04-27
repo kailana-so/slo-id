@@ -132,6 +132,13 @@ body {
     @apply px-2 py-1 m-1 rounded-[var(--border-radius)] border border-[var(--green-100)];
   }
 
+  .infoIcon {
+    border: 2px solid var(--brown-100);
+    font: var(--brown-100);
+    border-radius: 100%;
+    padding: 0 5px;
+  }
+
   .spinner {
     @apply w-4 h-4 border-2 border-[var(--green-500)] border-t-[var(--background)] rounded-[var(--border-radius)] m-[var(--padding)] animate-spin;
   }
@@ -167,7 +174,8 @@ body {
 
   .card {
     @apply mb-4 p-4 rounded-[var(--border-radius)];
-    background-color: var(--green-10)
+    /* background-color: var(--green-10) */
+    border: 1px solid var(--green-100);
   }
   
   .card-selected {

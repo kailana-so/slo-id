@@ -1,10 +1,10 @@
 import React from "react";
 import ActionButton from "@/components/common/ActionButton";
-import { AuthFormProps } from "@/types/user";
+import { AuthFormProps } from "@/types/form";
 
 
 export default function AuthForm({ 
-    title, email, setEmail, password, setPassword, handleSubmit, error, loading, isSignUp, name, setName}: AuthFormProps
+    title, email, setEmail, password, setPassword, handleSubmit, loading, isSignUp, name, setName}: AuthFormProps
 ) {
     return (
         <div>

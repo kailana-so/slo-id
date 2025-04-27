@@ -1,5 +1,5 @@
 
-import { identificationFormSchema } from '@/components/forms/identification/IdentificationFormSchema';
+import { FormData } from "@/types/note"; 
 
 export type FormSubmitEvent = React.FormEvent<HTMLFormElement>;
 
@@ -35,10 +35,9 @@ export interface IdentificationFormField {
 export interface IdentificationFormProps {
     schema: IdentificationFormField[];
     handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-    setFormData: React.Dispatch<React.SetStateAction<Record<string, any>>>;
-    formData: Record<string, any>;
+    setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+    formData: FormData;
     loading: boolean
 }
 
-export type FormType = keyof typeof identificationFormSchema;
 

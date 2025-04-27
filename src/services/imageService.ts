@@ -1,15 +1,6 @@
 import { commonHeaders } from "@/lib/commonHeaders";
+import { UploadPayload } from "@/types/note";
 
-interface UploadImage {
-	name: string;
-	type: string;
-	content: string; 
-}
-  
-interface UploadPayload {
-	thumbnailImageFile: UploadImage;
-	fullImageFile: UploadImage;
-}
   
 const uploadClient = async (
 	imageFiles: UploadPayload,

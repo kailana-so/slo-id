@@ -5,7 +5,6 @@ import { usePaginatedIds } from "@/hooks/usePaginationCache";
 import { useProfile } from "@/providers/ProfileProvider";
 import { sentenceCase } from "@/utils/helpers";
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Image from "next/image";
 import { SightingStatus } from "@/lib/db/dbHelpers";
@@ -13,7 +12,6 @@ import DrawIcon from '@mui/icons-material/Draw';
 
 export default function Identify() {
     const { userData } = useProfile();
-	const router = useRouter();
 
 	const {
 		data,
