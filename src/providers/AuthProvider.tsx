@@ -12,8 +12,8 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined); // Define context type
 
 export const AuthProvider = ({ children }: LayoutProps) => {
-    const [user, setUser] = useState<FirebaseUser | null>(null); // Initialize user state
-    const [loading, setLoading] = useState(true); // Initialize loading state
+    const [user, setUser] = useState<FirebaseUser | null>(null); // Initialise user state
+    const [loading, setLoading] = useState(true); // Initialise loading state
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }: LayoutProps) => {
             setLoading(false);
         });
         return () => unsubscribe();
-    }, [auth]);
+    }, []);
 
     if (loading) {
         return <Spinner/>; 

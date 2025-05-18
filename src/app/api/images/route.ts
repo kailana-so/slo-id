@@ -1,3 +1,4 @@
+import ErrorResponse from "@/utils/errorResponse";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -40,11 +41,8 @@ export async function POST(req: Request): Promise<Response> {
 			{ status: 200 }
 		);
 
-	} catch (err: any) {
+	} catch (err: unknown) {
 		console.error("Error generating signed URLs", err);
-		return new Response(
-			JSON.stringify({ message: "Error generating URLs", error: err.message }),
-			{ status: 500 }
-		);
+		return ErrorResponse("Error generating URLs", err, 500);
 	}
 }

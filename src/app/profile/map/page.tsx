@@ -1,8 +1,8 @@
 "use client";
 import { useProfile } from "@/providers/ProfileProvider";
-import { getUserSightingsCoords } from "@/app/identification/identificationService";
+import { getUserSightingsCoords } from "@/services/identificationService";
 import dynamic from "next/dynamic";
-import { MapPin } from "@/types/user";
+import { MapPin } from "@/types/map";
 import L from "leaflet";
 import { useCallback } from "react";
 import { addNoteMarkers } from "@/utils/addNoteMarkers.client";
@@ -19,6 +19,7 @@ export default function MapsPage() {
 
 		const { notes }: { notes: MapPin[] } = await getUserSightingsCoords(userData.userId);
 		addNoteMarkers(map, notes);
+
 	}, [userData]);
 
 	return <BaseMap onMapReady={handleMapReady} />;

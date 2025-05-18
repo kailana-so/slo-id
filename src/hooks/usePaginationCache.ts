@@ -1,8 +1,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getIdentifications, getSightings } from "@/app/identification/identificationService";
+import { getIdentifications, getSightings } from "@/services/identificationService";
 import { getImageURLs } from "@/services/imageService";
 import { QueryDocumentSnapshot } from "firebase/firestore";
-import { Note } from "@/types/sighting";
+import { Note } from "@/types/map";
 
 export type NotesViewModel = {
     notes: Note[];

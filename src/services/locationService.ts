@@ -1,40 +1,40 @@
 import { commonHeaders } from "@/lib/commonHeaders";
+import { LocationData } from "@/types/map";
 
+const locationCache = new Map<string, LocationData>();
 
-const locationCache = new Map<string, { city: string; state: string }>();
-
-const fetchLocationFromCoords = async (
-    latitude: string,
-    longitude: string,
-): Promise<{ city:string, state: string }> => {
+const getLocationData = async (
+    latitude: number,
+    longitude: number,
+): Promise<{location: LocationData}> => {
 	
 	const key = `${latitude},${longitude}`;
 
 	// Check cache first
 	const cached = locationCache.get(key);
-	if (cached) return cached;
+	if (cached) return { location: cached };
 
-
-	const params = new URLSearchParams({ lat: latitude, lng: longitude }).toString();
-	const res = await fetch(`/api/geolocate?${params}`, {
-		method: "GET",
-		headers: commonHeaders()
-	});
+	const res = await fetch("/api/geolocate", {
+        method: "POST",
+        headers: { 
+            "Content-Type": "application/json",
+            ...commonHeaders()
+        },
+        body: JSON.stringify({ lat: latitude, lng: longitude }),
+    });
 
 	if (!res.ok) {
 		const error = await res.text();
 		throw new Error(`Failed to fetch location: ${error}`);
 	}
 
-	const { city, state_code } =  await res.json(); // expected { city:string, state_code: string }
-	locationCache.set(key, { city, state: state_code }); // store in cache
+	const locationData =  await res.json();
+	locationCache.set(key, locationData); // store in cache
 
+	console.log(locationData, "locationData")
 
-    return { 
-        city: city, 
-        state: state_code
-    }
+    return { location: locationData };
 };
   
-export { fetchLocationFromCoords, locationCache };
+export { getLocationData, locationCache };
   

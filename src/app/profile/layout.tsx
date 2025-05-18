@@ -6,11 +6,9 @@ import MenuItem from "@/components/common/MenuItem";
 import { Routes } from "@/enums/routes";
 import { useProfile } from "@/providers/ProfileProvider";
 import NavItem from "@/components/common/NavItem";
-import { usePathname } from "next/navigation";
 
 const Layout = ({ children }: LayoutProps) => {
     const { userData } = useProfile();
-    const pathname = usePathname();
 
     if (!userData?.username) {
         return (
@@ -21,18 +19,16 @@ const Layout = ({ children }: LayoutProps) => {
         );
     }
 
-    const isNoteDraft = /^\/profile\/notes\/[^/]+$/.test(pathname);
-
     return (
         <div className="flex h-screen flex-col md:flex-row mt-4">
             {/* Nav: top on mobile, side on desktop */}
             <nav className="w-full flex-none md:h-48 md:w-48 mr-4 mb-4 card-alt" >
                 <div className="flex flex-row md:flex-col gap-2 justify-between">
                     <div>
-                        <NavItem route={Routes.TAKENOTE} item="Note" />
+                        <NavItem route={Routes.TAKENOTE} item="Mark" />
                     </div>
                     <div>
-                        <NavItem route={Routes.NOTES} item="Notes" />
+                        <NavItem route={Routes.NOTES} item="Sightings" />
                     </div>
                     <div>
                         <NavItem route={Routes.IDS} item="Identifications" />

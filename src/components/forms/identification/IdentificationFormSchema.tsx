@@ -1,32 +1,16 @@
-const commonFields = [
-    {
-        name: "terrain",
-        label: "Terrain",
-        type: "select",
-        required: false,
-        options: [
-            { name: "Bushland" },
-            { name: "Grassland" },
-            { name: "Wetland" },
-            { name: "Desert" },
-            { name: "Urban" }
-        ]
-    },
-    {
-        name: "weather",
-        label: "Weather",
-        type: "select",
-        required: false,
-        options: [
-            { name: "Sun" },
-            { name: "Rain" },
-            { name: "Cloud" },
-            { name: "Wind" },
-            { name: "Snow" },
-            { name: "Frost" }
-        ]
-    },
-];
+const commonTerrain = {
+    name: "terrain",
+    label: "Terrain",
+    type: "select",
+    required: false,
+    options: [
+        { name: "Bushland" },
+        { name: "Grassland" },
+        { name: "Wetland" },
+        { name: "Desert" },
+        { name: "Urban" }
+    ]
+};
 
 const commonSize = {
     name: "size",
@@ -80,12 +64,12 @@ const commonPattern = {
     ]
 }
 
-const commonName = {
-    name: "name",
-    label: "Name",
-    type: "text",
-    required: false,
-}
+// const commonName = {
+//     name: "name",
+//     label: "Name",
+//     type: "text",
+//     required: false,
+// }
 
 const commonShape =  [
     { name: "Oval" },
@@ -95,9 +79,39 @@ const commonShape =  [
     { name: "Clustered" }
 ];
 
+// Id data
+const commonLifeStage = {
+    name: "lifeStage",
+    label: "Life Stage",
+    type: "select",
+    required: true,
+    options: [    
+        { name: "adult" },
+        { name: "teneral" },
+        { name: "pupa" },
+        { name: "nymph" },
+        { name: "larva" },
+        { name: "egg" },
+        { name: "juvenile" },
+        { name: "subimago"}
+    ]
+}
+
+
+const commonLifeStatus = {
+    name: "lifeStatus",
+    label: "Life Status",
+    type: "select",
+    required: true,
+    options:[
+        { name: "alive" },
+        { name: "deceased" },
+    ]
+}
+
 export const identificationFormSchema = {
     insect: [
-        commonName,
+        // commonName,
         commonSize,
         commonColours,
         {
@@ -122,10 +136,12 @@ export const identificationFormSchema = {
             options: commonColours.options,
         },
         commonPattern,
-        ...commonFields,
+        commonTerrain,
+        commonLifeStage,
+        commonLifeStatus,
     ],
     plant: [
-        commonName,
+        // commonName,
         commonSize,
         commonColours,
         {
@@ -136,7 +152,9 @@ export const identificationFormSchema = {
             options: commonShape,
         },
         {
+            // Plant Phenology
             name: "hasFruits",
+            //  flowering, fruiting, flower budding
             label: "Has Fruits?",
             type: "checkbox",
             required: false,
@@ -157,10 +175,10 @@ export const identificationFormSchema = {
             conditional: "hasFruits",
             options: commonShape
         },
-        ...commonFields,
+        commonTerrain,
     ],
     reptile: [
-        commonName,
+        // commonName,
         commonSize,
         commonColours,
         {
@@ -184,10 +202,12 @@ export const identificationFormSchema = {
             type: "checkbox",
             required: false,
         },
-        ...commonFields,
+        commonTerrain,
+        commonLifeStage,
+        commonLifeStatus,
     ],
     bird:[
-        commonName,
+        // commonName,
         commonSize,
         commonColours,
         {
@@ -205,10 +225,12 @@ export const identificationFormSchema = {
             options: commonColours.options,
         },
         commonPattern,
-        ...commonFields,
+        commonTerrain,
+        commonLifeStage,
+        commonLifeStatus,
     ],
     mineral:[
-        commonName,
+        // commonName,
         commonSize,
         commonColours,
         {
@@ -226,6 +248,6 @@ export const identificationFormSchema = {
             options: commonColours.options,
         },
         commonPattern,
-        ...commonFields,
+        commonTerrain,
     ],
 };

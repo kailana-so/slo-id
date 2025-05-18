@@ -1,10 +1,19 @@
 import React from "react";
 import ActionButton from "@/components/common/ActionButton";
-import ImageSelector from "@/components/ImageSelector";
+// import ImageSelector from "@/components/ImageSelector";
+import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 import {
   IdentificationFormField,
   IdentificationFormProps,
 } from "@/types/form";
+import { safeValue } from "@/types/typeGuards";
+import dynamic from "next/dynamic";
+import { getEnvironmentalData } from "@/services/environmentService";
+import { getLocationData } from "@/services/locationService";
+
+const ImageSelector = dynamic(() => import('@/components/ImageSelector'), {
+    ssr: false,
+  });
 
 const IdentificationForm: React.FC<IdentificationFormProps> = ({
   schema,
@@ -50,19 +59,30 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
         }));
     };
 
-    const getLocationData = () => {
+    const getLocationEnvironment = async () => {
         navigator.geolocation.getCurrentPosition(
-        (pos) => {
-            const { latitude, longitude } = pos.coords;
-            setFormData((prev) => ({
-            ...prev,
-            latitude,
-            longitude,
-            }));
-        },
-        () => {
-            alert("Geolocation not supported or denied.");
-        }
+            async (pos) => {
+                const { latitude, longitude } = pos.coords;
+
+                console.log(latitude, longitude, "latitude, longitude")
+                const [environment, location] = await Promise.all([
+                    getEnvironmentalData(latitude, longitude),
+                    getLocationData(latitude, longitude),
+                ]);
+
+                console.log(location, "location")
+
+                setFormData((prev) => ({
+                    ...prev,
+                    latitude,
+                    longitude,
+                    ...location,
+                    ...environment
+                }));
+            },
+            () => {
+                alert("Geolocation not supported.");
+            }
         );
     };
 
@@ -88,7 +108,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
             <select
                 name={field.name}
                 required={field.required}
-                value={value || ""}
+                value={safeValue(value)}
                 onChange={handleChange}
             >
                 <option value=""></option>
@@ -124,7 +144,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                 type={field.type}
                 name={field.name}
                 required={field.required}
-                value={value || ""}
+                value={safeValue(value)}
                 onChange={handleChange}
             />
             );
@@ -143,17 +163,29 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                     </label>
                 </div>
                 ))}
-
-            <div className="flex-row">
-                <label className="block">
-                    Get Geolocation
-                <label className="switch ml-4">
-                    <input type="checkbox" onChange={getLocationData} />
-                    <span className="slider" />
-                </label>
-                </label>
-            </div>
-
+                <div className="flex flex-row items-center">
+                    <label className="flex items-center gap-1">
+                        Enable Environmental Data 
+                        <span
+                            className="tooltip"
+                            tabIndex={0}
+                            aria-describedby="geo-tooltip"
+                        >
+                            <InfoOutlineIcon fontSize="small" aria-label="More info" />
+                            <span
+                                id="geo-tooltip"
+                                role="tooltip"
+                                className="tooltip-text"
+                            >
+                            Uses device location
+                            </span>
+                        </span>
+                    </label>
+                    <label className="switch ml-4">
+                        <input type="checkbox" onChange={getLocationEnvironment} />
+                        <span className="slider" />
+                    </label>
+                </div>
             <ImageSelector setFormData={setFormData} />
             <div className="pt-2 justify-items-end">
                 <ActionButton label="Mark" loading={loading} />

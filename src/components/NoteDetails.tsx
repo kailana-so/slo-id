@@ -1,13 +1,11 @@
 import { format } from "date-fns";
 import { IdentificationFormField } from "@/types/form";
-import { Note } from "@/types/sighting";
+import { Note } from "@/types/note";
 // import { getDistanceFromLatLonInKm } from "@/utils/helpers";
 import CloseIcon from '@mui/icons-material/Close';
 import { identificationFormSchema } from "./forms/identification/IdentificationFormSchema";
-import { fetchLocationFromCoords } from "@/services/locationService";
-import { useEffect, useState } from "react";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { Alert } from "@mui/material";
+import { isDefined } from "@/types/typeGuards";
 
 interface NoteDetails {
   note: Note;
@@ -24,13 +22,9 @@ export function NoteExtendedDetails({
 	handleIdentify, 
 	hasActiveDraft,
 }: NoteDetails) {
-	
-	const [location, setLocation] = useState<{ city: string; state: string } | null>(null);
-	const [loadingLocation, setLoadingLocation] = useState<boolean>(false);
-	
+
 	console.log(hasActiveDraft, "hasActiveDraft")
-	const hasCoords = typeof note.latitude === "number" && typeof note.longitude === "number";
-	const typeSchema = identificationFormSchema[note.type as keyof typeof identificationFormSchema];
+	const typeSchema = identificationFormSchema[note.type];
 
 	const orderedVisibleFields = typeSchema.filter(
 		(field: IdentificationFormField) =>
@@ -39,37 +33,9 @@ export function NoteExtendedDetails({
 		!HIDDEN_FIELDS.includes(field.name)
 	);
 
-	useEffect(() => {
-		if(hasCoords) {
-			setLoadingLocation(true)
-			const getLocation = async () => {
-				try {
-					const location = await fetchLocationFromCoords(note.latitude, note.longitude);
-					setLocation(location);
-				} catch (error) {
-					console.error("Location fetch failed:", error);
-				}
-				setLoadingLocation(false)
-			};
-			getLocation();
-		}
-	}, []);
-
-	const renderLocation = () => {
-		if (loadingLocation) {
-			return <p>Finding location...</p>
-		} else if (location) {
-			return (
-				<p>
-					<strong>Location:</strong> {`${location.city}, ${location.state}`}
-				</p>
-			)
-		}
-	}
-
-
-	const renderValue = (key: string, value: any) => {
-		if (key === "createdAt") return format(new Date(value), "dd MMM yyyy");
+	const renderValue = (key: keyof Note, value: Note[keyof Note]) => {
+		if (!isDefined(value)) return "";
+		if (key === "createdAt" && typeof value === "number") return format(new Date(value), "dd MMM yyyy");
 		if (typeof value === "boolean") return value ? "Yes" : "No";
 		return String(value);
 	};
@@ -82,7 +48,6 @@ export function NoteExtendedDetails({
 					<strong>{field.label}:</strong> {renderValue(field.name, note[field.name])}
 					</p>
 				))}
-				{hasCoords && renderLocation()}
 			</div>
 			<div className="flex items-end justify-between pt-4">
 				<CloseIcon onClick={handleClose}/>

@@ -4,10 +4,11 @@ import { compressImage } from "@/lib/image/imageCompressor.client";
 import { convertImage } from "@/lib/image/imageConverter.client";
 import React from "react";
 import { v4 as uuidv4 } from "uuid"; 
+import { FormData } from "@/types/note";
 
 
 type ImageSelectorProps = {
-    setFormData: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+    setFormData: React.Dispatch<React.SetStateAction<FormData>>;
 };
 
 const ImageSelector = ({ setFormData }: ImageSelectorProps) => {
@@ -21,9 +22,8 @@ const ImageSelector = ({ setFormData }: ImageSelectorProps) => {
         file = await convertImage(file) // Convert HEIC if needed
         console.log(file, "convertedFile")
     
-        let { fullImageFile, thumbnailImageFile } = await compressImage(file, imageId); // Compress image
+        const { fullImageFile, thumbnailImageFile } = await compressImage(file, imageId); // TODO: Compress image - to be move to a BG process
         console.log(thumbnailImageFile, fullImageFile, "thumbnailImageFile, fullImageFile")
-        // setImageFile(file)
         setFormData((prev) => ({
             ...prev,
             imageFiles: { fullImageFile, thumbnailImageFile },
@@ -32,7 +32,7 @@ const ImageSelector = ({ setFormData }: ImageSelectorProps) => {
     };
 
     return (
-            <div className="pt-2">
+            <div className="pt-1">
                 <label key="photo-upload">
                 <input
                     type="file"

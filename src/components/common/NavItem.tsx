@@ -1,10 +1,6 @@
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import LogoutIcon from '@mui/icons-material/Logout';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import MapIcon from '@mui/icons-material/Map';
 import Link from "next/link";
 
 interface MenuItemProps {

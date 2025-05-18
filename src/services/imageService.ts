@@ -1,15 +1,6 @@
 import { commonHeaders } from "@/lib/commonHeaders";
+import { UploadPayload } from "@/types/note";
 
-interface UploadImage {
-	name: string;
-	type: string;
-	content: string; 
-}
-  
-interface UploadPayload {
-	thumbnailImageFile: UploadImage;
-	fullImageFile: UploadImage;
-}
   
 const uploadClient = async (
 	imageFiles: UploadPayload,
@@ -20,17 +11,17 @@ const uploadClient = async (
 	
 	try {
 		const response = await fetch("/api/uploadImage", {
-		method: "POST",
-		headers: { 
-			"Content-Type": "application/json",
-			...commonHeaders()
-			
-		},
-		body: JSON.stringify({
-			userId,
-			thumbnailImageFile: thumbnailImageFile.content,
-			fullImageFile: fullImageFile.content,
-		}),
+			method: "POST",
+			headers: { 
+				"Content-Type": "application/json",
+				...commonHeaders()
+				
+			},
+			body: JSON.stringify({
+				userId,
+				thumbnailImageFile: thumbnailImageFile.content,
+				fullImageFile: fullImageFile.content,
+			}),
 		});
 	
 		const data = await response.json();

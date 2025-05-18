@@ -1,7 +1,7 @@
 "use client"; 
 import React, {  useState } from "react";
 import { useProfile } from "@/providers/ProfileProvider";
-import { Note } from "@/types/sighting";
+import { Note } from "@/types/note";
 import Spinner from "@/components/common/Spinner";
 import Image from 'next/image'
 import { format } from 'date-fns';
@@ -10,9 +10,8 @@ import { usePaginatedNotes } from "@/hooks/usePaginationCache";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useRouter } from "next/navigation";
 import { Routes } from "@/enums/routes";
-import { updateSighting } from "@/app/identification/identificationService";
+import { updateSighting } from "@/services/identificationService";
 import { sentenceCase } from "@/utils/helpers";
-
 
 export default function ViewNotes() {
     const { userData } = useProfile();
@@ -78,6 +77,9 @@ export default function ViewNotes() {
                         <p key={`${note.type||"unknown"}-${note.createdAt}`}>
                             {note.createdAt ? format(note.createdAt, "dd MMM yyyy HH:mm a") : "No Date"}
                         </p>
+                        <p key={`${note.type||"unknown"}-location-${note.createdAt}`}>
+                            {note.location?.town ? `${note.location.town}, ${note.location.state}` : "Unknown Location"}
+                        </p>
                     </div>
                 </section>
                 {selectedNote?.id === note.id && (
@@ -86,7 +88,6 @@ export default function ViewNotes() {
                         handleClose={handleClose}
                         handleIdentify={handleIdentify}
                         hasActiveDraft={!!drafts}
-
                     />
                 )}
                 </div>

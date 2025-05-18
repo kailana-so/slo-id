@@ -1,3 +1,4 @@
+import ErrorResponse from "@/utils/errorResponse";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const s3 = new S3Client({
@@ -59,12 +60,9 @@ export async function POST(req: Request) {
         }),
         { status: 200 }
         );
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error uploading images to S3:", error);
 
-        return new Response(
-        JSON.stringify({ error: error.message || "Upload failed" }),
-        { status: 500 }
-        );
+        return ErrorResponse("Upload failed", error, 500);
     }
 }

@@ -1,7 +1,12 @@
-export async function GET(req: Request): Promise<Response> {
-	const { searchParams } = new URL(req.url);
-	const lat = searchParams.get("lat");
-	const lng = searchParams.get("lng");
+import ErrorResponse from "@/utils/errorResponse";
+
+export async function POST(
+	req: Request,
+): Promise<Response> {
+
+	const { lat, lng } = await req.json();
+
+    console.log(lat, lng, "lat, lng");
 
 	if (!lat || !lng) {
 		return new Response(
@@ -10,18 +15,15 @@ export async function GET(req: Request): Promise<Response> {
 		);
 	}
 
-	console.log(process.env.OPENCAGE_API_KEY, "process.env.OPENCAGE_API_KEY")
-
 	try {
-		const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lng}&key=${process.env.OPENCAGE_API_KEY}`;
+		const url = `${process.env.NOMINATION_API_HOST}?format=jsonv2&lat=${lat}&lon=${lng}`;
 		const response = await fetch(url);
 		const data = await response.json();
 
-		const {city, state_code} = data.results[0]?.components;
-
-		console.log(city, state_code, "city, state_code")
-
-		if (!city && !state_code) {
+		console.log(data)
+		const {boundingbox } = data
+		const {road, town, city, municipality, state, postcode, country_code } = data.address
+		if (!city && !municipality) {
 			return new Response(
 				JSON.stringify({ error: "No components found" }),
 				{ status: 404 }
@@ -29,13 +31,10 @@ export async function GET(req: Request): Promise<Response> {
 		}
 
 		return new Response(
-			JSON.stringify({ city, state_code }),
+			JSON.stringify({ road, town, city, municipality, state, postcode, country_code, boundingbox }),
 			{ status: 200 }
 		);
-	} catch (err: any) {
-		return new Response(
-			JSON.stringify({ error: "Failed to fetch geolocation", message: err.message }),
-			{ status: 500 }
-		);
+	} catch (err: unknown) {
+		return ErrorResponse("Failed to fetch geolocation", err, 500);
 	}
 }

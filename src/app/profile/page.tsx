@@ -7,8 +7,9 @@ import { useStatusCount } from "@/hooks/useCountStatus";
 import DrawIcon from '@mui/icons-material/Draw';
 import SearchIcon from '@mui/icons-material/Search';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HikingIcon from '@mui/icons-material/Hiking';
 
-export default function Page({ children }: { children: React.ReactNode }) {
+export default function Page() {
     const { userData } = useProfile();
 
     const {
@@ -28,23 +29,27 @@ export default function Page({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="card">
                         <h3>Trends</h3> 
-                        <section className="grid grid-cols-3 gap-4 justify-items-stretch mt-2">
-                            <div className="card-alt flex flex-col items-center justify-center gap-1 m-4">
+                        <section className="grid grid-cols-4 gap-4 justify-items-stretch mt-2">
+                            <div className="badge-item unselected flex flex-col items-center justify-center gap-1 m-4">
                                 <SearchIcon></SearchIcon>
-                                <p>Notes</p>
+                                <p>Sightings</p>
                                 <h4>{draftCount?.count}</h4>
                             </div>
-                            <div className="card-alt flex flex-col items-center justify-center gap-1 m-4">
+                            <div className="badge-item unselected flex flex-col items-center justify-center gap-1 m-4">
                                 <DrawIcon></DrawIcon>
                                 <p>Drafts</p>
                                 <h4>{draftCount?.count}</h4>
                             </div>
-                            <div className="card-alt flex flex-col items-center justify-center gap-1 m-4">
+                            <div className="badge-item unselected flex flex-col items-center justify-center gap-1 m-4">
                                 <CheckCircleIcon></CheckCircleIcon>
                                 <p>Ids</p>
                                 <h4>{draftCount?.count}</h4>
                             </div>
-                            <div className="card"> <h4>{draftCount?.count}km</h4> </div>
+                            <div className="badge-item unselected flex flex-col items-center justify-center gap-1 m-4">
+                                <HikingIcon></HikingIcon>
+                                <p>Distance</p>
+                                <h4>{draftCount?.count}km</h4>
+                            </div>
                         </section>
                     </div>
                 </section>

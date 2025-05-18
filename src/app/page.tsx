@@ -11,19 +11,21 @@ export default function HomePage() {
 
 	const router = useRouter();
 	
+	console.log(userData)
 
 	const handleRoute = () => {
-		if (userData) {
-			router.push(Routes.TAKENOTE);
-		}
-		router.push(Routes.SIGNUP);
+		if (userData?.userId) {
+			console.log("yes user")
+			return router.push(Routes.TAKENOTE);
+		} 
+		return router.push(Routes.SIGNUP);
 	};
 
 	return (
-		<div className="p-4 space-y-2 card">
+		<div className="mt-4 p-4 space-y-2 card">
 			<p> 
 				Slo-id focuses on identification in depth, avoiding misidentifications by examining key details, 
-				and tracking sightings to understand each species fits in. 
+				and tracking sightings to understand how its all fits together. 
 			</p>
 			<p>
 				Mark sightings, one id at a time.
