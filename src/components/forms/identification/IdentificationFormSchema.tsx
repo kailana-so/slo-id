@@ -64,12 +64,12 @@ const commonPattern = {
     ]
 }
 
-const commonName = {
-    name: "name",
-    label: "Name",
-    type: "text",
-    required: false,
-}
+// const commonName = {
+//     name: "name",
+//     label: "Name",
+//     type: "text",
+//     required: false,
+// }
 
 const commonShape =  [
     { name: "Oval" },
@@ -79,23 +79,35 @@ const commonShape =  [
     { name: "Clustered" }
 ];
 
-
 // Id data
-const commonLifeStage = [
-    { name: "adult" },
-    { name: "teneral" },
-    { name: "pupa" },
-    { name: "nymph" },
-    { name: "larva" },
-    { name: "egg" },
-    { name: "juvenile" },
-    { name: "subimago"}
-]
+const commonLifeStage = {
+    name: "lifeStage",
+    label: "Life Stage",
+    type: "select",
+    required: true,
+    options: [    
+        { name: "adult" },
+        { name: "teneral" },
+        { name: "pupa" },
+        { name: "nymph" },
+        { name: "larva" },
+        { name: "egg" },
+        { name: "juvenile" },
+        { name: "subimago"}
+    ]
+}
 
-const commonLifeStatus = [
-    { name: "alive" },
-    { name: "dead" },
-]
+
+const commonLifeStatus = {
+    name: "lifeStatus",
+    label: "Life Status",
+    type: "select",
+    required: true,
+    options:[
+        { name: "alive" },
+        { name: "deceased" },
+    ]
+}
 
 export const identificationFormSchema = {
     insect: [
@@ -125,6 +137,8 @@ export const identificationFormSchema = {
         },
         commonPattern,
         commonTerrain,
+        commonLifeStage,
+        commonLifeStatus,
     ],
     plant: [
         // commonName,
@@ -189,6 +203,8 @@ export const identificationFormSchema = {
             required: false,
         },
         commonTerrain,
+        commonLifeStage,
+        commonLifeStatus,
     ],
     bird:[
         // commonName,
@@ -210,6 +226,8 @@ export const identificationFormSchema = {
         },
         commonPattern,
         commonTerrain,
+        commonLifeStage,
+        commonLifeStatus,
     ],
     mineral:[
         // commonName,

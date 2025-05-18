@@ -4,10 +4,8 @@ import { Note } from "@/types/note";
 // import { getDistanceFromLatLonInKm } from "@/utils/helpers";
 import CloseIcon from '@mui/icons-material/Close';
 import { identificationFormSchema } from "./forms/identification/IdentificationFormSchema";
-import { fetchLocationFromCoords } from "@/services/locationService";
-import { useEffect, useState } from "react";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { hasGeoCoordinates, isDefined } from "@/types/typeGuards";
+import { isDefined } from "@/types/typeGuards";
 
 interface NoteDetails {
   note: Note;
@@ -24,12 +22,8 @@ export function NoteExtendedDetails({
 	handleIdentify, 
 	hasActiveDraft,
 }: NoteDetails) {
-	
-	const [location, setLocation] = useState<{ city: string; state: string } | null>(null);
-	const [loadingLocation, setLoadingLocation] = useState<boolean>(false);
-	
+
 	console.log(hasActiveDraft, "hasActiveDraft")
-	const hasCoords = hasGeoCoordinates(note)
 	const typeSchema = identificationFormSchema[note.type];
 
 	const orderedVisibleFields = typeSchema.filter(
@@ -38,34 +32,6 @@ export function NoteExtendedDetails({
 		note[field.name] !== null &&
 		!HIDDEN_FIELDS.includes(field.name)
 	);
-
-	useEffect(() => {
-		if(hasCoords) {
-			setLoadingLocation(true)
-			const getLocation = async () => {
-				try {
-					const location = await fetchLocationFromCoords(note.latitude, note.longitude);
-					setLocation(location);
-				} catch (error) {
-					console.error("Location fetch failed:", error);
-				}
-				setLoadingLocation(false)
-			};
-			getLocation();
-		}
-	}, [hasCoords, note.latitude, note.longitude]);
-
-	const renderLocation = () => {
-		if (loadingLocation) {
-			return <p>Finding location...</p>
-		} else if (location) {
-			return (
-				<p>
-					<strong>Location:</strong> {`${location.city}, ${location.state}`}
-				</p>
-			)
-		}
-	}
 
 	const renderValue = (key: keyof Note, value: Note[keyof Note]) => {
 		if (!isDefined(value)) return "";
@@ -82,7 +48,6 @@ export function NoteExtendedDetails({
 					<strong>{field.label}:</strong> {renderValue(field.name, note[field.name])}
 					</p>
 				))}
-				{hasCoords && renderLocation()}
 			</div>
 			<div className="flex items-end justify-between pt-4">
 				<CloseIcon onClick={handleClose}/>

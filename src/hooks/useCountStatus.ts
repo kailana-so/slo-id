@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getStatusCount } from "@/app/identification/identificationService";
+import { getStatusCount } from "@/services/identificationService";
 
 export function useStatusCount(statusType: string, userId?: string) {
   return useQuery({

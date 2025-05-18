@@ -22,9 +22,8 @@ const ImageSelector = ({ setFormData }: ImageSelectorProps) => {
         file = await convertImage(file) // Convert HEIC if needed
         console.log(file, "convertedFile")
     
-        const { fullImageFile, thumbnailImageFile } = await compressImage(file, imageId); // Compress image
+        const { fullImageFile, thumbnailImageFile } = await compressImage(file, imageId); // TODO: Compress image - to be move to a BG process
         console.log(thumbnailImageFile, fullImageFile, "thumbnailImageFile, fullImageFile")
-        // setImageFile(file)
         setFormData((prev) => ({
             ...prev,
             imageFiles: { fullImageFile, thumbnailImageFile },
@@ -33,7 +32,7 @@ const ImageSelector = ({ setFormData }: ImageSelectorProps) => {
     };
 
     return (
-            <div className="pt-2">
+            <div className="pt-1">
                 <label key="photo-upload">
                 <input
                     type="file"

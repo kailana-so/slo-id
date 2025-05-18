@@ -1,4 +1,6 @@
 import { identificationFormSchema } from "@/components/forms/identification/IdentificationFormSchema";
+import { EnvironmentalData } from "./environment";
+import { LocationData } from "./map";
 
 export type FieldType = "text" | "select" | "checkbox" | "color-buttons";
 
@@ -50,7 +52,7 @@ export type UploadPayload = {
 	thumbnailImageFile: UploadImage;
 	fullImageFile: UploadImage;
 }
-export type FormDataValue = string | boolean | number | File | UploadPayload;
+export type FormDataValue = string | boolean | number | File | UploadPayload | EnvironmentalData | LocationData ;
 
 export type FormData = Record<string, FormDataValue>;
     

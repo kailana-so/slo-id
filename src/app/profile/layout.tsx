@@ -25,10 +25,10 @@ const Layout = ({ children }: LayoutProps) => {
             <nav className="w-full flex-none md:h-48 md:w-48 mr-4 mb-4 card-alt" >
                 <div className="flex flex-row md:flex-col gap-2 justify-between">
                     <div>
-                        <NavItem route={Routes.TAKENOTE} item="Note" />
+                        <NavItem route={Routes.TAKENOTE} item="Mark" />
                     </div>
                     <div>
-                        <NavItem route={Routes.NOTES} item="Notes" />
+                        <NavItem route={Routes.NOTES} item="Sightings" />
                     </div>
                     <div>
                         <NavItem route={Routes.IDS} item="Identifications" />

@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FormSubmitEvent } from "@/types/form";
 import { identificationFormSchema } from "@/components/forms/identification/IdentificationFormSchema";
 import { Routes } from "@/enums/routes";
 import { useRouter } from "next/navigation";
-import { addSighting } from "@/app/identification/identificationService";
+import { addSighting } from "@/services/identificationService";
 import IdentificationForm from "@/components/forms/identification/IdentificationForm";
 import { useProfile } from "@/providers/ProfileProvider";
 import { uploadClient } from "@/services/imageService";
@@ -19,8 +19,6 @@ export default function TakeNote() {
     const [loading, setLoading] = useState<boolean>(false);
 
     const router = useRouter()
-
-    console.log(formData, "formDAta")
 
     // Reset form data when formType changes
     useEffect(() => {

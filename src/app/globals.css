@@ -219,3 +219,22 @@ body {
 svg[class*="MuiSvgIcon-root"] {
   color: var(--green-500);
 }
+
+.tooltip {
+  display: inline-block;
+}
+.tooltip .tooltip-text {
+  visibility: hidden;
+  background-color: var(--green-500);
+  color: var(--background);
+  text-align: center;
+  font-size: small;
+  padding: var(--padding);
+  /* margin-right: var(--margin-left); */
+  border-radius: var(--border-radius);
+  position: absolute;
+  z-index: 1;
+}
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+}

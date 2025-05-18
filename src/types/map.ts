@@ -5,7 +5,13 @@ export interface MapPin {
     createdAt: number;
 }
 
-
-
-
-
+export type LocationData = {
+    road: string;
+    town: string;
+    city: string;
+    municipality: string;
+    state: string;
+    postcode: string;
+    country_code: string;
+    boundingbox: [string];
+}

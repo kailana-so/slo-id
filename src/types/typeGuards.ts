@@ -1,7 +1,7 @@
 import { Note } from "@/types/note";
 
-export function hasGeoCoordinates(note: Note): note is Note & { latitude: string; longitude: string } {
-  return typeof note.latitude === "string" && typeof note.longitude === "string";
+export function hasGeoCoordinates(note: Note): note is Note & { latitude: number; longitude: number } {
+  return typeof note.latitude === "number" && typeof note.longitude === "number";
 }
 
 export const isDefined = <T>(value: T | undefined | null): value is T => {

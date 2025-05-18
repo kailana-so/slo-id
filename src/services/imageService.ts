@@ -11,17 +11,17 @@ const uploadClient = async (
 	
 	try {
 		const response = await fetch("/api/uploadImage", {
-		method: "POST",
-		headers: { 
-			"Content-Type": "application/json",
-			...commonHeaders()
-			
-		},
-		body: JSON.stringify({
-			userId,
-			thumbnailImageFile: thumbnailImageFile.content,
-			fullImageFile: fullImageFile.content,
-		}),
+			method: "POST",
+			headers: { 
+				"Content-Type": "application/json",
+				...commonHeaders()
+				
+			},
+			body: JSON.stringify({
+				userId,
+				thumbnailImageFile: thumbnailImageFile.content,
+				fullImageFile: fullImageFile.content,
+			}),
 		});
 	
 		const data = await response.json();
