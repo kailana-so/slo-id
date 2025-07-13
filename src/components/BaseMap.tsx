@@ -6,9 +6,11 @@ import { getLocation } from "@/utils/getLocation.client";
 
 interface BaseMapProps {
   onMapReady?: (map: L.Map) => void;
+  initialLat?: number;
+  initialLng?: number;
 }
 
-export default function BaseMap({ onMapReady }: BaseMapProps) {
+export default function BaseMap({ onMapReady, initialLat, initialLng }: BaseMapProps) {
 	const mapRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -18,19 +20,25 @@ export default function BaseMap({ onMapReady }: BaseMapProps) {
 			let viewLat = -33.6688233;
 			let viewLng = 150.323443;
 			
-			try {
-				const { latitude, longitude } = await getLocation();
-				viewLat = latitude;
-				viewLng = longitude;
-			} catch (err) {
-				console.log("Using default location:", err);
+			// If initial coordinates are provided, use them
+			if (initialLat && initialLng) {
+				viewLat = initialLat;
+				viewLng = initialLng;
+			} else {
+				// Otherwise, try to get user's location
+				try {
+					const { latitude, longitude } = await getLocation();
+					viewLat = latitude;
+					viewLng = longitude;
+				} catch (err) {
+					console.log("Using default location:", err);
+				}
 			}
 
 			if (!mapRef.current || mapRef.current.dataset.initialized) return;
 			mapRef.current.dataset.initialized = "true";
 
-
-			const map = L.map(mapRef.current).setView([viewLat, viewLng], 13);
+			const map = L.map(mapRef.current).setView([viewLat, viewLng], initialLat && initialLng ? 15 : 13);
 
 			L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 				maxZoom: 19,
@@ -41,7 +49,7 @@ export default function BaseMap({ onMapReady }: BaseMapProps) {
 		};
 
 		init();
-	}, [onMapReady]);
+	}, [onMapReady, initialLat, initialLng]);
 
 	return <div ref={mapRef} className="card" style={{ height: "600px", width: "100%" }} />;
 }

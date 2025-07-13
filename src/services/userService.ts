@@ -52,7 +52,7 @@ const addUser = async (
 const getUser = async (
     userId: string,
 ) => {
-    console.log("[getUser] Getting user")
+    console.log("[getUser] Getting user for ID:", userId);
     try {
         const userDocRef = doc(database, "users", userId);
 
@@ -61,6 +61,7 @@ const getUser = async (
 
         if (userDoc.exists()) {
             const userData = userDoc.data();
+            console.log("[getUser] User data found:", userData);
 
             return {
                 userId: userData?.userId,
