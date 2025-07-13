@@ -27,5 +27,20 @@ function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon
 	return R * c; // Distance in km
 }
 
+export const formatDate = (year?: number, month?: string): string => {
+  if (!year) return 'Unknown date';
+  
+  if (month) {
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const monthIndex = parseInt(month) - 1;
+    return `${monthNames[monthIndex]} ${year}`;
+  }
+  
+  return year.toString();
+};
+
 
 export { generateFriendlyId, sentenceCase, getDistanceFromLatLonInKm }

@@ -1,5 +1,6 @@
 export enum Routes {
     PROFILE = "/profile",
+    NEARBY = "/profile/nearby",  
     MAP = "/map",
     NOTES = "/profile/notes",
     TAKENOTE = "/profile/note",

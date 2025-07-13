@@ -42,7 +42,7 @@ export default function Identify() {
 
     return (
         <section>
-            <div className="card-alt mb-4">
+            <div className="card mb-4">
                 <h4> Use tools to accurately identify your notes.</h4>
                 <p> In keeping with the slow method, 1 active drafts limit.</p>
             </div>

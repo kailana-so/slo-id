@@ -10,7 +10,17 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HikingIcon from '@mui/icons-material/Hiking';
 
 export default function Page() {
-    const { userData } = useProfile();
+    const { userData, loading } = useProfile();
+
+    // Show loading state while fetching user data
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center p-8">
+                <div className="spinner"></div>
+                <span className="ml-2">Loading...</span>
+            </div>
+        );
+    }
 
     const {
             data: draftCount,

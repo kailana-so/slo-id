@@ -25,6 +25,8 @@ export default function LoginPage() {
         
         try {
             const user = await login(email, password);
+            console.log("Login successful, user:", user.uid);
+            
             const sessionRes = await fetch("/api/session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json",
@@ -38,7 +40,20 @@ export default function LoginPage() {
                 setError("Session error. You may be logged out unexpectedly.");
                 return;
             }
-            router.push(Routes.PROFILE);
+            
+            console.log("Session setup successful, redirecting to profile...");
+            // Add a small delay to ensure auth state is updated
+            setTimeout(() => {
+                router.push(Routes.PROFILE);
+            }, 100);
+            
+            // Fallback redirect after a longer delay in case the first one fails
+            setTimeout(() => {
+                if (window.location.pathname !== Routes.PROFILE) {
+                    console.log("Fallback redirect to profile");
+                    router.push(Routes.PROFILE);
+                }
+            }, 1000);
         } catch (error) {
             let errorMessage = AuthErrorMessages.UNKNOWN_ERROR; 
 

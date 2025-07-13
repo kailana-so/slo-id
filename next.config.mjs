@@ -8,6 +8,11 @@ const nextConfig = {
           hostname: `${process.env.NEXT_PUBLIC_IMAGE_BUCKET}.s3.ap-southeast-2.amazonaws.com`,
           pathname: '/**',
         },
+        {
+          protocol: 'https',
+          hostname: 'images.ala.org.au',
+          pathname: '/**',
+        },
       ],
     },
   };

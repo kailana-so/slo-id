@@ -8,7 +8,17 @@ import { useProfile } from "@/providers/ProfileProvider";
 import NavItem from "@/components/common/NavItem";
 
 const Layout = ({ children }: LayoutProps) => {
-    const { userData } = useProfile();
+    const { userData, loading } = useProfile();
+
+    // Show loading state while fetching user data
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center p-8">
+                <div className="spinner"></div>
+                <span className="ml-2">Loading ...</span>
+            </div>
+        );
+    }
 
     if (!userData?.username) {
         return (
@@ -25,13 +35,16 @@ const Layout = ({ children }: LayoutProps) => {
             <nav className="w-full flex-none md:h-48 md:w-48 mr-4 mb-4 card-alt" >
                 <div className="flex flex-row md:flex-col gap-2 justify-between">
                     <div>
-                        <NavItem route={Routes.TAKENOTE} item="Mark" />
+                        <NavItem route={Routes.NEARBY} item="Nearby?" />
+                    </div>
+                    <div>
+                        <NavItem route={Routes.TAKENOTE} item="Note" />
                     </div>
                     <div>
                         <NavItem route={Routes.NOTES} item="Sightings" />
                     </div>
                     <div>
-                        <NavItem route={Routes.IDS} item="Identifications" />
+                        <NavItem route={Routes.IDS} item="Ids" />
                     </div>
                     <div>
                         <NavItem route={Routes.USERMAP} item="Map" />

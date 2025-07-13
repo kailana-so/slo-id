@@ -6,8 +6,8 @@ export const addNoteMarkers = async (map: L.Map, notes: MapPin[]) => {
 
 	const icon = L.icon({
 		iconUrl: "/imgs/note-pin.png",
-		iconSize: [32, 32],
-		iconAnchor: [16, 32],
+		iconSize: [14, 14],
+		iconAnchor: [14, 14],
 	});
 
 	notes.forEach(note => {
@@ -25,7 +25,7 @@ export const addNoteMarkers = async (map: L.Map, notes: MapPin[]) => {
 				  
 		bboxes.forEach(bbox => {
 			L.rectangle(bbox, {
-				color: "red",
+				color: "var(--primary-brown)",
 				weight: 1,
 				fillOpacity: 0.1,
 			}).addTo(map);
