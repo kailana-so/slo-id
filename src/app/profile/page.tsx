@@ -39,26 +39,26 @@ export default function Page() {
                     </div>
                     <div className="card">
                         <h3>Trends</h3> 
-                        <section className="grid grid-cols-4 gap-4 justify-items-stretch mt-2">
-                            <div className="badge-item unselected flex flex-col items-center justify-center gap-1 m-4">
+                        <section className="badge-grid">
+                            <div className="trend-item">
                                 <SearchIcon></SearchIcon>
-                                <p>Sightings</p>
-                                <h4>{draftCount?.count}</h4>
+                                <p className="hidden sm:block">Notes</p>
+                                <p>{draftCount?.count}</p>
                             </div>
-                            <div className="badge-item unselected flex flex-col items-center justify-center gap-1 m-4">
+                            <div className="trend-item">
                                 <DrawIcon></DrawIcon>
-                                <p>Drafts</p>
-                                <h4>{draftCount?.count}</h4>
+                                <p className="hidden sm:block">Drafts</p>
+                                <p>{draftCount?.count}</p>
                             </div>
-                            <div className="badge-item unselected flex flex-col items-center justify-center gap-1 m-4">
+                            <div className="trend-item">
                                 <CheckCircleIcon></CheckCircleIcon>
-                                <p>Ids</p>
-                                <h4>{draftCount?.count}</h4>
+                                <p className="hidden sm:block">Ids</p>
+                                <p>{draftCount?.count}</p>
                             </div>
-                            <div className="badge-item unselected flex flex-col items-center justify-center gap-1 m-4">
+                            <div className="trend-item">
                                 <HikingIcon></HikingIcon>
-                                <p>Distance</p>
-                                <h4>{draftCount?.count}km</h4>
+                                <p className="hidden sm:block">Distance</p>
+                                <p>{draftCount?.count}km</p>
                             </div>
                         </section>
                     </div>

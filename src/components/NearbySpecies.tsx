@@ -99,7 +99,7 @@ const NearbySpecies: React.FC<NearbySpeciesProps> = ({ latitude, longitude, radi
                 {occurrence.thumbnailUrl && (
                   <Image
                     src={occurrence.thumbnailUrl}
-                    width={100}
+                    width={200}
                     height={100}
                     alt={occurrence.vernacularName || occurrence.scientificName}
                     className="object-cover rounded-sm"
