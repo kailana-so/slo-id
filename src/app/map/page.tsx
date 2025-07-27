@@ -7,26 +7,26 @@ import { getCurrentUserLocation } from "@/services/locationService";
 import SimpleSpeciesList from "@/components/SimpleSpeciesList";
 
 const BaseMap = dynamic(() => import("../../components/BaseMap"), {
-  	ssr: false,
+	ssr: false,
 });
 
 export default function MapsPage() {
-	const [location, setLocation] = useState<{latitude: number; longitude: number; accuracy: number} | null>(null);
+	const [location, setLocation] = useState<{ latitude: number; longitude: number; accuracy: number } | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [drawerOpen, setDrawerOpen] = useState(true);
 
-	// Get user location
 	useEffect(() => {
 		const fetchLocation = async () => {
 			try {
 				setLoading(true);
 				setError(null);
-				
+
 				const userLocation = await getCurrentUserLocation();
 				setLocation(userLocation);
 			} catch (err) {
-				console.error('Error getting location:', err);
-				setError(err instanceof Error ? err.message : 'Failed to get your location');
+				console.error("Error getting location:", err);
+				setError(err instanceof Error ? err.message : "Failed to get your location");
 			} finally {
 				setLoading(false);
 			}
@@ -78,22 +78,34 @@ export default function MapsPage() {
 	}
 
 	return (
-		<div className="mt-4">
-			<div className="flex flex-row gap-6 h-[600px]">
-				{/* Nearby Species - LEFT */}
-				<div className="w-1/2 h-full overflow-y-auto">
-					<SimpleSpeciesList 
-						latitude={location.latitude} 
-						longitude={location.longitude} 
-						radius={2} 
-					/>
-				</div>
-				
-				{/* Map - RIGHT */}
-				<div className="w-1/2 h-full">
+		<div className="maps-wrapper">
+			<div className="maps-container">
+
+				{/* BaseMap background */}
+				<div className="maps-basemap">
 					<BaseMap onMapReady={handleMapReady} />
 				</div>
+
+				{/* Drawer */}
+				<div className={`maps-drawer ${drawerOpen ? "open" : "closed"}`}>
+					<div className="drawer-content-wrapper">
+						<button className="drawer-tab-toggle" onClick={() => setDrawerOpen(prev => !prev)}>
+							<h3>Nearby</h3>
+							{drawerOpen ? "←" : "→"}
+						</button>
+
+						<div className="drawer-content">
+							<SimpleSpeciesList
+								latitude={location.latitude}
+								longitude={location.longitude}
+								radius={2}
+							/>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</div>
+
 	);
 }
