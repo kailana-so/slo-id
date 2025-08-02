@@ -14,7 +14,9 @@ export default function MapsPage() {
 	const [location, setLocation] = useState<{ latitude: number; longitude: number; accuracy: number } | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const [drawerOpen, setDrawerOpen] = useState(true);
+	const [drawerOpen, setDrawerOpen] = useState(false);
+
+	console.log(drawerOpen, "drawerOpen")
 
 	useEffect(() => {
 		const fetchLocation = async () => {

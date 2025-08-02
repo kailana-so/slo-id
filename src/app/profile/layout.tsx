@@ -41,7 +41,7 @@ const Layout = ({ children }: LayoutProps) => {
                         <NavItem route={Routes.TAKENOTE} item="Note" />
                     </div>
                     <div>
-                        <NavItem route={Routes.NOTES} item="Sightings" />
+                        <NavItem route={Routes.NOTES} item="Notes" />
                     </div>
                     <div>
                         <NavItem route={Routes.IDS} item="Ids" />

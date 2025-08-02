@@ -52,7 +52,7 @@ const NearbySpecies: React.FC<NearbySpeciesProps> = ({ species, loading, error, 
 
   return (
     <div>
-      <div className="card mb-4">
+      <div className="mb-4">
         <h4>Nearby Species ({species.length})</h4>
         <p>Within 2km of your location</p>
       </div>

@@ -42,7 +42,7 @@ export default function Identify() {
 
     return (
         <section>
-            <div className="card mb-4">
+            <div className="mb-4">
                 <h4> Use tools to accurately identify your notes.</h4>
                 <p> In keeping with the slow method, 1 active drafts limit.</p>
             </div>
@@ -53,17 +53,17 @@ export default function Identify() {
                     className="aligned content-center"
                     key={`${note.id}-${note.type}${note.createdAt}-${note.status}`}
                 >
-                    {fullImages[note.imageId] && (
+                    {note.imageId && fullImages[note.imageId] && (
                         <Image
                             src={fullImages[note.imageId]}
-                            width={500}
-                            height={500}
+                            width={100}
+                            height={100}
                             alt={`picture of ${note.name}`}
                             className="object-cover rounded-sm" 
                         />
                     )}
                     <div>
-                        {renderIsDraft(note.status)}
+                        {renderIsDraft(String(note.status))}
                         <h4>{`${sentenceCase(note.type)}`}</h4>
                         <p key={`${note.type||"unknown"}-${note.createdAt}`}>
                             {note.createdAt ? format(note.createdAt, "dd MMM yyyy HH:mm a") : "No Date"}

@@ -64,7 +64,7 @@ const SimpleSpeciesList: React.FC<SimpleSpeciesListProps> = ({ latitude, longitu
 
   return (
     <div>
-      <div className="card mb-4">
+      <div className="mb-4">
         <h4>Nearby Species ({species.length})</h4>
         <p>Species in the map area</p>
       </div>
