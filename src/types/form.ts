@@ -15,6 +15,8 @@ export type  AuthFormProps = {
     isSignUp?: boolean;
     name?: string;
     setName?: (name: string) => void;
+    refCode?: string;
+    setRefCode?: (refCode: string) => void;
 }
 
 

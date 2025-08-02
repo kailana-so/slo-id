@@ -29,6 +29,8 @@ export type NoteBase = {
     name?: string;
     createdAt?: number;
     updatedAt?: number;
+    imageId?: string;
+    location?: LocationData;
 };
 
 export type NoteByType<T extends FormType> = NoteBase & {

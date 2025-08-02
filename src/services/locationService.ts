@@ -84,7 +84,21 @@ const getCurrentUserLocation = async (): Promise<{
             };
         }
         
-        throw new Error("Failed to get your location. Please check your browser permissions.");
+        // Provide a more helpful error message based on the error type
+        if (error instanceof GeolocationPositionError) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    throw new Error("Location access denied. Please enable location permissions in your browser settings.");
+                case error.POSITION_UNAVAILABLE:
+                    throw new Error("Location information is unavailable. Please check your device's location services.");
+                case error.TIMEOUT:
+                    throw new Error("Location request timed out. Please try again.");
+                default:
+                    throw new Error("Failed to get your location. Please check your browser permissions and try again.");
+            }
+        }
+        
+        throw new Error("Failed to get your location. Please check your browser permissions and try again.");
     }
 };
   

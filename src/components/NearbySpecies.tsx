@@ -10,37 +10,16 @@ import { Routes } from '@/enums/routes';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 interface NearbySpeciesProps {
-  latitude: number;
-  longitude: number;
-  radius: number;
+  species: SpeciesOccurrence[];
+  loading: boolean;
+  error: string | null;
+  onRetry: () => void;
 }
 
-const NearbySpecies: React.FC<NearbySpeciesProps> = ({ latitude, longitude, radius = 2 }) => {
-  const [species, setSpecies] = useState<SpeciesOccurrence[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const NearbySpecies: React.FC<NearbySpeciesProps> = ({ species, loading, error, onRetry }) => {
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchNearbySpecies = async () => {
-      if (!latitude || !longitude || !radius) return;
 
-      setLoading(true);
-      setError(null);
-
-      try {
-        const speciesData = await getNearbySpecies(latitude, longitude, radius);
-        setSpecies(speciesData);
-      } catch (err) {
-        console.error('Error fetching nearby species:', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch species data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNearbySpecies();
-  }, [latitude, longitude, radius]);
 
   const handleSeeOnMap = (lat: number, lng: number) => {
     // Navigate to the profile map page with coordinates as URL parameters
@@ -64,14 +43,8 @@ const NearbySpecies: React.FC<NearbySpeciesProps> = ({ latitude, longitude, radi
       <div className="card">
         <h4>Nearby Species</h4>
         <div className="p-4 text-center">
-          <p className="text-red-500 mb-2">Error loading species data</p>
           <p className="text-sm text-gray-600">{error}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="submit mt-2"
-          >
-            Try Again
-          </button>
+          <button onClick={onRetry}><h4>Try Again</h4></button>
         </div>
       </div>
     );
@@ -81,7 +54,7 @@ const NearbySpecies: React.FC<NearbySpeciesProps> = ({ latitude, longitude, radi
     <div>
       <div className="card mb-4">
         <h4>Nearby Species ({species.length})</h4>
-        <p>Within {radius}km of your location</p>
+        <p>Within 2km of your location</p>
       </div>
       
       {species.length === 0 ? (

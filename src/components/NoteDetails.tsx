@@ -52,10 +52,9 @@ export function NoteExtendedDetails({
 			<div className="flex items-end justify-between pt-4">
 				<CloseIcon onClick={handleClose}/>
 				{hasActiveDraft ? (
-					<div className="m-1">
-						<sub className="badge-item">1 active ID limit</sub>
+					<div className="flex items-end disabled">
+						<p>One active draft at a time</p>
 					</div>
-
 				) : (
 					<button onClick={() => handleIdentify(note.id)} className="ml-auto">
 						<div className="flex items-end">

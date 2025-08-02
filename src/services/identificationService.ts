@@ -94,7 +94,7 @@ const getSightings = async (
         const [documentSnapshots, countSnapshot, draftSnapshot] = await Promise.all([
             getDocs(dbQuery),
             getCountFromServer(countQuery),
-            getStatusCount(userId, sightingType)
+            getStatusCount(userId, SightingStatus.DRAFT)
         ]);
 
         // like marshal in go - casting

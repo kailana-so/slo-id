@@ -209,6 +209,10 @@ body {
   .note-divider {
     border-top: 2px dotted var(--brown-100);
   }
+
+  .disabled {
+    color: var(--secondary-grey);
+  }
 }
 
 @keyframes spin {
@@ -247,7 +251,7 @@ svg[class*="MuiSvgIcon-root"] {
 .drawer-tab-toggle {
 	position: absolute;
 	top: 50%;
-	right: -5.7rem; /* sticks out of drawer */
+	right: -5.6rem; /* sticks out of drawer */
 	transform: translateY(-50%);
 	z-index: 30;
 	color: var(--green-500);

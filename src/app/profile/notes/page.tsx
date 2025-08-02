@@ -42,7 +42,7 @@ export default function ViewNotes() {
     const drafts = data?.pages[0]?.drafts ?? 0;
     const allThumbnails = Object.assign({}, ...(data?.pages.map(p => p.thumbnails) ?? []));
     const validFetchMore = allNotes.length < totalCount
- 
+    console.log(drafts, "drafts")
     const handleClose = () => {
 		setSelectedNote(null)
 	}
@@ -63,7 +63,7 @@ export default function ViewNotes() {
                     key={`${note.id}-${note.type}${note.createdAt}`}
                     onClick={() => setSelectedNote(note)}
                 >
-                    {allThumbnails[note.imageId] && (
+                    {note.imageId && allThumbnails[note.imageId] && (
                         <Image
                             src={allThumbnails[note.imageId]}
                             width={50}

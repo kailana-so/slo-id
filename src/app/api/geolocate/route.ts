@@ -17,7 +17,12 @@ export async function POST(
 
 	try {
 		const url = `${process.env.NOMINATION_API_HOST}?format=jsonv2&lat=${lat}&lon=${lng}`;
-		const response = await fetch(url);
+		const response = await fetch(url,
+			{
+			headers: {
+				"User-Agent": "slo-id-client/1.0 (kailana.work@gmail.com)"
+			}
+		});
 		const data = await response.json();
 
 		console.log(data)

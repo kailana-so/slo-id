@@ -2,7 +2,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getIdentifications, getSightings } from "@/services/identificationService";
 import { getImageURLs } from "@/services/imageService";
 import { QueryDocumentSnapshot } from "firebase/firestore";
-import { Note } from "@/types/map";
+import { Note } from "@/types/note";
 
 export type NotesViewModel = {
     notes: Note[];
@@ -33,10 +33,14 @@ export const usePaginatedNotes = (userId?: string) => {
         
         const cursor = pageParam as QueryDocumentSnapshot | undefined;
         const { notes, lastDoc, count, drafts} = await getSightings(userId!, cursor);
+ console.log(notes, "notes")
 
-        const filenames = notes.map(n => n.imageId).filter(Boolean);
+ console.log(drafts, "drafts")
+        const filenames = notes.map(n => n.imageId).filter((id): id is string => !!id);
+        
+        console.log(filenames, "filenames")
         const imageUrls = await getImageURLs(userId!, filenames, ImageType.THUMBNAIL);
-
+            console.log(imageUrls, "imageUrls")
         const thumbnails = Object.fromEntries(
             imageUrls.map(({ filename, url }: { filename: string; url: string }) => [filename, url])
         );
@@ -57,7 +61,7 @@ export const usePaginatedIds = (userId?: string) => {
         const cursor = pageParam as QueryDocumentSnapshot | undefined;
         const { identifications, lastDoc, count} = await getIdentifications(userId!, cursor);
 
-        const filenames = identifications.map(id => id.imageId).filter(Boolean);
+        const filenames = identifications.map(id => id.imageId).filter((id): id is string => !!id);
         const imageUrls = await getImageURLs(userId!, filenames, ImageType.FULL);
 
         const fullImages = Object.fromEntries(

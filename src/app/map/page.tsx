@@ -57,7 +57,6 @@ export default function MapsPage() {
 			<div className="mt-4">
 				<div className="card">
 					<div className="p-4 text-center">
-						<p className="text-red-500 mb-2">Error getting your location</p>
 						<p className="text-sm text-gray-600">{error}</p>
 					</div>
 				</div>
@@ -70,7 +69,15 @@ export default function MapsPage() {
 			<div className="mt-4">
 				<div className="card">
 					<div className="p-4 text-center">
-						<p className="text-gray-500">Unable to determine your location</p>
+						<p className="text-sm text-gray-600">Unable to determine your location</p>
+						<p className="text-sm text-gray-500 mt-2">
+							You can view species in Upper Moutains, Australia as a fallback.
+						</p>
+						<button 
+							onClick={() => setLocation({ latitude: -33.6688233, longitude: 150.323443, accuracy: 0 })}
+						>
+							<h4>View Upper Moutains species</h4>
+						</button>
 					</div>
 				</div>
 			</div>

@@ -55,8 +55,8 @@ const SimpleSpeciesList: React.FC<SimpleSpeciesListProps> = ({ latitude, longitu
       <div className="card">
         <h4>Nearby Species</h4>
         <div className="p-4 text-center">
-          <p className="text-red-500 mb-2">Error loading species data</p>
           <p className="text-sm text-gray-600">{error}</p>
+          <button onClick={() => window.location.reload()}><h4>Try Again</h4></button>
         </div>
       </div>
     );
@@ -73,7 +73,6 @@ const SimpleSpeciesList: React.FC<SimpleSpeciesListProps> = ({ latitude, longitu
         <div className="card">
           <div className="text-center p-8">
             <p className="text-gray-500">No species found in this area</p>
-            <p className="text-sm text-gray-400">Try increasing the search radius</p>
           </div>
         </div>
       ) : (

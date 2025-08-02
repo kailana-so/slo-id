@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { getUser } from "@/services/userService";
 import { useAuth } from "@/providers/AuthProvider";
 import { ProfileProps } from "@/types/user";
+import { retry } from "@/utils/retry"
 
 
 type ProfileContextType = {
@@ -21,27 +22,21 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     const user = authContext?.user;
 
     useEffect(() => {
-        if (user) {
-            console.log("ProfileProvider: User authenticated, fetching user data for:", user.uid);
-            setLoading(true);
-            getUser(user.uid)
-                .then((data) => {
-                    console.log("ProfileProvider: User data fetched:", data);
-                    setUserData(data);
-                })
-                .catch((error) => {
-                    console.error("ProfileProvider: Error fetching user data:", error);
-                    setUserData(null);
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
-        } else {
-            console.log("ProfileProvider: No user, clearing user data");
-            setUserData(null);
-            setLoading(false);
+        if (!user) {
+          setUserData(null);
+          setLoading(false);
+          return;
         }
-    }, [user]);
+      
+        const load = async () => {
+          setLoading(true);
+          const data = await retry(() => getUser(user.uid));
+          setUserData(data);
+          setLoading(false);
+        };
+      
+        load();
+      }, [user]);
 
     return (
         <ProfileContext.Provider value={{ userData, loading }}>
