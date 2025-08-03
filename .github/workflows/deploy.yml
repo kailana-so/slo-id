@@ -1,4 +1,4 @@
-name: Deploy Slo-ID
+name: Deploy Slo-id
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
       WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
       WEATHER_API_HOST: ${{ secrets.WEATHER_API_HOST }}
       EMAIL_SIGNER: ${{ secrets.EMAIL_SIGNER}}
-      ALA_OCCURANCE_API: ${{ secrets.ALA_OCCURANCE_API }}
+      NEXT_PUBLIC_ALA_OCCURANCE_API: ${{ secrets.NEXT_PUBLIC_ALA_OCCURANCE_API }}
 
     steps:
       - name: Checkout code
@@ -74,7 +74,7 @@ jobs:
           WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
           WEATHER_API_HOST=${{ secrets.WEATHER_API_HOST }}
           EMAIL_SIGNER=${{ secrets.EMAIL_SIGNER}}
-          ALA_OCCURANCE_API=${{ secrets.ALA_OCCURANCE_API }}
+          NEXT_PUBLIC_ALA_OCCURANCE_API=${{ secrets.NEXT_PUBLIC_ALA_OCCURANCE_API }}
           ENV
 
           yarn install --frozen-lockfile

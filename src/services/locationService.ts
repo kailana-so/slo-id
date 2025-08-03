@@ -35,8 +35,6 @@ const getLocationData = async (
 	const locationData =  await res.json();
 	locationCache.set(key, locationData); // store in cache
 
-	console.log(locationData, "locationData")
-
     return { location: locationData };
 };
 
@@ -50,7 +48,6 @@ const getCurrentUserLocation = async (): Promise<{
     // Check cache first
 	const cached = userLocationCache.get(cacheKey);
 	if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
-		console.log("Using cached user location");
 		return {
 			latitude: cached.latitude,
 			longitude: cached.longitude,
@@ -59,7 +56,6 @@ const getCurrentUserLocation = async (): Promise<{
 	}
 
     try {
-        console.log("Fetching fresh user location...");
         const coords = await getLocation();
         
         // Cache the result
@@ -67,16 +63,12 @@ const getCurrentUserLocation = async (): Promise<{
             ...coords,
             timestamp: Date.now()
         });
-        
-        console.log("User location obtained and cached:", coords);
         return coords;
     } catch (error) {
-        console.error("Error getting user location:", error);
         
         // If we have a cached location that's expired, we can still use it as fallback
         const cached = userLocationCache.get(cacheKey);
         if (cached) {
-            console.log("Using expired cached location as fallback");
             return {
                 latitude: cached.latitude,
                 longitude: cached.longitude,

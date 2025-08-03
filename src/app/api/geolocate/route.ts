@@ -6,8 +6,6 @@ export async function POST(
 
 	const { lat, lng } = await req.json();
 
-    console.log(lat, lng, "lat, lng");
-
 	if (!lat || !lng) {
 		return new Response(
 			JSON.stringify({ error: "Missing lat/lng" }),
@@ -25,7 +23,6 @@ export async function POST(
 		});
 		const data = await response.json();
 
-		console.log(data)
 		const {boundingbox } = data
 		const {road, town, city, municipality, state, postcode, country_code } = data.address
 		if (!city && !municipality) {

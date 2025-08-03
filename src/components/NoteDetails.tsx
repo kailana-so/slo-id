@@ -23,7 +23,6 @@ export function NoteExtendedDetails({
 	hasActiveDraft,
 }: NoteDetails) {
 
-	console.log(hasActiveDraft, "hasActiveDraft")
 	const typeSchema = identificationFormSchema[note.type];
 
 	const orderedVisibleFields = typeSchema.filter(

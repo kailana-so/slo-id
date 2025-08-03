@@ -35,14 +35,12 @@ export default function ViewNotes() {
         </div>
     );
 
-    console.log(data, "data")
 
 	const allNotes = data?.pages.flatMap(page => page.notes) ?? [];
     const totalCount = data?.pages[0]?.count ?? 0;
     const drafts = data?.pages[0]?.drafts ?? 0;
     const allThumbnails = Object.assign({}, ...(data?.pages.map(p => p.thumbnails) ?? []));
     const validFetchMore = allNotes.length < totalCount
-    console.log(drafts, "drafts")
     const handleClose = () => {
 		setSelectedNote(null)
 	}

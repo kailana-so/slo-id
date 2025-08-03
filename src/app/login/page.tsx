@@ -25,7 +25,6 @@ export default function LoginPage() {
         
         try {
             const user = await login(email, password);
-            console.log("Login successful, user:", user.uid);
             
             const sessionRes = await fetch("/api/session", {
                 method: "POST",

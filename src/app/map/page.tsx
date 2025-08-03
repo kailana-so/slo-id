@@ -16,7 +16,6 @@ export default function MapsPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [drawerOpen, setDrawerOpen] = useState(false);
 
-	console.log(drawerOpen, "drawerOpen")
 
 	useEffect(() => {
 		const fetchLocation = async () => {
@@ -38,7 +37,7 @@ export default function MapsPage() {
 	}, []);
 
 	const handleMapReady = useCallback(async (map: L.Map) => {
-		console.log("[Map Ready]:", map);
+		console.log("[Map Ready]");
 	}, []);
 
 	if (loading) {

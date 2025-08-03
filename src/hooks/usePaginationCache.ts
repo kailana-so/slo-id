@@ -33,14 +33,10 @@ export const usePaginatedNotes = (userId?: string) => {
         
         const cursor = pageParam as QueryDocumentSnapshot | undefined;
         const { notes, lastDoc, count, drafts} = await getSightings(userId!, cursor);
- console.log(notes, "notes")
 
- console.log(drafts, "drafts")
         const filenames = notes.map(n => n.imageId).filter((id): id is string => !!id);
         
-        console.log(filenames, "filenames")
         const imageUrls = await getImageURLs(userId!, filenames, ImageType.THUMBNAIL);
-            console.log(imageUrls, "imageUrls")
         const thumbnails = Object.fromEntries(
             imageUrls.map(({ filename, url }: { filename: string; url: string }) => [filename, url])
         );

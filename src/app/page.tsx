@@ -11,11 +11,8 @@ export default function HomePage() {
 
 	const router = useRouter();
 	
-	console.log(userData)
-
 	const handleRoute = () => {
 		if (userData?.userId) {
-			console.log("yes user")
 			return router.push(Routes.TAKENOTE);
 		} 
 		return router.push(Routes.SIGNUP);

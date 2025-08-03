@@ -24,8 +24,6 @@ export default function SignUpPage() {
     const [userCreated, setUserCreated] = useState(false)
  
     const { userData, loading: profileLoading } = useProfile();
-    console.log(userData, "userData")
-    console.log(profileLoading, "profileLoading")
 
     const handleSignUp = async (event: FormSubmitEvent) => {
         event.preventDefault();
@@ -33,7 +31,6 @@ export default function SignUpPage() {
         try {
 
             const hasValidRefCode =  await validateRefCode(refCode)
-            console.log(hasValidRefCode, "hasValidRefCode")
             
             if (hasValidRefCode) {
                 const user = await signUp(email, password, name)

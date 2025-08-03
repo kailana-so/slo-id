@@ -21,7 +21,6 @@ const getEnvironmentalData = async (
     }
 
     const { main, sys, weather, wind }  = await res.json();
-    console.log({ main, sys, weather: weather[0], wind }, "{ main, sys, weather: weather[0], wind }")
 
     return {
         environment: { 

@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: LayoutProps) => {
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
-        console.log("useAuth must be used within an AuthProvider");
+        console.log("User context not found");
     }
     return context;
 };

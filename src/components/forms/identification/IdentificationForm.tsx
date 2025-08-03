@@ -64,13 +64,10 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
             async (pos) => {
                 const { latitude, longitude } = pos.coords;
 
-                console.log(latitude, longitude, "latitude, longitude")
                 const [environment, location] = await Promise.all([
                     getEnvironmentalData(latitude, longitude),
                     getLocationData(latitude, longitude),
                 ]);
-
-                console.log(location, "location")
 
                 setFormData((prev) => ({
                     ...prev,

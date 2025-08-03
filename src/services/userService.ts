@@ -39,19 +39,15 @@ const getCurrentUser = () => {
 const addUser = async (
     userData: UserProps,
 ):Promise<boolean> => {
-    console.log("[addUser] Adding User")
     try {
         const userRef = doc(database, "users", userData.userId);
         await setDoc(userRef, userData); 
-        console.log("[addUser] User added with ID: ", userData.userId);
         const friendlyIdRef = doc(database, "friendlyIds", userData.friendlyId);
-        console.log(userData.friendlyId, "userData.friendlyId")
         await setDoc(friendlyIdRef, {
             userId: userData.userId,
             maxUses: 3,
             used: 0
         }); 
-        console.log("[addUser] Friendly Id added with code: ", userData.friendlyId);
         return true;
     } catch (error) {
         console.error("[addUser] Error adding user: ", error);
@@ -66,7 +62,6 @@ const getUser = async (
     username: string,
     friendlyId: string,
 }|null> => {
-    console.log("[getUser] Getting user for ID:", userId);
     try {
         const userDocRef = doc(database, "users", userId);
 
@@ -75,7 +70,6 @@ const getUser = async (
 
         if (userDoc.exists()) {
             const userData = userDoc.data();
-            console.log("[getUser] User data found:", userData);
 
             return {
                 userId: userData?.userId,
@@ -83,11 +77,9 @@ const getUser = async (
                 friendlyId: userData?.friendlyId,
             };
         } else {
-            console.log("[getUser] No user found with id: ", userId);
             return null;
         }
     } catch (error) {
-        console.error("[getUser] Error getting user: ", error);
         return null;
     }
 };
@@ -95,7 +87,6 @@ const getUser = async (
 const validateRefCode = async (
     refCode: string
   ): Promise<boolean | null> => {
-    console.log("[validateRefCode] Checking refCode: ", refCode);
   
     try {
       const friendlyIdDocRef = doc(database, "friendlyIds", refCode);

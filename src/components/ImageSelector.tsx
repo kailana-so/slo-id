@@ -20,10 +20,8 @@ const ImageSelector = ({ setFormData }: ImageSelectorProps) => {
         let file = event.target.files[0];
     
         file = await convertImage(file) // Convert HEIC if needed
-        console.log(file, "convertedFile")
     
         const { fullImageFile, thumbnailImageFile } = await compressImage(file, imageId); // TODO: Compress image - to be move to a BG process
-        console.log(thumbnailImageFile, fullImageFile, "thumbnailImageFile, fullImageFile")
         setFormData((prev) => ({
             ...prev,
             imageFiles: { fullImageFile, thumbnailImageFile },

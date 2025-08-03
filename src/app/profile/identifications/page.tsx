@@ -31,7 +31,6 @@ export default function Identify() {
     );
 
     const allNotes = data?.pages.flatMap(page => page.identifications) ?? [];
-    console.log(data, "data")
     const totalCount = data?.pages[0]?.count ?? 0;
     const fullImages = Object.assign({}, ...(data?.pages.map(p => p.fullImages) ?? []));
 

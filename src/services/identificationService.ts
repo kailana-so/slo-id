@@ -38,11 +38,9 @@ const addSighting = async (
 
     sighting[DocumentTimestamp.CREATED_AT] = Date.now();
     sighting[SightingFields.Status] = SightingStatus.SIGHTING
-    console.log(`[addSighting] Adding sighting to DB with payload`, sighting)
 
     try {
         const docRef = await addDoc(sightingsCollection(), sighting);
-        console.log(`[addSighting] Sighting added with id: ${docRef.id} for user: ${sighting.userId}`)
     } catch (error) {
         console.error("Error adding user sighting: ", error);
     }
@@ -56,10 +54,8 @@ const updateSighting = async (
         [DocumentTimestamp.UPDATED_AT]: Date.now(),
         [SightingFields.Status]: SightingStatus.DRAFT
     }
-    console.log(`[updateSighting] Updating sighting ${noteId} updates`, updates)
     try {
         const docRef = await updateDoc(sightingsDoc(noteId), updates);
-        console.log(docRef, "docRef")
     } catch (error) {
         console.error("[updateSighting] Error updating sighting: ", error);
     }
@@ -69,12 +65,10 @@ const getSightings = async (
 	userId: string,
     lastDoc?: QueryDocumentSnapshot
 ): Promise<GetNotesResult> => {
-    console.log("[getSightings] Fetching sightings")
     
     const sightingType = SightingStatus.SIGHTING
 
     try {
-
         const baseConstraints: QueryConstraint[] = [
             where(SightingFields.UserId, "==", userId),
             where(SightingFields.Status, "==", sightingType),
@@ -107,7 +101,6 @@ const getSightings = async (
 
         // Get the last visible document
         const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
-        console.log("Total drafts:", draftSnapshot.count);
 
         return { 
             notes, 
@@ -169,8 +162,6 @@ const getIdentifications = async (
     lastDoc?: QueryDocumentSnapshot
 ): Promise<GetIdentificationsResult> => {
 
-    console.log("[getIdentifications] Fetching Ids")
-
     const idTypes = [SightingStatus.DRAFT, SightingStatus.IDENTIFICATION]
     
     try {
@@ -203,7 +194,6 @@ const getIdentifications = async (
 
         // Get the last visible document
         const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
-        console.log("Total count:", countSnapshot.count);
 
         return { 
             identifications, 
@@ -224,9 +214,6 @@ const getStatusCount = async (
 	userId: string,
     statusTypes: string | string[],
 ): Promise<{ count: number }> => {
-
-
-    console.log("[getDraftCount] Fetching draft count")
     
     try {
         const baseConstraints: QueryConstraint[] = [
@@ -241,9 +228,6 @@ const getStatusCount = async (
         const [countSnapshot] = await Promise.all([
             getCountFromServer(countQuery),
         ]);
-
-        console.log("Total count:", countSnapshot.data().count);
-
         return { 
             count: countSnapshot.data().count, 
         };

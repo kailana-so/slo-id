@@ -45,11 +45,8 @@ export default function TakeNote() {
         
             if (imageFiles) {
                 const imageResult = await uploadClient(imageFiles as UploadPayload, userData.userId);
-                console.log(imageResult, "imageResult");
                 noteData.imageId = imageResult.thumbnailKey.split("/").pop()?.split("_")[0];
             }
-
-            console.log("[handleSubmit] noteData:", noteData)
       
             await addSighting(noteData);
             router.push(Routes.NOTES);

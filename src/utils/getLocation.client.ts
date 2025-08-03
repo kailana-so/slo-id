@@ -14,15 +14,20 @@ const options = {
   }
   
   export const getLocation = (): Promise<{
-    latitude: number;
-    longitude: number;
-    accuracy: number;
-  }> =>
-    new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => resolve(success(pos)),
-        (err) => reject(error(err)),
-        options
-      );
-    });
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+}> =>
+  new Promise((resolve, reject) => {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      reject(new Error('Geolocation not available'));
+      return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+      (pos) => resolve(success(pos)),
+      (err) => reject(error(err)),
+      options
+    );
+  });
   

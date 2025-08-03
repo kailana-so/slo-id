@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { getLocation } from "@/utils/getLocation.client";
@@ -12,9 +12,15 @@ interface BaseMapProps {
 
 export default function BaseMap({ onMapReady, initialLat, initialLng }: BaseMapProps) {
 	const mapRef = useRef<HTMLDivElement>(null);
+	const [isClient, setIsClient] = useState(false);
 
 	useEffect(() => {
+		setIsClient(true);
+	}, []);
 
+	useEffect(() => {
+		if (!isClient) return;
+		
 		const init = async () => {
 		
 			let viewLat = -33.6688233;
@@ -49,7 +55,11 @@ export default function BaseMap({ onMapReady, initialLat, initialLng }: BaseMapP
 		};
 
 		init();
-	}, [onMapReady, initialLat, initialLng]);
+	}, [onMapReady, initialLat, initialLng, isClient]);
+
+	if (!isClient) {
+		return <div className="card" style={{ height: "600px", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>Loading map...</div>;
+	}
 
 	return <div ref={mapRef} className="card" style={{ height: "600px", width: "100%" }} />;
 }
