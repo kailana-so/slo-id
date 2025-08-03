@@ -2,9 +2,9 @@ module.exports = {
     apps: [
       {
         name: "slo-id",
-        script: "./server/dist/index.js",
-        instances: 1,
-        autorestart: true,
+        cwd: "/var/www/slo-id",
+        script: "node_modules/next/dist/bin/next",
+        args: "start -p 3001",
         env: {
           NODE_ENV: "production",
           PORT: 3001,
