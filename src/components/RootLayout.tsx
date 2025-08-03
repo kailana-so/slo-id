@@ -24,9 +24,15 @@ const RootLayout = ({ children }: LayoutProps) => {
             <Link href="/">
               <h1 className="flex items-center gap-1">
                 Slo
-                <GrassIcon className="mt-[2px]" /> 
+                <GrassIcon className="mt-2"/>
                 Id
               </h1>
+              <Image
+                  src="/slo-id.png"
+                  alt="Slo id logo"
+                  width={24}
+                  height={24}
+                />
             </Link>
           </div>
               <nav>
