@@ -66,10 +66,6 @@ body {
     @apply font-montserrat text-base font-light;
   }
 
-  /* main {
-    padding: 10px 0 0 0;
-  } */
-
   input, select {
     @apply font-montserrat border border-[var(--foreground)] rounded-[var(--border-radius)] px-[var(--padding)] py-[var(--padding)] focus:outline-none focus-visible:outline-none focus:border-2 focus:border-green-500;
   }
