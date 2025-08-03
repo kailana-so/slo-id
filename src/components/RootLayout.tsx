@@ -27,12 +27,6 @@ const RootLayout = ({ children }: LayoutProps) => {
                 <GrassIcon className="mt-2"/>
                 Id
               </h1>
-              <Image
-                  src="/slo-id.png"
-                  alt="Slo id logo"
-                  width={24}
-                  height={24}
-                />
             </Link>
           </div>
               <nav>
