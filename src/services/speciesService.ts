@@ -10,7 +10,7 @@ const getNearbySpecies = async (
     throw new Error('Invalid coordinates or radius');
   }
 
-  const url = `https://biocache.ala.org.au/ws/occurrences/search?q=*&lat=${latitude}&lon=${longitude}&radius=${radius}&pageSize=${pageSize}`;
+  const url = `${process.env.ALA_OCCURANCE_API}search?q=*&lat=${latitude}&lon=${longitude}&radius=${radius}&pageSize=${pageSize}`;
   
   const response = await fetch(url);
   

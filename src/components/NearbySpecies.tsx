@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { formatDate } from '@/utils/helpers';
 import { SpeciesOccurrence } from '@/types/species';
-import { getNearbySpecies } from '@/services/speciesService';
 import { Routes } from '@/enums/routes';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 

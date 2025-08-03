@@ -12,7 +12,12 @@ import HikingIcon from '@mui/icons-material/Hiking';
 export default function Page() {
     const { userData, loading } = useProfile();
 
-    // Show loading state while fetching user data
+    // status hooks
+    const { data: draftCount } = useStatusCount(SightingStatus.DRAFT, userData?.userId);
+    const { data: noteCount } = useStatusCount(SightingStatus.SIGHTING, userData?.userId);
+    const { data: idCount } = useStatusCount(SightingStatus.IDENTIFICATION, userData?.userId);
+
+    // loading state
     if (loading) {
         return (
             <div className="flex items-center justify-center p-8">
@@ -22,66 +27,45 @@ export default function Page() {
         );
     }
 
-    const {
-            data: draftCount,
-            error: draftError,
-        } = useStatusCount(SightingStatus.DRAFT, userData?.userId);
-    const {
-            data: noteCount,
-            // error: noteError
-    } = useStatusCount(SightingStatus.SIGHTING, userData?.userId);
-    const {
-        data: idCount,
-        // error: idError
-} = useStatusCount(SightingStatus.IDENTIFICATION, userData?.userId);
-
-
-    const renderPage = () => {
-        if (userData?.username) {
-            return (
+    return (
+        <div>
+            {userData?.username ? (
                 <section>
                     <div className="card">
-                        <h3>Hi {userData.username}</h3> 
+                        <h3>Hi {userData.username}</h3>
                         <p>Ref code: <b>{userData.friendlyId}</b></p>
                     </div>
                     <div className="card">
-                        <h3>Trends</h3> 
+                        <h3>Trends</h3>
                         <section className="badge-grid">
                             <div className="trend-item">
-                                <SearchIcon></SearchIcon>
+                                <SearchIcon />
                                 <p className="hidden sm:block">Notes</p>
                                 <p>{noteCount?.count}</p>
                             </div>
                             <div className="trend-item">
-                                <DrawIcon></DrawIcon>
+                                <DrawIcon />
                                 <p className="hidden sm:block">Drafts</p>
                                 <p>{draftCount?.count}</p>
                             </div>
                             <div className="trend-item">
-                                <CheckCircleIcon></CheckCircleIcon>
+                                <CheckCircleIcon />
                                 <p className="hidden sm:block">Ids</p>
                                 <p>{idCount?.count}</p>
                             </div>
                             <div className="trend-item">
-                                <HikingIcon></HikingIcon>
+                                <HikingIcon />
                                 <p className="hidden sm:block">Distance</p>
                                 <p>{draftCount?.count}km</p>
                             </div>
                         </section>
                     </div>
                 </section>
-            );
-        }
-        return (
-            <div>
-                <p>Create a profile to start noticing.</p>
-            </div>
-        )
-    }
-
-    return (
-        <div>
-            {renderPage()}
+            ) : (
+                <div>
+                    <p>Create a profile to start noticing.</p>
+                </div>
+            )}
         </div>
     );
 }

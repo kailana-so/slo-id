@@ -27,6 +27,8 @@ jobs:
       NOMINATION_API_HOST: ${{ secrets.NOMINATION_API_HOST }}
       WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
       WEATHER_API_HOST: ${{ secrets.WEATHER_API_HOST }}
+      EMAIL_SIGNER: ${{ secrets.EMAIL_SIGNER}}
+      ALA_OCCURANCE_API: ${{ secrets.ALA_OCCURANCE_API }}
 
     steps:
       - name: Checkout code
@@ -71,6 +73,8 @@ jobs:
           NOMINATION_API_HOST=${{ secrets.NOMINATION_API_HOST }}
           WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
           WEATHER_API_HOST=${{ secrets.WEATHER_API_HOST }}
+          EMAIL_SIGNER=${{ secrets.EMAIL_SIGNER}}
+          ALA_OCCURANCE_API=${{ secrets.ALA_OCCURANCE_API }}
           ENV
 
           yarn install --frozen-lockfile

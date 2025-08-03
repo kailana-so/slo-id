@@ -79,7 +79,12 @@ export default function SignUpPage() {
 
     useEffect(() => {
         if (userCreated && userData) return router.push(Routes.PROFILE);
-    }, [userCreated, userData, profileLoading])
+    }, [
+        userCreated, 
+        userData, 
+        profileLoading, 
+        router,
+    ])
 
     return (
         <>
