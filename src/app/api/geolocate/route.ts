@@ -20,7 +20,7 @@ export async function POST(
 		const response = await fetch(url,
 			{
 			headers: {
-				"User-Agent": "slo-id-client/1.0 (kailana.work@gmail.com)"
+				"User-Agent": `slo-id-client/1.0 (${process.env.EMAIL_SIGNER})`
 			}
 		});
 		const data = await response.json();

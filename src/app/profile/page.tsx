@@ -24,10 +24,17 @@ export default function Page() {
 
     const {
             data: draftCount,
-            error
-        } = useStatusCount(SightingStatus.DRAFT, userData?.userId );
-    console.log(draftCount, "draftCount")
-    console.log(error, "error")
+            error: draftError,
+        } = useStatusCount(SightingStatus.DRAFT, userData?.userId);
+    const {
+            data: noteCount,
+            // error: noteError
+    } = useStatusCount(SightingStatus.SIGHTING, userData?.userId);
+    const {
+        data: idCount,
+        // error: idError
+} = useStatusCount(SightingStatus.IDENTIFICATION, userData?.userId);
+
 
     const renderPage = () => {
         if (userData?.username) {
@@ -43,7 +50,7 @@ export default function Page() {
                             <div className="trend-item">
                                 <SearchIcon></SearchIcon>
                                 <p className="hidden sm:block">Notes</p>
-                                <p>{draftCount?.count}</p>
+                                <p>{noteCount?.count}</p>
                             </div>
                             <div className="trend-item">
                                 <DrawIcon></DrawIcon>
@@ -53,7 +60,7 @@ export default function Page() {
                             <div className="trend-item">
                                 <CheckCircleIcon></CheckCircleIcon>
                                 <p className="hidden sm:block">Ids</p>
-                                <p>{draftCount?.count}</p>
+                                <p>{idCount?.count}</p>
                             </div>
                             <div className="trend-item">
                                 <HikingIcon></HikingIcon>
