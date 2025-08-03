@@ -5,6 +5,8 @@ import dynamic from "next/dynamic";
 import { MapPin } from "@/types/map";
 import { useCallback, useEffect, useState } from "react";
 import { addNoteMarkers } from "@/utils/addNoteMarkers.client";
+import type { Map } from "leaflet";
+
 
 const BaseMap = dynamic(() => import("./BaseMap"), {
   	ssr: false,
@@ -34,7 +36,7 @@ export default function MapsPage() {
 		}
 	}, []);
 
-	const handleMapReady = useCallback(async (map: any) => {
+	const handleMapReady = useCallback(async (map: Map) => {
 		if (!userData) return;
 
 		// Dynamically import Leaflet to avoid SSR issues
