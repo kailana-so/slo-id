@@ -10,7 +10,6 @@ import Link from "next/link";
 import { ProfileProvider } from "@/providers/ProfileProvider";
 import GrassIcon from '@mui/icons-material/Grass';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import Image from 'next/image';
 
 const queryClient = new QueryClient();
 
