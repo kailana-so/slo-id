@@ -11,7 +11,6 @@ const getNearbySpecies = async (
   }
 
   const url = `${process.env.NEXT_PUBLIC_ALA_OCCURANCE_API}search?q=*&lat=${latitude}&lon=${longitude}&radius=${radius}&pageSize=${pageSize}`;
-  console.log(process.env.NEXT_PUBLIC_ALA_OCCURANCE_API, "process.env.NEXT_PUBLIC_ALA_OCCURANCE_API")
   const response = await fetch(url);
   
   if (!response.ok) {

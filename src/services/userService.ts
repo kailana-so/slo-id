@@ -79,7 +79,7 @@ const getUser = async (
         } else {
             return null;
         }
-    } catch (error) {
+    } catch {
         return null;
     }
 };

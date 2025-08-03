@@ -1,8 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import L from "leaflet";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentUserLocation } from "@/services/locationService";
 import SimpleSpeciesList from "@/components/SimpleSpeciesList";
 
@@ -36,9 +35,7 @@ export default function MapsPage() {
 		fetchLocation();
 	}, []);
 
-	const handleMapReady = useCallback(async (map: L.Map) => {
-		console.log("[Map Ready]");
-	}, []);
+
 
 	if (loading) {
 		return (
@@ -91,7 +88,7 @@ export default function MapsPage() {
 
 				{/* BaseMap background */}
 				<div className="maps-basemap">
-					<BaseMap onMapReady={handleMapReady} />
+					<BaseMap />
 				</div>
 
 				{/* Drawer */}

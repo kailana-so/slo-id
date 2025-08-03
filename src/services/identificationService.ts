@@ -40,7 +40,7 @@ const addSighting = async (
     sighting[SightingFields.Status] = SightingStatus.SIGHTING
 
     try {
-        const docRef = await addDoc(sightingsCollection(), sighting);
+        await addDoc(sightingsCollection(), sighting);
     } catch (error) {
         console.error("Error adding user sighting: ", error);
     }
@@ -55,7 +55,7 @@ const updateSighting = async (
         [SightingFields.Status]: SightingStatus.DRAFT
     }
     try {
-        const docRef = await updateDoc(sightingsDoc(noteId), updates);
+        await updateDoc(sightingsDoc(noteId), updates);
     } catch (error) {
         console.error("[updateSighting] Error updating sighting: ", error);
     }
