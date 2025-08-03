@@ -8,7 +8,7 @@ import { Routes } from "@/enums/routes";
 import UserSession from "@/components/common/UserSession";
 import Link from "next/link";
 import { ProfileProvider } from "@/providers/ProfileProvider";
-// import GrassIcon from '@mui/icons-material/Grass';
+import GrassIcon from '@mui/icons-material/Grass';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Image from 'next/image';
 
@@ -25,13 +25,7 @@ const RootLayout = ({ children }: LayoutProps) => {
             <Link href="/">
               <h1 className="flex items-center gap-1">
                 Slo
-                {/* <GrassIcon className="mt-[2px]" /> */}
-                <Image
-                  src="/slo-id.png"
-                  alt="Slo id logo"
-                  width={24}
-                  height={24}
-                />
+                <GrassIcon className="mt-[2px]" /> 
                 Id
               </h1>
             </Link>
