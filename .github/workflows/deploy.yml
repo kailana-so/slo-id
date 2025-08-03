@@ -47,6 +47,8 @@ jobs:
           nvm install 20
           nvm use 20
 
+          npm install -g yarn
+
           cd /var/www/slo-id
           git pull origin main
 
