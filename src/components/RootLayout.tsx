@@ -24,7 +24,7 @@ const RootLayout = ({ children }: LayoutProps) => {
             <Link href="/">
               <h1 className="flex items-center gap-1">
                 Slo
-                <GrassIcon className="mt-2"/>
+                <GrassIcon className="mt-3"/>
                 Id
               </h1>
             </Link>
