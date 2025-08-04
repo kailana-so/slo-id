@@ -30,7 +30,7 @@ type GetMapPinsResult = {
     notes: MapPin[];
 };
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 10;
 
 const addSighting = async (
     sighting: FormData

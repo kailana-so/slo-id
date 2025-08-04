@@ -13,6 +13,7 @@ module.exports = {
           AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
           AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
           NOMINATION_API_HOST: process.env.NOMINATION_API_HOST,
+          EMAIL_SIGNER: process.env.EMAIL_SIGNER,
           WEATHER_API_KEY: process.env.WEATHER_API_KEY,
           WEATHER_API_HOST: process.env.WEATHER_API_HOST,
         },
