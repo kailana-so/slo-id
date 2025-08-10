@@ -1,5 +1,6 @@
 export interface MapPin {
     name: string; 
+    type: string
     latitude: number;
     longitude: number;
     createdAt: number;

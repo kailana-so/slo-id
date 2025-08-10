@@ -1,12 +1,13 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { formatDate } from '@/utils/helpers';
 import { SpeciesOccurrence } from '@/types/species';
 import { Routes } from '@/enums/routes';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import ImageModal from './common/ImageModal';
 
 interface NearbySpeciesProps {
   species: SpeciesOccurrence[];
@@ -17,6 +18,7 @@ interface NearbySpeciesProps {
 
 const NearbySpecies: React.FC<NearbySpeciesProps> = ({ species, loading, error, onRetry }) => {
   const router = useRouter();
+  const [modalImage, setModalImage] = useState<{ src: string; alt: string; imageId?: string; userId?: string } | null>(null);
 
 
 
@@ -75,6 +77,10 @@ const NearbySpecies: React.FC<NearbySpeciesProps> = ({ species, loading, error, 
                     height={100}
                     alt={occurrence.vernacularName || occurrence.scientificName}
                     className="object-cover rounded-sm"
+                    onClick={() => setModalImage({
+                      src: occurrence.thumbnailUrl!,
+                      alt: occurrence.vernacularName || occurrence.scientificName
+                    })}
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
                     }}
@@ -102,6 +108,13 @@ const NearbySpecies: React.FC<NearbySpeciesProps> = ({ species, loading, error, 
           ))}
         </div>
       )}
+      
+      <ImageModal
+        isOpen={!!modalImage}
+        onClose={() => setModalImage(null)}
+        imageSrc={modalImage?.src || ''}
+        alt={modalImage?.alt || ''}
+      />
     </div>
   );
 };

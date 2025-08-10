@@ -4,6 +4,9 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { getCurrentUserLocation } from "@/services/locationService";
 import SimpleSpeciesList from "@/components/SimpleSpeciesList";
+import { SpeciesOccurrence } from "@/types/species";
+import { getNearbySpecies } from "@/services/speciesService";
+import type L from "leaflet";
 
 const BaseMap = dynamic(() => import("../../components/BaseMap"), {
 	ssr: false,
@@ -14,14 +17,17 @@ export default function MapsPage() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [drawerOpen, setDrawerOpen] = useState(false);
+	const [species, setSpecies] = useState<SpeciesOccurrence[]>([]);
+	const [speciesLoading, setSpeciesLoading] = useState(false);
+	const [speciesError, setSpeciesError] = useState<string | null>(null);
+	const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
 
-
+	// 1. Fetch location on mount
 	useEffect(() => {
 		const fetchLocation = async () => {
 			try {
 				setLoading(true);
 				setError(null);
-
 				const userLocation = await getCurrentUserLocation();
 				setLocation(userLocation);
 			} catch (err) {
@@ -31,11 +37,51 @@ export default function MapsPage() {
 				setLoading(false);
 			}
 		};
-
 		fetchLocation();
 	}, []);
 
+	// 2. Fetch species and add markers when location and mapInstance are available
+	useEffect(() => {
+		if (!location || !mapInstance) return;
+		let cancelled = false;
+		const fetchAndAddMarkers = async () => {
+			setSpeciesLoading(true);
+			setSpeciesError(null);
+			try {
+				const speciesData = await getNearbySpecies(location.latitude, location.longitude, 2);
+				if (cancelled) return;
+				setSpecies(speciesData);
+				const L = await import("leaflet");
+				const { default: Leaflet } = L;
+				const speciesIcon = Leaflet.icon({
+					iconUrl: "/imgs/species-pin.png",
+					iconSize: [16, 16],
+					iconAnchor: [16, 16],
+				});
+				speciesData.forEach((occ) => {
+					if (occ.decimalLatitude && occ.decimalLongitude) {
+						Leaflet.marker([occ.decimalLatitude, occ.decimalLongitude], { icon: speciesIcon })
+							.addTo(mapInstance)
+							.bindPopup(
+								`<strong>${occ.vernacularName || occ.scientificName}</strong><br/>${occ.scientificName}`
+							);
+					}
+				});
+			} catch (err) {
+				if (cancelled) return;
+				console.error('Error fetching nearby species:', err);
+				setSpeciesError(err instanceof Error ? err.message : 'Failed to fetch species data');
+			} finally {
+				if (!cancelled) setSpeciesLoading(false);
+			}
+		};
+		fetchAndAddMarkers();
+		return () => { cancelled = true; };
+	}, [location, mapInstance]);
 
+	const handleMapReady = (map: L.Map) => {
+		setMapInstance(map);
+	};
 
 	if (loading) {
 		return (
@@ -85,12 +131,10 @@ export default function MapsPage() {
 	return (
 		<div className="maps-wrapper">
 			<div className="maps-container">
-
 				{/* BaseMap background */}
 				<div className="maps-basemap">
-					<BaseMap />
+					<BaseMap onMapReady={handleMapReady} initialLat={location.latitude} initialLng={location.longitude} />
 				</div>
-
 				{/* Drawer */}
 				<div className={`maps-drawer ${drawerOpen ? "open" : "closed"}`}>
 					<div className="drawer-content-wrapper">
@@ -98,19 +142,19 @@ export default function MapsPage() {
 							<h3>Nearby</h3>
 							{drawerOpen ? "←" : "→"}
 						</button>
-
 						<div className="drawer-content">
 							<SimpleSpeciesList
 								latitude={location.latitude}
 								longitude={location.longitude}
 								radius={2}
+								species={species}
+								loading={speciesLoading}
+								error={speciesError}
 							/>
 						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
-
 	);
 }

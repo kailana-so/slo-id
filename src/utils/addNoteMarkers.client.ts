@@ -15,7 +15,12 @@ export const addNoteMarkers = async (map: L.Map, notes: MapPin[]) => {
 
 		L.marker([note.latitude, note.longitude], { icon })
 			.addTo(map)
-			.bindPopup(`${note.name || "Unnamed"}<br/>${format(note.createdAt, "dd MMM yyyy")}`);
+			.bindPopup(`
+				${note.type}
+				<br/>
+				${note.name || "Unnamed"}
+				<br/>
+				${format(note.createdAt, "dd MMM yyyy")}`);
 
 		// TODO: use actual cords
 		const bboxes: L.LatLngBoundsExpression[] = [

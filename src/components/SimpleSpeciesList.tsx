@@ -1,42 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { formatDate } from '@/utils/helpers';
 import { SpeciesOccurrence } from '@/types/species';
-import { getNearbySpecies } from '@/services/speciesService';
 
 interface SimpleSpeciesListProps {
   latitude: number;
   longitude: number;
   radius: number;
+  species: SpeciesOccurrence[];
+  loading: boolean;
+  error: string | null;
 }
 
-const SimpleSpeciesList: React.FC<SimpleSpeciesListProps> = ({ latitude, longitude, radius = 2 }) => {
-  const [species, setSpecies] = useState<SpeciesOccurrence[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchNearbySpecies = async () => {
-      if (!latitude || !longitude || !radius) return;
-
-      setLoading(true);
-      setError(null);
-
-      try {
-        const speciesData = await getNearbySpecies(latitude, longitude, radius);
-        setSpecies(speciesData);
-      } catch (err) {
-        console.error('Error fetching nearby species:', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch species data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNearbySpecies();
-  }, [latitude, longitude, radius]);
-
+const SimpleSpeciesList: React.FC<SimpleSpeciesListProps> = ({species, loading, error }) => {
   if (loading) {
     return (
       <div className="card">

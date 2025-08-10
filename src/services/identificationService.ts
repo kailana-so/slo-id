@@ -145,6 +145,7 @@ const getUserSightingsCoords = async (
 				longitude: data.longitude,
 				createdAt: data.createdAt,
 				name: data.name,
+                type: data.type
 				};
 			})
 			.filter(Boolean) as MapPin[];
