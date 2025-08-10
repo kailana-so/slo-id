@@ -153,6 +153,22 @@ export const identificationFormSchema = {
         },
         {
             // Plant Phenology
+            name: "isFlowering",
+            //  flowering, fruiting, flower budding
+            label: "Flowering?",
+            type: "checkbox",
+            required: false,
+        },
+        {
+            name: "flowerColour",
+            label: "Flower Colour",
+            type: "color-buttons",
+            required: false,
+            conditional: "isFlowering",
+            options: commonColours.options,
+        },
+        {
+            // Plant Phenology
             name: "hasFruits",
             //  flowering, fruiting, flower budding
             label: "Has Fruits?",
