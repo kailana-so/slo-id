@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { getCurrentUserLocation } from "@/services/locationService";
+import { getCurrentUserGeolocation } from "@/services/locationService";
 import SimpleSpeciesList from "@/components/SimpleSpeciesList";
 import { SpeciesOccurrence } from "@/types/species";
 import { getNearbySpecies } from "@/services/speciesService";
@@ -28,7 +28,7 @@ export default function MapsPage() {
 			try {
 				setLoading(true);
 				setError(null);
-				const userLocation = await getCurrentUserLocation();
+				const userLocation = await getCurrentUserGeolocation();
 				setLocation(userLocation);
 			} catch (err) {
 				console.error("Error getting location:", err);

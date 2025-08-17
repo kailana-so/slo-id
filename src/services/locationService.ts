@@ -1,13 +1,13 @@
 import { commonHeaders } from "@/lib/commonHeaders";
 import { LocationData } from "@/types/map";
-import { getLocation } from "@/utils/getLocation.client";
+import { getGeolocation } from "@/utils/getLocation.client";
 
 const locationCache = new Map<string, LocationData>();
 const userLocationCache = new Map<string, {latitude: number; longitude: number; accuracy: number; timestamp: number}>();
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-const getLocationData = async (
+const getNearestIdentifiableLocation = async (
     latitude: number,
     longitude: number,
 ): Promise<{location: LocationData}> => {
@@ -38,7 +38,7 @@ const getLocationData = async (
     return { location: locationData };
 };
 
-const getCurrentUserLocation = async (): Promise<{
+const getCurrentUserGeolocation = async (): Promise<{
     latitude: number;
     longitude: number;
     accuracy: number;
@@ -56,7 +56,7 @@ const getCurrentUserLocation = async (): Promise<{
 	}
 
     try {
-        const coords = await getLocation();
+        const coords = await getGeolocation();
         
         // Cache the result
         userLocationCache.set(cacheKey, {
@@ -95,8 +95,8 @@ const getCurrentUserLocation = async (): Promise<{
 };
   
 export { 
-	getLocationData,
-	getCurrentUserLocation, 
+	getNearestIdentifiableLocation,
+	getCurrentUserGeolocation, 
 	locationCache
 };
   

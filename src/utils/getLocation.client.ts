@@ -13,7 +13,7 @@ const options = {
     return new Error(`Geolocation error: ${err.message}`);
   }
   
-  export const getLocation = (): Promise<{
+  export const getGeolocation = (): Promise<{
   latitude: number;
   longitude: number;
   accuracy: number;

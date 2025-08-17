@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import ActionButton from "@/components/common/ActionButton";
 // import ImageSelector from "@/components/ImageSelector";
 import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
@@ -9,7 +9,8 @@ import {
 import { safeValue } from "@/types/typeGuards";
 import dynamic from "next/dynamic";
 import { getEnvironmentalData } from "@/services/environmentService";
-import { getLocationData } from "@/services/locationService";
+import { getCurrentUserGeolocation, getNearestIdentifiableLocation } from "@/services/locationService";
+import Snackbar from "@/components/common/Snackbar";
 
 const ImageSelector = dynamic(() => import('@/components/ImageSelector'), {
     ssr: false,
@@ -22,6 +23,13 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
   formData,
   loading,
 }) => {
+
+    const [snackbar, setSnackbar] = useState({
+        isOpen: false,
+        message: "",
+        type: "success" as "success" | "error",
+      });
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
@@ -59,28 +67,37 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
         }));
     };
 
-    const getLocationEnvironment = async () => {
-        navigator.geolocation.getCurrentPosition(
-            async (pos) => {
-                const { latitude, longitude } = pos.coords;
-
-                const [environment, location] = await Promise.all([
-                    getEnvironmentalData(latitude, longitude),
-                    getLocationData(latitude, longitude),
-                ]);
-
-                setFormData((prev) => ({
-                    ...prev,
-                    latitude,
-                    longitude,
-                    ...location,
-                    ...environment
-                }));
-            },
-            () => {
-                alert("Geolocation not supported.");
-            }
-        );
+    const getLocationEnvironment = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const isChecked = e.target.checked;
+        if (!isChecked) {
+            // remove location/environment fields when toggled off
+            setFormData((prev) => {
+              const { latitude, longitude, environment, location, ...rest } = prev;
+              return rest;
+            });
+            setSnackbar({ isOpen: true, message: "Environmental data removed.", type: "success" });
+            return;
+        }
+        // if checked, fetch
+        try {
+            const userLocation = await getCurrentUserGeolocation();
+            const [environmentData, identLocation] = await Promise.all([
+                getEnvironmentalData(userLocation.latitude, userLocation.longitude),
+                getNearestIdentifiableLocation(userLocation.latitude, userLocation.longitude),
+            ]);
+        
+            setFormData(prev => ({
+                ...prev,
+                latitude: userLocation.latitude,
+                longitude: userLocation.longitude,
+                ...identLocation,
+                ...environmentData,
+            }));
+        
+            setSnackbar({ isOpen: true, message: "Environmental data added.", type: "success" });
+        } catch (err) {
+            setSnackbar({ isOpen: true, message: `Error: ${err}`, type: "error" });
+        }
     };
 
     const renderField = (field: IdentificationFormField) => {
@@ -149,45 +166,54 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            {schema
-                .filter((field) => !field.conditional || formData[field.conditional])
-                .map((field) => (
-                <div key={field.name} className={field.conditional ? "ml-4" : ""}>
-                    <label className="block mb-2">
-                    {field.label}
-                    {renderField(field)}
-                    </label>
-                </div>
-                ))}
-                <div className="flex flex-row items-center">
-                    <label className="flex items-center gap-1">
-                        Enable Environmental Data 
-                        <span
-                            className="tooltip"
-                            tabIndex={0}
-                            aria-describedby="geo-tooltip"
-                        >
-                            <InfoOutlineIcon fontSize="small" aria-label="More info" />
+        <>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                {schema
+                    .filter((field) => !field.conditional || formData[field.conditional])
+                    .map((field) => (
+                    <div key={field.name} className={field.conditional ? "ml-4" : ""}>
+                        <label className="block mb-2">
+                        {field.label}
+                        {renderField(field)}
+                        </label>
+                    </div>
+                    ))}
+                    <div className="flex flex-row items-center">
+                        <label className="flex items-center gap-1">
+                            Enable Environmental Data 
                             <span
-                                id="geo-tooltip"
-                                role="tooltip"
-                                className="tooltip-text"
+                                className="tooltip"
+                                tabIndex={0}
+                                aria-describedby="geo-tooltip"
                             >
-                            Uses device location
+                                <InfoOutlineIcon fontSize="small" aria-label="More info" />
+                                <span
+                                    id="geo-tooltip"
+                                    role="tooltip"
+                                    className="tooltip-text"
+                                >
+                                Uses device location for accurate observations
+                                </span>
                             </span>
-                        </span>
-                    </label>
-                    <label className="switch ml-4">
-                        <input type="checkbox" onChange={getLocationEnvironment} />
-                        <span className="slider" />
-                    </label>
+                        </label>
+                        <label className="switch ml-4">
+                            <input type="checkbox" onChange={getLocationEnvironment} />
+                            <span className="slider" />
+                        </label>
+                    </div>
+                <ImageSelector setFormData={setFormData} />
+                <div className="pt-2 justify-items-end">
+                    <ActionButton label="Mark" loading={loading} />
                 </div>
-            <ImageSelector setFormData={setFormData} />
-            <div className="pt-2 justify-items-end">
-                <ActionButton label="Mark" loading={loading} />
-            </div>
-        </form>
+            </form>
+            {/* Local snackbar */}
+            <Snackbar
+                message={snackbar.message}
+                type={snackbar.type}
+                isOpen={snackbar.isOpen}
+                onClose={() => setSnackbar(prev => ({ ...prev, isOpen: false }))}
+            />
+        </>
     );
 };
 

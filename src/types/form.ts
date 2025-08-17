@@ -39,7 +39,8 @@ export interface IdentificationFormProps {
     handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
     setFormData: React.Dispatch<React.SetStateAction<FormData>>;
     formData: FormData;
-    loading: boolean
+    loading: boolean;
+    setSnackbar: (snackbar: { isOpen: boolean; message: string; type: 'success' | 'error' }) => void;
 }
 
 

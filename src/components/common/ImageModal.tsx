@@ -37,7 +37,7 @@ export default function ImageModal({
       <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
         <button onClick={onClose} className="image-modal-close">×</button>
 
-        <div className="image-modal-card card relative">
+        <div className="image-modal-card relative">
           {showSpinner && (
             <div className="absolute inset-0 grid place-items-center z-10 pointer-events-none">
               <div className="spinner" />

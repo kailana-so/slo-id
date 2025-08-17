@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import NearbySpecies from "@/components/NearbySpecies";
-import { getCurrentUserLocation } from "@/services/locationService";
+import { getCurrentUserGeolocation } from "@/services/locationService";
 import { getNearbySpecies } from "@/services/speciesService";
 import { SpeciesOccurrence } from "@/types/species";
 
@@ -18,7 +18,7 @@ export default function NearbyPage() {
                 setError(null);
                 
                 // Get user location
-                const coords = await getCurrentUserLocation();
+                const coords = await getCurrentUserGeolocation();
                 
                 // Fetch species data
                 const speciesData = await getNearbySpecies(coords.latitude, coords.longitude, 2);

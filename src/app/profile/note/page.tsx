@@ -16,7 +16,7 @@ type snackbarProps = {
     isOpen: boolean; 
     message: string; 
     type: 'success' | 'error' 
-    onclose?: () =>void
+    onclose?: () => void
 }
 
 export default function TakeNote() {
@@ -100,6 +100,7 @@ export default function TakeNote() {
                             setFormData={setFormData}
                             loading={loading}
                             formData={formData}
+                            setSnackbar={setSnackbar}
                         />
                     </>
                 ) : (
