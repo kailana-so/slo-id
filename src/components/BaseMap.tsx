@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { getLocation } from "@/utils/getLocation.client";
+import { getGeolocation } from "@/utils/getLocation.client";
 
 interface BaseMapProps {
   onMapReady?: (map: L.Map) => void;
@@ -33,7 +33,7 @@ export default function BaseMap({ onMapReady, initialLat, initialLng }: BaseMapP
 			} else {
 				// Otherwise, try to get user's location
 				try {
-					const { latitude, longitude } = await getLocation();
+					const { latitude, longitude } = await getGeolocation();
 					viewLat = latitude;
 					viewLng = longitude;
 				} catch (err) {
