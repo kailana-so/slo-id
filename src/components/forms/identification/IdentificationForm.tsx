@@ -72,6 +72,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
         if (!isChecked) {
             // remove location/environment fields when toggled off
             setFormData((prev) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const { latitude, longitude, environment, location, ...rest } = prev;
               return rest;
             });
