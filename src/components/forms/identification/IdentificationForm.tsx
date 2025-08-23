@@ -169,6 +169,29 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
     return (
         <>
             <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex flex-row items-center">
+                    <label className="flex items-center gap-1">
+                        Enable Environmental Data 
+                        <span
+                            className="tooltip"
+                            tabIndex={0}
+                            aria-describedby="geo-tooltip"
+                        >
+                            <InfoOutlineIcon fontSize="small" aria-label="More info" />
+                            <span
+                                id="geo-tooltip"
+                                role="tooltip"
+                                className="tooltip-text"
+                            >
+                            Uses device location for accurate observations
+                            </span>
+                        </span>
+                    </label>
+                    <label className="switch ml-4">
+                        <input type="checkbox" onChange={getLocationEnvironment} />
+                        <span className="slider" />
+                    </label>
+                </div>
                 {schema
                     .filter((field) => !field.conditional || formData[field.conditional])
                     .map((field) => (
@@ -179,29 +202,6 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                         </label>
                     </div>
                     ))}
-                    <div className="flex flex-row items-center">
-                        <label className="flex items-center gap-1">
-                            Enable Environmental Data 
-                            <span
-                                className="tooltip"
-                                tabIndex={0}
-                                aria-describedby="geo-tooltip"
-                            >
-                                <InfoOutlineIcon fontSize="small" aria-label="More info" />
-                                <span
-                                    id="geo-tooltip"
-                                    role="tooltip"
-                                    className="tooltip-text"
-                                >
-                                Uses device location for accurate observations
-                                </span>
-                            </span>
-                        </label>
-                        <label className="switch ml-4">
-                            <input type="checkbox" onChange={getLocationEnvironment} />
-                            <span className="slider" />
-                        </label>
-                    </div>
                 <ImageSelector setFormData={setFormData} />
                 <div className="pt-2 justify-items-end">
                     <ActionButton label="Mark" loading={loading} />

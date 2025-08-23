@@ -42,7 +42,7 @@ export type Note =
     | NoteByType<"plant">
     | NoteByType<"reptile">
     | NoteByType<"bird">
-    | NoteByType<"mineral">;
+    // | NoteByType<"mineral">;
 
 export type UploadImage = {
 	name: string;

@@ -330,9 +330,15 @@ svg[class*="MuiSvgIcon-root"] {
   gap: 0.25rem; /* gap-1 */
 }
 
+.badge-sub-item {
+  @apply px-2 py-1 m-1 rounded-[var(--border-radius)] border border-[var(--brown-10)];
+}
+.badge-sub-item.selected {
+  background-color: var(--brown-50);
+}
 .snackbar {
   position: fixed;
-  top: 10rem;
+  bottom: 5%;
   left: 0;
   z-index: 50;
   padding: var(--padding);
