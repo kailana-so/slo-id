@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import ActionButton from "@/components/common/ActionButton";
-// import ImageSelector from "@/components/ImageSelector";
 import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 import {
   IdentificationFormField,
@@ -82,7 +81,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
         // if checked, fetch
         try {
             const userLocation = await getCurrentUserGeolocation();
-            const [environmentData, identLocation] = await Promise.all([
+            const [environmentData, nearestILocation] = await Promise.all([
                 getEnvironmentalData(userLocation.latitude, userLocation.longitude),
                 getNearestIdentifiableLocation(userLocation.latitude, userLocation.longitude),
             ]);
@@ -91,13 +90,13 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                 ...prev,
                 latitude: userLocation.latitude,
                 longitude: userLocation.longitude,
-                ...identLocation,
+                ...nearestILocation,
                 ...environmentData,
             }));
         
             setSnackbar({ isOpen: true, message: "Environmental data added.", type: "success" });
         } catch (err) {
-            setSnackbar({ isOpen: true, message: `Error: ${err}`, type: "error" });
+            setSnackbar({ isOpen: true, message: `Error: ${err}.`, type: "error" });
         }
     };
 
