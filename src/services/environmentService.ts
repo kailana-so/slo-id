@@ -14,10 +14,11 @@ const getEnvironmentalData = async (
         },
         body: JSON.stringify({ lat, lng }),
     });
+    
     if (!res.ok) {
         const error = await res.text();
         console.error("Error from API:", error);
-        throw new Error(`Failed to fetch environmental data: ${error}`);
+        throw new Error(`WEATHER API FAILED: ${error}`);
     }
 
     const { main, sys, weather, wind }  = await res.json();

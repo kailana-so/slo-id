@@ -1,45 +1,72 @@
-type GeolocationResult = { 
-  latitude: number; 
-  longitude: number; 
-  accuracy: number;
+export type GeolocationResult = {
+  latitude: number;
+  longitude: number;
+  accuracy: number;   // meters (95% CI)
+  timestamp: number;  // ms epoch
 };
 
-const coarseOpts: PositionOptions  = { enableHighAccuracy: false, timeout: 15000, maximumAge: 0   }; // force fresh
-const preciseOpts: PositionOptions = { enableHighAccuracy: true,  timeout: 20000, maximumAge: 0 };
+function toResult(p: GeolocationPosition): GeolocationResult {
+  const { latitude, longitude, accuracy } = p.coords;
+  return { latitude, longitude, accuracy, timestamp: p.timestamp };
+}
 
-function getPosition(opts: PositionOptions): Promise<GeolocationResult> {
-  return new Promise((resolve, reject) => {
-    if (typeof window === 'undefined' || !('geolocation' in navigator)) {
-      reject(new Error('Geolocation not supported'));
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => resolve({ latitude: coords.latitude, longitude: coords.longitude, accuracy: coords.accuracy }),
-      (err: GeolocationPositionError) => reject(err),
+function getBestFixWithin({
+  timeoutMs = 15000,
+  desiredAccuracy = 50,
+  highAccuracy = true,
+}: {
+  timeoutMs?: number;
+  desiredAccuracy?: number;
+  highAccuracy?: boolean;
+}): Promise<GeolocationResult> {
+  if (typeof window === 'undefined' || !('geolocation' in navigator) || !window.isSecureContext) {
+    return Promise.reject(new Error('Geolocation requires HTTPS/localhost and navigator.geolocation.'));
+  }
+
+  return new Promise<GeolocationResult>((resolve, reject) => {
+    let best: GeolocationResult | undefined;
+    let settled = false;
+
+    const opts: PositionOptions = { enableHighAccuracy: highAccuracy, maximumAge: 0, timeout: timeoutMs };
+
+    const clearAll = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      navigator.geolocation.clearWatch(watchId);
+    };
+    const finishResolve = (value: GeolocationResult) => { clearAll(); resolve(value); };
+    const finishReject  = (err: unknown)              => { clearAll(); reject(err); };
+
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const fix = toResult(pos);
+        if (!best || fix.accuracy < best.accuracy) best = fix;
+        if (fix.accuracy <= desiredAccuracy) finishResolve(fix);
+      },
+      (err) => finishReject(err),
       opts
     );
+
+    const timer = setTimeout(() => {
+      if (best) {
+        // TS: best is GeolocationResult here
+        finishResolve(best);
+      } else {
+        finishReject(new Error('Geolocation timeout without any fixes'));
+      }
+    }, timeoutMs);
   });
 }
 
-/** Take coarse if good enough; escalate quickly; fall back if precise times out. */
+// Public API unchanged
 export async function getGeolocation(): Promise<GeolocationResult> {
-  if (!window.isSecureContext) throw new Error('Geolocation requires HTTPS or localhost.');
-
   try {
-    const coarse = await getPosition(coarseOpts);
-    if (coarse.accuracy <= 300) return coarse;      // accept decent coarse
-    try {
-      const precise = await getPosition(preciseOpts);
-      return precise.accuracy < coarse.accuracy ? precise : coarse;
-    } catch {
-      return coarse; // precise failed; keep coarse
-    }
-  } catch (err) {
-    const error = err as GeolocationPositionError;
-    if (error?.code === 1){
-      throw error
-    };                      // PERMISSION_DENIED → bail
-    // Retry with precise in case coarse timed out/unavailable
-    return getPosition(preciseOpts);
+    const precise = await getBestFixWithin({ timeoutMs: 12000, desiredAccuracy: 75, highAccuracy: true });
+    if (Date.now() - precise.timestamp < 60_000) return precise;
+    throw new Error('Stale precise fix');
+  } catch {
+    const coarse = await getBestFixWithin({ timeoutMs: 6000, desiredAccuracy: 500, highAccuracy: false });
+    return coarse;
   }
 }
