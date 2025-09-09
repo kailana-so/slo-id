@@ -41,20 +41,29 @@ jobs:
 
       - name: Deploy to Droplet via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} <<EOF
+          ssh -o StrictHostKeyChecking=no -T ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} 'bash -s' <<'EOF'
+          set -euo pipefail
+          set -x
+          trap 'echo "❌ failed at: $BASH_COMMAND"; exit 1' ERR
+      
+          # --- nvm: source safely + set a default to avoid exit 3 ---
+          export NVM_DIR="$HOME/.nvm"
+          set +e
+          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
           set -e
-
-          export NVM_DIR="\$HOME/.nvm"
-          [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"
           nvm install 20
+          nvm alias default 20
           nvm use 20
-
-          npm install -g yarn
-          npm install -g pm2
-
+      
+          # tooling (only if missing)
+          command -v yarn >/dev/null 2>&1 || sudo npm i -g yarn@1.22.22
+          command -v pm2  >/dev/null 2>&1 || sudo npm i -g pm2
+      
           cd /var/www/slo-id
-          git pull origin main
-
+          git config --global --add safe.directory /var/www/slo-id
+          git fetch origin main
+          git reset --hard origin/main
+      
           echo "Writing .env.production"
           cat > .env.production <<ENV
           NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
@@ -74,15 +83,22 @@ jobs:
           NOMINATION_API_HOST=${{ secrets.NOMINATION_API_HOST }}
           WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
           WEATHER_API_HOST=${{ secrets.WEATHER_API_HOST }}
-          EMAIL_SIGNER=${{ secrets.EMAIL_SIGNER}}
+          EMAIL_SIGNER=${{ secrets.EMAIL_SIGNER }}
           NEXT_PUBLIC_ALA_OCCURANCE_API=${{ secrets.NEXT_PUBLIC_ALA_OCCURANCE_API }}
           ENV
-
+      
           yarn install --frozen-lockfile
           yarn build
-
-          pm2 start ecosystem.config.js || pm2 restart slo-id
+      
+          # start/restart via PM2
+          if [ -f ecosystem.config.js ]; then
+            pm2 start ecosystem.config.js || pm2 restart slo-id
+          else
+            # fallback: start Next standalone/server as needed
+            pm2 restart slo-id || pm2 start "yarn start" --name slo-id
+          fi
           pm2 save
-
+      
           echo "✅ Deployed slo-id"
           EOF
+      
