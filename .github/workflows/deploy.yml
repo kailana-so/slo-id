@@ -38,33 +38,24 @@ jobs:
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
-
-      - name: Deploy to Droplet via SSH
+      
+      - name: Deploy to Droplet via SSH (no nvm)
         run: |
           ssh -o StrictHostKeyChecking=no -T ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} 'bash -s' <<'EOF'
           set -euo pipefail
           set -x
-          trap 'echo "❌ failed at: $BASH_COMMAND"; exit 1' ERR
       
-          # --- nvm: source safely + set a default to avoid exit 3 ---
-          export NVM_DIR="$HOME/.nvm"
-          set +e
-          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-          set -e
-          nvm install 20
-          nvm alias default 20
-          nvm use 20
-      
-          # tooling (only if missing)
+          # Ensure tooling (only if missing)
           command -v yarn >/dev/null 2>&1 || sudo npm i -g yarn@1.22.22
           command -v pm2  >/dev/null 2>&1 || sudo npm i -g pm2
+      
+          node -v; npm -v
       
           cd /var/www/slo-id
           git config --global --add safe.directory /var/www/slo-id
           git fetch origin main
           git reset --hard origin/main
       
-          echo "Writing .env.production"
           cat > .env.production <<ENV
           NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
           NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
@@ -90,15 +81,12 @@ jobs:
           yarn install --frozen-lockfile
           yarn build
       
-          # start/restart via PM2
           if [ -f ecosystem.config.js ]; then
             pm2 start ecosystem.config.js || pm2 restart slo-id
           else
-            # fallback: start Next standalone/server as needed
             pm2 restart slo-id || pm2 start "yarn start" --name slo-id
           fi
           pm2 save
-      
           echo "✅ Deployed slo-id"
           EOF
       
