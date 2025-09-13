@@ -81,6 +81,7 @@ jobs:
           yarn install --frozen-lockfile
           yarn build
           test -f .next/BUILD_ID || { echo "❌ No .next/BUILD_ID (build failed)"; exit 1; }
+          test -f .next/prerender-manifest.json || { echo "❌ Build artifacts missing"; exit 1; }
           pm2 reload ecosystem.config.js --only slo-id
           pm2 save
 
