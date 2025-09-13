@@ -1,4 +1,3 @@
-# .github/workflows/deploy-slo-id.yml
 name: Deploy Slo-id (build in CI)
 
 on:
@@ -13,9 +12,6 @@ jobs:
       run:
         working-directory: .
 
-    env:
-      NODE_ENV: production
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,11 +22,17 @@ jobs:
           node-version: 20
           cache: yarn
 
-      - name: Install deps
-        run: yarn install --frozen-lockfile
+      - name: Install deps (include devDependencies)
+        run: yarn install --frozen-lockfile --production=false
+
+      - name: Assert CSS toolchain present
+        run: |
+          node -e "require.resolve('tailwindcss/package.json')"
+          node -e "require.resolve('postcss/package.json')"
+          node -e "require.resolve('autoprefixer/package.json')"
 
       - name: Build (CI)
-        run: yarn build
+        run: NODE_ENV=production yarn build
 
       - name: Sanity check build
         run: |
@@ -65,7 +67,6 @@ jobs:
           APP_DIR=/var/www/slo-id
           BUNDLE=/tmp/slo-id-build.tgz
 
-          # Ensure tools exist (no building on server)
           command -v yarn >/dev/null 2>&1 || sudo npm i -g yarn@1.22.22
           command -v pm2  >/dev/null 2>&1 || sudo npm i -g pm2
 
