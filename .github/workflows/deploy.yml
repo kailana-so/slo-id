@@ -82,13 +82,10 @@ jobs:
       
           yarn install --frozen-lockfile
           yarn build
-      
-          if [ -f ecosystem.config.js ]; then
-            pm2 start ecosystem.config.js || pm2 restart slo-id
-          else
-            pm2 restart slo-id || pm2 start "yarn start" --name slo-id
-          fi
+          test -f .next/BUILD_ID || { echo "❌ No .next/BUILD_ID (build failed)"; exit 1; }
+          pm2 reload ecosystem.config.js --only slo-id
           pm2 save
+          
           echo "✅ Deployed slo-id"
           EOF
       
