@@ -41,7 +41,10 @@ jobs:
             public \
             package.json \
             yarn.lock \
-            ecosystem.config.js
+            ecosystem.config.js \
+            tsconfig.json \
+            next.config.js
+
 
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.8.0
