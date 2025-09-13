@@ -149,7 +149,7 @@ const schemas = {
   },
 
   // Geology schemas
-  geology: (type: string) => [
+  geology: () => [
     field.size(), field.color(),
     ...field.pattern(),
   ],
@@ -177,11 +177,11 @@ export const identificationFormSchema: Record<FormType, IdentificationFormField[
   fungus: schemas.organism.fungus(),
 
   // Geology
-  rock: schemas.geology("Rock"),
-  mineral: schemas.geology("Mineral"),
-  fossil: schemas.geology("Fossil"),
-  soil: schemas.geology("Soil/Sand"),
-  landform: schemas.geology("Landform"),
+  rock: schemas.geology(),
+  mineral: schemas.geology(),
+  fossil: schemas.geology(),
+  soil: schemas.geology(),
+  landform: schemas.geology(),
 
   // Evidence
   "Tracks": schemas.evidence(),
