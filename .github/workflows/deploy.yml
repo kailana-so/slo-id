@@ -27,7 +27,7 @@ jobs:
       NOMINATION_API_HOST: ${{ secrets.NOMINATION_API_HOST }}
       WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
       WEATHER_API_HOST: ${{ secrets.WEATHER_API_HOST }}
-      EMAIL_SIGNER: ${{ secrets.EMAIL_SIGNER}}
+      EMAIL_SIGNER: ${{ secrets.EMAIL_SIGNER }}
       NEXT_PUBLIC_ALA_OCCURANCE_API: ${{ secrets.NEXT_PUBLIC_ALA_OCCURANCE_API }}
 
     steps:
@@ -38,58 +38,55 @@ jobs:
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
-      
-      - name: Deploy to Droplet via SSH (no nvm)
+
+      - name: Deploy to Droplet
         run: |
-         ssh \
-            -o StrictHostKeyChecking=no \
-            -o ServerAliveInterval=60 \
-            -o ServerAliveCountMax=5 \
-            -o TCPKeepAlive=yes \
-            -T ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} 'bash -s' <<'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} 'bash -s' <<'EOF'
           set -euo pipefail
           set -x
-          
+
           # Ensure tooling (only if missing)
           command -v yarn >/dev/null 2>&1 || sudo npm i -g yarn@1.22.22
           command -v pm2  >/dev/null 2>&1 || sudo npm i -g pm2
-      
+
           node -v; npm -v
-      
+
           cd /var/www/slo-id
           git config --global --add safe.directory /var/www/slo-id
           git fetch origin main
           git reset --hard origin/main
-      
+
+          # Write fresh .env.production
           cat > .env.production <<ENV
-          NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
-          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
-          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
-          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
-          NEXT_PUBLIC_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
-          NEXT_PUBLIC_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_MEASUREMENT_ID }}
-          NEXT_PUBLIC_AWS_REGION=${{ secrets.NEXT_PUBLIC_AWS_REGION }}
-          NEXT_PUBLIC_IMAGE_BUCKET=${{ secrets.NEXT_PUBLIC_IMAGE_BUCKET }}
-          NEXT_PUBLIC_X_SYSTEM_KEY=${{ secrets.NEXT_PUBLIC_X_SYSTEM_KEY }}
-          AWS_UPLOAD_LAMBDA=${{ secrets.AWS_UPLOAD_LAMBDA }}
-          AWS_BUCKET=${{ secrets.AWS_BUCKET }}
-          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          NOMINATION_API_HOST=${{ secrets.NOMINATION_API_HOST }}
-          WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
-          WEATHER_API_HOST=${{ secrets.WEATHER_API_HOST }}
-          EMAIL_SIGNER=${{ secrets.EMAIL_SIGNER }}
-          NEXT_PUBLIC_ALA_OCCURANCE_API=${{ secrets.NEXT_PUBLIC_ALA_OCCURANCE_API }}
+          NEXT_PUBLIC_FIREBASE_API_KEY=${NEXT_PUBLIC_FIREBASE_API_KEY}
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID=${NEXT_PUBLIC_FIREBASE_PROJECT_ID}
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=${NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID}
+          NEXT_PUBLIC_FIREBASE_APP_ID=${NEXT_PUBLIC_FIREBASE_APP_ID}
+          NEXT_PUBLIC_MEASUREMENT_ID=${NEXT_PUBLIC_MEASUREMENT_ID}
+          NEXT_PUBLIC_AWS_REGION=${NEXT_PUBLIC_AWS_REGION}
+          NEXT_PUBLIC_IMAGE_BUCKET=${NEXT_PUBLIC_IMAGE_BUCKET}
+          NEXT_PUBLIC_X_SYSTEM_KEY=${NEXT_PUBLIC_X_SYSTEM_KEY}
+          AWS_UPLOAD_LAMBDA=${AWS_UPLOAD_LAMBDA}
+          AWS_BUCKET=${AWS_BUCKET}
+          AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+          AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+          NOMINATION_API_HOST=${NOMINATION_API_HOST}
+          WEATHER_API_KEY=${WEATHER_API_KEY}
+          WEATHER_API_HOST=${WEATHER_API_HOST}
+          EMAIL_SIGNER=${EMAIL_SIGNER}
+          NEXT_PUBLIC_ALA_OCCURANCE_API=${NEXT_PUBLIC_ALA_OCCURANCE_API}
           ENV
-      
+
           yarn install --frozen-lockfile
           yarn build
+
           test -f .next/BUILD_ID || { echo "❌ No .next/BUILD_ID (build failed)"; exit 1; }
           test -f .next/prerender-manifest.json || { echo "❌ Build artifacts missing"; exit 1; }
+
           pm2 reload ecosystem.config.js --only slo-id
           pm2 save
 
           echo "✅ Deployed slo-id"
           EOF
-      
