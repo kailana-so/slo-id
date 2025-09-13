@@ -41,9 +41,12 @@ jobs:
 
       - name: Deploy to Droplet
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "bash -s" <<EOF
-          set -euo pipefail
-          set -x
+          ssh \
+          -o StrictHostKeyChecking=no \
+          -o ServerAliveInterval=30 \
+          -o ServerAliveCountMax=10 \
+          -o TCPKeepAlive=yes \
+          ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "bash -s" <<EOF
       
           cd /var/www/slo-id
           git config --global --add safe.directory /var/www/slo-id
