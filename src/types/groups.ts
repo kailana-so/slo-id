@@ -95,7 +95,7 @@ export const getFormType = (topGroup: TopGroup, subGroup?: string): FormType | "
   const group = groups.find(g => g.name === topGroup);
   if (!group) return "";
   
-  if (group.types.length === 1) return group.types[0].id;
+  if (group.types.length === 1) return group.types[0]?.id || "";
   
   const type = group.types.find(t => t.name === subGroup);
   return type?.id || "";

@@ -52,7 +52,7 @@ export default function TakeNote() {
     if (!top) return setFormType("");
 
     if (subTypes.length === 1) {
-      setFormType(subTypes[0].id);
+      setFormType(subTypes[0]?.id || "");
     } else {
       setFormType("");
     }

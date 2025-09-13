@@ -38,7 +38,7 @@ const field = {
       options: [{ name: "Striped" }, { name: "Spotted" }, { name: "Banded" },
                 { name: "Blotched" }, { name: "Checkered" }, { name: "Marbled" }, { name: "Solid" }] },
     { name: "patternColour", label: "Pattern Colour", type: "color-buttons", required: true, 
-      conditional: "hasPatterns", options: field.color().options },
+      conditional: "hasPatterns", options: field.color().options || [] },
   ],
 
   shape: (): IdentificationFormField => ({
@@ -135,25 +135,23 @@ const schemas = {
         name: "isFlowering", label: "Flowering?", type: "checkbox", required: false },
       { 
         name: "flowerColour", label: "Flower Colour", type: "color-buttons", required: false,
-        conditional: "isFlowering", options: field.color().options },
+        conditional: "isFlowering", options: field.color().options || [] },
       { 
         name: "hasFruits", label: "Has Fruits?", type: "checkbox", required: false },
       { 
         name: "fruitColour", label: "Fruit Colour", type: "color-buttons", required: false,
-        conditional: "hasFruits", options: field.color().options },
+        conditional: "hasFruits", options: field.color().options || [] },
       { 
         name: "fruitDescription", label: "Fruit Shape", type: "select", required: false,
-        conditional: "hasFruits", options: field.shape().options },
+        conditional: "hasFruits", options: field.shape().options || [] },
     ],
     fungus: () => [...schemas.base.plant(), field.shape()],
   },
 
   // Geology schemas
   geology: (type: string) => [
-    { name: "geologyType", label: "Geology Type", type: "select", required: true, options: [{ name: type }] },
     field.size(), field.color(),
     ...field.pattern(),
-    field.habitat(), field.status(),
   ],
 
   // Evidence schemas

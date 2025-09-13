@@ -100,7 +100,7 @@ const getSightings = async (
             .filter((note): note is Note => note.type != null);
 
         // Get the last visible document
-        const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
+        const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1] || null;
 
         return { 
             notes, 
@@ -194,7 +194,7 @@ const getIdentifications = async (
             .filter((note): note is Note => note.type != null);
 
         // Get the last visible document
-        const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
+        const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1] || null;
 
         return { 
             identifications, 

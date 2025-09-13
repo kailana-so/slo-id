@@ -33,7 +33,11 @@ const fileToBase64 = (file: Blob) => {
       reader.onload = () => {
         if (typeof reader.result === "string") {
           const base64String = reader.result.split(",")[1]; // Remove the data prefix
-          resolve(base64String);
+          if (base64String) {
+            resolve(base64String);
+          } else {
+            reject(new Error("Invalid base64 string"));
+          }
         } else {
           reject(new Error("FileReader result is not a string"));
         }

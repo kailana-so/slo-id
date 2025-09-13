@@ -61,5 +61,9 @@ export default function MapsPage() {
 
 	}, [userData, initialLat, initialLng]);
 
-	return <BaseMap onMapReady={handleMapReady} initialLat={initialLat} initialLng={initialLng} />;
+	return <BaseMap 
+		onMapReady={handleMapReady} 
+		{...(initialLat !== undefined && { initialLat })}
+		{...(initialLng !== undefined && { initialLng })}
+	/>;
 } 

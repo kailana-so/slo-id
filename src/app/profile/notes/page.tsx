@@ -118,8 +118,8 @@ export default function ViewNotes() {
                 onClose={() => setModalImage(null)}
                 imageSrc={modalImage?.src || ''}
                 alt={modalImage?.alt || ''}
-                imageId={modalImage?.imageId}
-                userId={userData?.userId}
+                {...(modalImage?.imageId && { imageId: modalImage.imageId })}
+                {...(userData?.userId && { userId: userData.userId })}
             />
         </div>
     );

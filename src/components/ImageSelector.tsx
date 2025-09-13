@@ -16,7 +16,7 @@ const ImageSelector = ({ setFormData }: ImageSelectorProps) => {
     const handleImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const imageId = uuidv4();
 
-        if (!event.target.files) return;
+        if (!event.target.files || !event.target.files[0]) return;
         let file = event.target.files[0];
     
         file = await convertImage(file) // Convert HEIC if needed
