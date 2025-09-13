@@ -1,11 +1,11 @@
 import ErrorResponse from "@/utils/errorResponse";
 import dns from "node:dns";
-console.log("DNS default order:", dns.getDefaultResultOrder());
 
 export async function POST(
 	req: Request,
 ): Promise<Response> {
-
+	
+	console.log("DNS default order:", dns.getDefaultResultOrder());
 	const { lat, lng } = await req.json();
 	console.log("lat", lat);
 	console.log("lng", lng);
