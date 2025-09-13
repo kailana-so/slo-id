@@ -8,6 +8,7 @@ module.exports = {
         env: {
           NODE_ENV: "production",
           PORT: 3001,
+          NODE_OPTIONS: process.env.NODE_OPTIONS,
           AWS_UPLOAD_LAMBDA: process.env.AWS_UPLOAD_LAMBDA,
           AWS_BUCKET: process.env.AWS_BUCKET,
           AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
