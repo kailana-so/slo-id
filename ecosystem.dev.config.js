@@ -8,7 +8,7 @@ module.exports = {
         interpreter: "bash",
         env: {
             NODE_ENV: "development",
-            NODE_OPTIONS: process.env.NODE_OPTIONS, // ipvN first force
+            NODE_OPTIONS: "--dns-result-order=ipv4first",
         },
         },
     ],

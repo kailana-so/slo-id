@@ -31,9 +31,9 @@
   --primary-green: var(--green-100);
   --secondary-green: var(--green-50);
   --primary-grey: rgb(230, 230, 230);
-  --secondary-grey: rgba(160,159,159,0.5);
-  --primary-error:  rgba(188, 21, 21, 0.5);
-  --secondary-error:  rgba(250, 214, 214, 0.5);
+  --secondary-grey: rgba(160,159,159);
+  --primary-error:  rgba(188, 21, 21);
+  --secondary-error:  rgba(250, 214, 214);
 
 
   --modal-opacity-bg: rgba(0, 0, 0, 0.5);
