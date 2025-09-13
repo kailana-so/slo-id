@@ -7,7 +7,7 @@ module.exports = {
         args: "start -p 3002",
         env: {
           NODE_ENV: "production",
-          PORT: 3001,
+          PORT: 3002,
           NODE_OPTIONS: "--dns-result-order=ipv4first",
           AWS_UPLOAD_LAMBDA: process.env.AWS_UPLOAD_LAMBDA,
           AWS_BUCKET: process.env.AWS_BUCKET,
