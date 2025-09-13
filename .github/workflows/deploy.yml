@@ -9,6 +9,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: .
+
     env:
       NODE_ENV: production
 
@@ -33,7 +37,6 @@ jobs:
           test -f .next/BUILD_ID
           test -f .next/prerender-manifest.json
 
-      # Pack only what the server needs at runtime
       - name: Create build bundle
         run: |
           tar -czf build.tgz \
@@ -44,7 +47,6 @@ jobs:
             ecosystem.config.js \
             tsconfig.json \
             next.config.js
-
 
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.8.0
@@ -72,7 +74,6 @@ jobs:
 
           cd "$APP_DIR"
 
-          # Write runtime env (edit secrets in repo settings)
           cat > .env.production <<ENV
           NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
           NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
@@ -95,14 +96,11 @@ jobs:
           EMAIL_SIGNER=${{ secrets.EMAIL_SIGNER }}
           ENV
 
-          # Install runtime deps (no build step here)
           yarn install --frozen-lockfile
 
-          # Quick guard: artifacts present
           test -f .next/BUILD_ID
           test -f .next/prerender-manifest.json
 
-          # Start once, then hot-reload next deploys
           if pm2 describe slo-id >/dev/null 2>&1; then
             pm2 reload ecosystem.config.js --only slo-id
           else
