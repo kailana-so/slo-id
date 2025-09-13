@@ -1,5 +1,6 @@
 import ErrorResponse from "@/utils/errorResponse";
 import dns from "node:dns";
+import "@/lib/net"; // force ipv4 for fetch
 
 export async function POST(
 	req: Request,
@@ -41,6 +42,8 @@ export async function POST(
 		);
 	} catch (err: unknown) {
 		console.log("err", err);
+		console.log("DNS default order:", dns.getDefaultResultOrder());
+		
 		return ErrorResponse("Failed to fetch geolocation", err, 500);
 	}
 }
