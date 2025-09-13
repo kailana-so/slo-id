@@ -29,7 +29,6 @@ jobs:
       WEATHER_API_HOST: ${{ secrets.WEATHER_API_HOST }}
       EMAIL_SIGNER: ${{ secrets.EMAIL_SIGNER}}
       NEXT_PUBLIC_ALA_OCCURANCE_API: ${{ secrets.NEXT_PUBLIC_ALA_OCCURANCE_API }}
-      NODE_OPTIONS: ${{ secrets.NODE_OPTIONS }}
 
     steps:
       - name: Checkout code
@@ -77,7 +76,6 @@ jobs:
           WEATHER_API_HOST=${{ secrets.WEATHER_API_HOST }}
           EMAIL_SIGNER=${{ secrets.EMAIL_SIGNER }}
           NEXT_PUBLIC_ALA_OCCURANCE_API=${{ secrets.NEXT_PUBLIC_ALA_OCCURANCE_API }}
-          NODE_OPTIONS=${{ secrets.NODE_OPTIONS }}
           ENV
       
           yarn install --frozen-lockfile
@@ -85,7 +83,7 @@ jobs:
           test -f .next/BUILD_ID || { echo "❌ No .next/BUILD_ID (build failed)"; exit 1; }
           pm2 reload ecosystem.config.js --only slo-id
           pm2 save
-          
+
           echo "✅ Deployed slo-id"
           EOF
       
