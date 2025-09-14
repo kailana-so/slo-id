@@ -73,6 +73,11 @@ jobs:
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Show agent keys
+        run: |
+          ssh-add -l
+          ssh-add -L | ssh-keygen -lf -
         
       - name: Test SSH (verbose)
         run: ssh -vvv -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} true
@@ -80,10 +85,6 @@ jobs:
       - name: Upload bundle to droplet
         run: scp -o StrictHostKeyChecking=no build.tgz \
               ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/tmp/slo-id-build.tgz
-              
-      - name: Upload bundle to droplet
-        run: scp -o StrictHostKeyChecking=no build.tgz \
-          ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/tmp/slo-id-build.tgz
 
       - name: SSH – deploy artifacts & reload
         run: |
