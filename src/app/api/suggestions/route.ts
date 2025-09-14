@@ -9,7 +9,7 @@ function toPayload(raw: unknown): { suggestions: Suggestion[] } {
   if (
     obj &&
     typeof obj === "object" &&
-    Array.isArray((obj as any).suggestions)
+    Array.isArray((obj as { suggestions?: unknown }).suggestions)
   ) {
     return obj as { suggestions: Suggestion[] };
   }
