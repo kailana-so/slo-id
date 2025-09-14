@@ -47,7 +47,6 @@ jobs:
           WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
           WEATHER_API_HOST: ${{ secrets.WEATHER_API_HOST }}
         run: NODE_ENV=production yarn build
-        
 
       - name: Sanity check build
         run: |
@@ -58,7 +57,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # Build the file list and include whichever next.config.* you have
           CFG="$(ls -1 next.config.* 2>/dev/null || true)"
           tar -czf build.tgz \
             .next \
@@ -74,17 +72,25 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-      - name: Show agent keys
+      - name: Probe SSH & upload bundle (same agent/session)
+        shell: bash
+        env:
+          SSH_PORT: ${{ secrets.DROPLET_SSH_PORT }}
         run: |
+          set -euo pipefail
+          PORT_FLAG=""
+          if [[ -n "${SSH_PORT:-}" ]]; then PORT_FLAG="-P ${SSH_PORT}"; fi
+
+          echo "Agent sock: ${SSH_AUTH_SOCK:-<missing>}"
           ssh-add -l
-          ssh-add -L | ssh-keygen -lf -
-        
-      - name: Test SSH (verbose)
-        run: ssh -vvv -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} true
-      
-      - name: Upload bundle to droplet
-        run: scp -o StrictHostKeyChecking=no build.tgz \
-              ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/tmp/slo-id-build.tgz
+          # Prove auth with exact target (same user/host/port as scp)
+          ssh -vvv -o StrictHostKeyChecking=no ${PORT_FLAG} \
+            "${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}" true
+
+          # Upload bundle
+          scp -vvv -o StrictHostKeyChecking=no ${PORT_FLAG} \
+            build.tgz \
+            "${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/tmp/slo-id-build.tgz"
 
       - name: SSH – deploy artifacts & reload
         run: |
