@@ -55,7 +55,11 @@ jobs:
           test -f .next/prerender-manifest.json
 
       - name: Create build bundle
+        shell: bash
         run: |
+          set -euo pipefail
+          # Build the file list and include whichever next.config.* you have
+          CFG="$(ls -1 next.config.* 2>/dev/null || true)"
           tar -czf build.tgz \
             .next \
             public \
@@ -63,7 +67,8 @@ jobs:
             yarn.lock \
             ecosystem.config.js \
             tsconfig.json \
-            next.config.js
+            $CFG
+        
 
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.8.0
