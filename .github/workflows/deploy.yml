@@ -68,24 +68,19 @@ jobs:
             ecosystem.config.js \
             tsconfig.json \
             $CFG
-        
 
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
-      
-      - name: List loaded SSH keys
-        run: ssh-add -l
-      
-      - name: Test SSH
-        run: ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes -vvv ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} true
+        
+      - name: Test SSH (verbose)
+        run: ssh -vvv -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} true
       
       - name: Upload bundle to droplet
-        run: scp -o IdentitiesOnly=yes -o StrictHostKeyChecking=no build.tgz \
+        run: scp -o StrictHostKeyChecking=no build.tgz \
               ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/tmp/slo-id-build.tgz
-      
-
+              
       - name: Upload bundle to droplet
         run: scp -o StrictHostKeyChecking=no build.tgz \
           ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/tmp/slo-id-build.tgz
