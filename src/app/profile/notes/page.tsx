@@ -53,7 +53,7 @@ export default function ViewNotes() {
         await updateSighting(noteId)
         router.push(Routes.IDS);
     };
-
+ console.log(allNotes);
     return (
         <div key='view-notes'>
             {allNotes.map((note) => (

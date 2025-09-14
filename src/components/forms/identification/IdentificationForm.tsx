@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import ActionButton from "@/components/common/ActionButton";
 import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 import {
@@ -10,10 +10,15 @@ import dynamic from "next/dynamic";
 import { getEnvironmentalData } from "@/services/environmentService";
 import { getCurrentUserGeolocation, getNearestIdentifiableLocation } from "@/services/locationService";
 import Snackbar from "@/components/common/Snackbar";
+import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+import { getNoteSuggestions } from "@/services/generativeService";
+import { Suggestion } from "@/types/suggestions";
+import Spinner from "@/components/common/Spinner";
 
 const ImageSelector = dynamic(() => import('@/components/ImageSelector'), {
     ssr: false,
-  });
+});
+
 
 const IdentificationForm: React.FC<IdentificationFormProps> = ({
   schema,
@@ -21,6 +26,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
   setFormData,
   formData,
   loading,
+  type
 }) => {
 
     const [snackbar, setSnackbar] = useState({
@@ -28,6 +34,10 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
         message: "",
         type: "success" as "success" | "error",
       });
+    const [suggestionDetails, setSuggestionDetails] = useState<Suggestion[]>([])
+    const [suggestionsLoading, setSuggestionsLoading] = useState<boolean>(false)
+    const [drawerOpen, setDrawerOpen] = useState(false);
+
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -167,6 +177,31 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
         }
     };
 
+    const canSuggest = useMemo(() =>
+        schema.every(f => {
+          if (!f.required) return true;
+          if (f.conditional && !formData[f.conditional]) return true; // gated field off
+          const v = formData[f.name];
+          return f.type === "checkbox" ? v === true : String(v ?? "").trim() !== "";
+        }),
+        [formData, schema]
+      );
+
+    const handleSuggestions = async (data: typeof formData) => {
+        setSuggestionsLoading(true);
+        
+        try {
+            const suggestions = await getNoteSuggestions(data, type);
+            setSuggestionDetails(Array.isArray(suggestions) ? suggestions : []);
+        } catch (err) {
+            console.error("Failed to get suggestions:", err);
+            // setSuggestionDetails([]);
+        } finally {
+            setSuggestionsLoading(false);
+            setDrawerOpen(true); 
+        }
+    };
+
     return (
         <>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -208,6 +243,45 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                     <ActionButton label="Mark" loading={loading} />
                 </div>
             </form>
+            {/* Toggle button - always visible on right */}
+            {canSuggest && (
+                <button
+                    type="button"
+                    className={`suggestions-tab-toggle suggestions ${drawerOpen ? 'drawer-open' : ''}`}
+                    onClick={() => {
+                        if (!drawerOpen) {
+                            handleSuggestions(formData);
+                        } else {
+                            setDrawerOpen(false);
+                        }
+                    }}
+                >
+                    {suggestionsLoading ? <Spinner/> : <TipsAndUpdatesIcon />}
+                </button>
+            )}
+            
+            <div className={`suggestions-drawer ${drawerOpen ? "open" : "closed"}`}>
+                <div className="suggestions-content-wrapper">
+                <div className="suggestions-content">
+                    {Array.isArray(suggestionDetails) && suggestionDetails.length > 0 
+                    && (
+                        <ul className="space-y-3">
+                            {suggestionDetails.map((s, i) => (
+                                <li key={`${s.name}-${i}`} className="rounded border p-3">
+                                <div className="font-medium">{s.name}</div>
+                                <div className="text-xs opacity-70">{s.native ? "Native" : "Introduced"}</div>
+                                {s.key_details?.length ? (
+                                    <div className="mt-2 list-disc">
+                                        {s.key_details.map((k, j) => <div key={j}>{k}</div>)}
+                                    </div>
+                                ) : null}
+                            </li>
+                            ))}
+                        </ul>
+                    )}
+                    </div>
+                </div>
+			</div>
             {/* Local snackbar */}
             <Snackbar
                 message={snackbar.message}

@@ -13,6 +13,10 @@ import { identificationFormSchema} from "@/components/forms/identification/Ident
 import { groups, type TopGroup } from "@/types/groups";
 import type { FormType } from "@/types/groups";
 import type { FormData, UploadPayload } from "@/types/note";
+// import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+// import { getNoteSuggestions } from "@/services/generativeService"
+
+
 
 type snackbarProps = {
   isOpen: boolean;
@@ -115,6 +119,11 @@ export default function TakeNote() {
     }
   };
 
+//   const handleSuggestions = () => {
+//     const suggestions = getNoteSuggestions(formData)
+//     console.log(suggestions)
+// }
+
   return (
     <>
       <section className="card">
@@ -150,15 +159,23 @@ export default function TakeNote() {
 
         {/* Form */}
         {formType && resolvedSchema ? (
-          <IdentificationForm
-            key={formType}
-            schema={resolvedSchema}
-            handleSubmit={handleSubmit}
-            setFormData={setFormData}
-            loading={loading}
-            formData={formData}
-            setSnackbar={setSnackbar}
-          />
+          <>
+            <IdentificationForm
+              key={formType}
+              schema={resolvedSchema}
+              handleSubmit={handleSubmit}
+              setFormData={setFormData}
+              loading={loading}
+              formData={formData}
+              setSnackbar={setSnackbar}
+              type={formType}
+            />
+            {/* <div className="pt-2 justify-items-start">
+              <div className="content-center gap-4 flex flex-row">
+                  <button type="button" className="flex items-center gap-4 suggestions" onClick={handleSuggestions}><h4>Get Suggestions<TipsAndUpdatesIcon /></h4></button>
+              </div>
+            </div> */}
+          </>
         ) : (
           <div><p>Please select a category.</p></div>
         )}

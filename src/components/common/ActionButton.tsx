@@ -9,7 +9,7 @@ interface ActionButtonProps {
 
 const ActionButton: React.FC<ActionButtonProps> = ({ label, loading }) => {
     return (
-        <div className="content-center gap-4 flex flex-row ">
+        <div className="content-center gap-4 flex flex-row">
             {loading ? (
                 <Spinner></Spinner>
             ): ( 

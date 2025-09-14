@@ -41,6 +41,7 @@ export interface IdentificationFormProps {
     formData: FormData;
     loading: boolean;
     setSnackbar: (snackbar: { isOpen: boolean; message: string; type: 'success' | 'error' }) => void;
+    type: string;   
 }
 
 

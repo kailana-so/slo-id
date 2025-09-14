@@ -308,7 +308,6 @@ svg[class*="MuiSvgIcon-root"] {
 	padding: 1rem;
 }
 
-
 .badge-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -443,4 +442,93 @@ svg[class*="MuiSvgIcon-root"] {
   align-items: center;
   justify-content: center;
   gap: 1rem;
+}
+
+.suggestions svg[class*="MuiSvgIcon-root"], .suggestions{
+  color: var(--brown-500);
+  /* border: 1px solid; */
+  border-radius: var(--border-radius);
+  padding: var(--padding);
+  background-color: var(--brown-10);
+}
+
+.drawer-content-wrapper {
+	position: relative;
+	height: 100%;
+}
+
+.drawer-tab-toggle {
+	position: absolute;
+	top: 50%;
+	right: -5.6rem; /* sticks out of drawer */
+	transform: translateY(-50%);
+	z-index: 30;
+	color: var(--green-500);
+	background-color: var(--background);
+	border: 1px solid var(--green-100);
+	border-left: none;
+	border-radius: 0 6px 6px 0;
+	padding: 0.5rem 0.75rem;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+
+.suggestions-content-wrapper {
+	position: relative;
+	height: 100%;
+}
+.suggestions-tab-toggle {
+	position: fixed;
+	top: 55%;
+	right: 0;
+	transform: translateY(-100%);
+	z-index: 1002;
+	color: var(--green-500);
+	background-color: var(--background);
+	border: 1px solid var(--green-100);
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+	padding: 0.5rem 0.75rem;
+	cursor: pointer;
+	transition: right 0.3s ease;
+}
+
+.suggestions-drawer {
+  position: absolute;          
+  top: 0;
+  right: 0;                   
+  left: auto;
+  width: 15rem;
+  height: 75vh;             
+  margin-top: 15vh;
+  background-color: var(--background);
+  z-index: 1001;
+  box-shadow: -6px 0 16px rgba(0,0,0,.08);
+  transition: transform .3s ease;
+  border: 1px solid var(--green-100);
+	border-right: none;
+	border-top-left-radius: 12px;
+	border-bottom-left-radius: 12px;
+}
+
+.suggestions-drawer.closed {
+  transform: translateX(100%);
+}
+
+.suggestions-drawer.open {
+  transform: translateX(0);
+}
+
+/* When drawer is open, move button to left edge of drawer */
+.suggestions-tab-toggle.drawer-open {
+	right: 15rem; 
+}
+
+.suggestions-content {
+	overflow-y: auto;
+	height: 100%;
+	padding: 1rem;
+	position: relative;
+	z-index: 1;
 }
