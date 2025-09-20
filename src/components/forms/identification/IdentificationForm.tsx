@@ -92,7 +92,6 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
         try {
             const userLocation = await getCurrentUserGeolocation();
 
-            console.log(userLocation, "USER LOCATION")
             const [environmentData, nearestILocation] = await Promise.all([
                 getEnvironmentalData(userLocation.latitude, userLocation.longitude),
                 getNearestIdentifiableLocation(userLocation.latitude, userLocation.longitude),

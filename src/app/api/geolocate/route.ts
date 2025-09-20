@@ -6,10 +6,8 @@ export async function POST(
 	req: Request,
 ): Promise<Response> {
 	
-	console.log("DNS default order:", dns.getDefaultResultOrder());
 	const { lat, lng } = await req.json();
-	console.log("lat", lat);
-	console.log("lng", lng);
+
 	if (!lat || !lng) {
 		return new Response(
 			JSON.stringify({ error: "Missing lat/lng" }),
@@ -18,7 +16,6 @@ export async function POST(
 	}
 	try {
 		const url = `${process.env.NOMINATION_API_HOST}?format=jsonv2&lat=${lat}&lon=${lng}`;
-		console.log("url", url);
 		const response = await fetch(url,
 			{
 			headers: {
@@ -26,7 +23,6 @@ export async function POST(
 			}
 		});
 		const data = await response.json();
-		console.log("data", data);
 		const {boundingbox } = data
 		const {road, town, city, municipality, state, postcode, country_code } = data.address
 		if (!city && !municipality) {

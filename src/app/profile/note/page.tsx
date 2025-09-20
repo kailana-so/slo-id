@@ -119,11 +119,6 @@ export default function TakeNote() {
     }
   };
 
-//   const handleSuggestions = () => {
-//     const suggestions = getNoteSuggestions(formData)
-//     console.log(suggestions)
-// }
-
   return (
     <>
       <section className="card">
