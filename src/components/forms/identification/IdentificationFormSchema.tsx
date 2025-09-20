@@ -69,6 +69,69 @@ const field = {
     name: "individualStatus", label: "Individual Status", type: "select", required: false,
     options: [{ name: "Alive" }, { name: "Dead" }, { name: "Fossil" }, { name: "Evidence only" }],
   }),
+
+  totalSize: (required = true): IdentificationFormField => ({
+    name: "totalSize",
+    label: "Total Size (cm)",
+    type: "select",
+    required,
+    options: [
+      { name: "<1" }, { name: "1-5" }, { name: "5-10" }, { name: "10-20" },
+      { name: "20-30" }, { name: "30-40" }, { name: "40-50" },
+      { name: "50-100" }, { name: "100-150" }, { name: ">150" },
+    ],
+  }),
+
+  // Optional label override so we can reuse for fungus
+  leafShape: (label = "Leaf Shape"): IdentificationFormField => ({
+    name: "leafShape",
+    label,
+    type: "select",
+    required: false,
+    options: [
+      { name: "Linear" }, { name: "Needle-like" }, { name: "Lanceolate" },
+      { name: "Elliptic" }, { name: "Ovate" }, { name: "Cordate" },
+      { name: "Scale-like" }, { name: "Triangular" }
+    ],
+  }),
+  leafSize: (required = true): IdentificationFormField => ({
+    name: "leafSize",
+    label: "Leaf Size (cm)",
+    type: "select",
+    required,
+    options: [
+      { name: "<1" }, { name: "1-5" }, { name: "5-10" }, { name: "10-20" },
+      { name: "20-30" }, { name: "30-40" }, { name: "40-50" },
+      { name: "50-100" }, { name: "100-150" }, { name: ">150" },
+    ],
+  }),
+
+  // Optional label override so we can reuse for fungus as “Fruiting Body Shape”
+  flowerShape: (label = "Flower Shape"): IdentificationFormField => ({
+    name: "flowerShape",
+    label,
+    type: "select",
+    required: false,
+    conditional: "isFlowering",
+    options: [
+      { name: "Daisy-like" }, { name: "Star" }, { name: "Tube" },
+      { name: "Bell" }, { name: "Brush" }, { name: "Pea" },
+      { name: "Spike" }, { name: "Umbel" }
+    ],
+  }),
+
+  flowerSize: (): IdentificationFormField => ({
+    name: "flowerSize",
+    label: "Flower Size (cm)",
+    type: "select",
+    required: false,
+    conditional: "isFlowering",
+    options: [
+      { name: "<1" }, { name: "1-5" }, { name: "5-10" }, { name: "10-20" },
+      { name: "20-30" }, { name: "30-40" }, { name: "40-50" },
+      { name: "50-100" }, { name: "100-150" }, { name: ">150" },
+    ],
+  }),
 };
 
 // ── Schema Groups ────────────────────────────────────────────────────────────
@@ -79,7 +142,7 @@ const schemas = {
     arthropod: () => [...schemas.base.animal(), field.lifeStage.arthropod(), field.status()],
     vertebrate: () => [...schemas.base.animal(), field.lifeStage.vertebrate(), field.status()],
     arachnid: () => [...schemas.base.animal(), field.lifeStage.arachnid(), field.status()],
-    plant: () => [field.size(), field.color(), field.habitat(), field.status()],
+    plant: () => [],
     evidence: () => [field.size(), field.habitat()],
   },
 
@@ -130,12 +193,16 @@ const schemas = {
   organism: {
     plant: () => [
       ...schemas.base.plant(),
-      field.shape(),
+      field.totalSize(),       
+      field.leafShape("Leaf Shape"),
+      field.leafSize(),
       { 
         name: "isFlowering", label: "Flowering?", type: "checkbox", required: false },
       { 
         name: "flowerColour", label: "Flower Colour", type: "color-buttons", required: false,
         conditional: "isFlowering", options: field.color().options || [] },
+      field.flowerShape(),
+      field.flowerSize(),
       { 
         name: "hasFruits", label: "Has Fruits?", type: "checkbox", required: false },
       { 
@@ -144,13 +211,21 @@ const schemas = {
       { 
         name: "fruitDescription", label: "Fruit Shape", type: "select", required: false,
         conditional: "hasFruits", options: field.shape().options || [] },
+      field.habitat()
     ],
-    fungus: () => [...schemas.base.plant(), field.shape()],
+    fungus: () => [
+      ...schemas.base.plant(),
+      field.totalSize(),                    // replaces field.size()
+      field.leafShape("Cap Shape"),         // same field, clearer label for fungi
+      field.flowerShape("Fruiting Body Shape"), 
+      field.habitat()
+    ],
   },
 
   // Geology schemas
   geology: () => [
-    field.size(), field.color(),
+    field.size(), 
+    field.color(),
     ...field.pattern(),
   ],
 

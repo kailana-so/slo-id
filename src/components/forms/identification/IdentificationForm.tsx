@@ -187,6 +187,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
         [formData, schema]
       );
 
+
     const handleSuggestions = async (data: typeof formData) => {
         setSuggestionsLoading(true);
         
@@ -195,7 +196,12 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
             setSuggestionDetails(Array.isArray(suggestions) ? suggestions : []);
         } catch (err) {
             console.error("Failed to get suggestions:", err);
-            // setSuggestionDetails([]);
+            setSuggestionDetails([{
+                name: "sorry no suggestions found",
+                native: false,
+                characteristics: [],
+                key_details: [],
+            }]);
         } finally {
             setSuggestionsLoading(false);
             setDrawerOpen(true); 

@@ -72,25 +72,23 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-      - name: Probe SSH & upload bundle (same agent/session)
-        shell: bash
+      - name: Upload bundle to droplet
         env:
           SSH_PORT: ${{ secrets.DROPLET_SSH_PORT }}
         run: |
           set -euo pipefail
           PORT_FLAG=""
           if [[ -n "${SSH_PORT:-}" ]]; then PORT_FLAG="-P ${SSH_PORT}"; fi
-
-          echo "Agent sock: ${SSH_AUTH_SOCK:-<missing>}"
-          ssh-add -l
-          # Prove auth with exact target (same user/host/port as scp)
-          ssh -vvv -o StrictHostKeyChecking=no ${PORT_FLAG} \
+      
+          # Optional: quick non-verbose connectivity check (kept but quiet)
+          ssh -o StrictHostKeyChecking=no ${PORT_FLAG} \
             "${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}" true
-
+      
           # Upload bundle
-          scp -vvv -o StrictHostKeyChecking=no ${PORT_FLAG} \
+          scp -o StrictHostKeyChecking=no ${PORT_FLAG} \
             build.tgz \
             "${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/tmp/slo-id-build.tgz"
+      
 
       - name: SSH – deploy artifacts & reload
         run: |

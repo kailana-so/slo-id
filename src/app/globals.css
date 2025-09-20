@@ -457,20 +457,20 @@ svg[class*="MuiSvgIcon-root"] {
 	height: 100%;
 }
 
-.drawer-tab-toggle {
+.suggestions-tab-toggle {
 	position: absolute;
 	top: 50%;
-	right: -5.6rem; /* sticks out of drawer */
+	right: 0rem;
 	transform: translateY(-50%);
-	z-index: 30;
 	color: var(--green-500);
 	background-color: var(--background);
 	border: 1px solid var(--green-100);
-	border-left: none;
-	border-radius: 0 6px 6px 0;
 	padding: 0.5rem 0.75rem;
 	cursor: pointer;
-	transition: background-color 0.2s ease;
+	z-index: 1003 !important;
+  border-right: none !important;
+  border-radius: 6px 0 0 6px !important;
+	transition: right 0.3s ease !important;
 }
 
 
@@ -478,32 +478,16 @@ svg[class*="MuiSvgIcon-root"] {
 	position: relative;
 	height: 100%;
 }
-.suggestions-tab-toggle {
-	position: fixed;
-	top: 55%;
-	right: 0;
-	transform: translateY(-100%);
-	z-index: 1002;
-	color: var(--green-500);
-	background-color: var(--background);
-	border: 1px solid var(--green-100);
-  border-right: none;
-  border-radius: 6px 0 0 6px;
-	padding: 0.5rem 0.75rem;
-	cursor: pointer;
-	transition: right 0.3s ease;
-}
 
 .suggestions-drawer {
-  position: absolute;          
+  position: fixed;          
   top: 0;
   right: 0;                   
   left: auto;
   width: 15rem;
-  height: 75vh;             
-  margin-top: 15vh;
+  height: 100vh;             
   background-color: var(--background);
-  z-index: 1001;
+  z-index: 1003;
   box-shadow: -6px 0 16px rgba(0,0,0,.08);
   transition: transform .3s ease;
   border: 1px solid var(--green-100);
