@@ -58,7 +58,9 @@ export function NoteExtendedDetails({
 					<button onClick={() => handleIdentify(note.id)} className="ml-auto">
 						<div className="flex items-end">
 							<h4>Identify</h4>
-							<NavigateNextIcon></NavigateNextIcon>
+							<div className="ml-4">
+								<NavigateNextIcon></NavigateNextIcon>
+							</div>
 						</div>
 					</button>
 				)}

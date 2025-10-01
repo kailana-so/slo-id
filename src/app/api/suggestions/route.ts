@@ -49,7 +49,7 @@ export async function POST(req: Request): Promise<Response> {
       },
       body: JSON.stringify(body),
     });
-
+ 
     const rawText = await resp.text();
     if (!resp.ok) {
       throw new Error(`DeepSeek ${resp.status}: ${rawText}`);
@@ -65,6 +65,7 @@ export async function POST(req: Request): Promise<Response> {
       headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
     });
   } catch (err) {
+    console.log("Suggestions error:", err)
     return ErrorResponse("Failed to fetch suggestion for note", err, 500);
   }
 }

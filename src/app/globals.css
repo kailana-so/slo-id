@@ -222,7 +222,21 @@ body {
 }
 
 svg[class*="MuiSvgIcon-root"] {
-  color: var(--green-500);
+  color: var(--brown-500);
+  border-radius: 1rem;
+  font-size: 26px;
+  margin: 15 15 0 15;
+  padding: 4px;
+  background-color: var(--brown-10)
+}
+
+.icon svg[class*="MuiSvgIcon-root"] {
+  color: var(--brown-500);
+  border-radius: 1rem;
+  font-size: 32px;
+  margin: 15 15 0 15;
+  padding: 4 4 0 4;
+  background-color: var(--brown-10)
 }
 
 .tooltip {

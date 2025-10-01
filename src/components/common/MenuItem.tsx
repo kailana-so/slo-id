@@ -25,13 +25,13 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, item, handler }) => {
 
   const handleItemRender = (item: string) => {
     if(item === "Log Out") {
-        return <LogoutIcon className="ml-1 mb-1"/>
+        return <div className="icon"><LogoutIcon className="ml-1"/></div>
     }
     if(item === "Profile") {
-        return <PersonOutlineIcon className="ml-1 mb-1"/>
+        return <div className="icon"><PersonOutlineIcon className="ml-1"/></div>
     }
     if(item === "Map") {
-      return <MapIcon className="ml-1 mb-1"/>
+      return <div className="icon"><MapIcon className="ml-1"/></div>
   }
     return item
   }
