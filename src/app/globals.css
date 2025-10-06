@@ -432,22 +432,17 @@ svg[class*="MuiSvgIcon-root"] {
 
 .image-modal-close {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 0.4rem;
+  right: 0.4rem;
   z-index: 10;
-  background-color: var(--brown-50);
   border-radius: 9999px;
-  width: 2rem;
-  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgb(31, 41, 55);
 }
 
 .image-modal-close:hover {
-  background-color: var(--brown-100);
-  transform: translateY(1px);
+  background-color: var(--brown-50);
 }
 
 .image-modal-loading {

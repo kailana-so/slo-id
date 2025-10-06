@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useFullImage } from "@/hooks/useFullImagesCache";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface ImageModalProps {
   isOpen: boolean;
@@ -35,8 +36,7 @@ export default function ImageModal({
   return (
     <div className="image-modal" onClick={onClose}>
       <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button onClick={onClose} className="image-modal-close">×</button>
-
+        <CloseIcon onClick={onClose} className="image-modal-close"/>
         <div className="image-modal-card relative">
           {showSpinner && (
             <div className="absolute inset-0 grid place-items-center z-10 pointer-events-none">
