@@ -135,6 +135,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                 required={field.required}
                 value={safeValue(value)}
                 onChange={handleChange}
+                className="max-w-40"
             >
                 <option value=""></option>
                 {field.options?.map((option) => (

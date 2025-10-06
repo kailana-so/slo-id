@@ -89,9 +89,11 @@ const field = {
     type: "select",
     required: false,
     options: [
-      { name: "Linear" }, { name: "Needle-like" }, { name: "Lanceolate" },
-      { name: "Elliptic" }, { name: "Ovate" }, { name: "Cordate" },
-      { name: "Scale-like" }, { name: "Triangular" }
+      { name: "Acicular (needle-like)" }, { name: "Cuneate (wedge-shaped)" }, { name: "Elliptic (oval)" },
+      { name: "Filiform (thread-like)" }, { name: "Flabellate (fan-shaped)" }, { name: "Lanceolate (spear-shaped)" },
+      { name: "Linear (narrow parallel sides)" }, { name: "Oblong (rectangular)" }, { name: "Obovate (inverted egg)" },
+      { name: "Orbicular (circular)" }, { name: "Ovate (egg-shaped)" }, { name: "Reniform (kidney-shaped)" },
+      { name: "Spathulate (spoon-shaped)" }, { name: "Subulate (narrow tapering point)" }
     ],
   }),
   leafSize: (required = true): IdentificationFormField => ({
@@ -106,7 +108,7 @@ const field = {
     ],
   }),
 
-  // Optional label override so we can reuse for fungus as “Fruiting Body Shape”
+  // Optional label override so we can reuse for fungus as "Fruiting Body Shape"
   flowerShape: (label = "Flower Shape"): IdentificationFormField => ({
     name: "flowerShape",
     label,
@@ -114,9 +116,14 @@ const field = {
     required: false,
     conditional: "isFlowering",
     options: [
-      { name: "Daisy-like" }, { name: "Star" }, { name: "Tube" },
-      { name: "Bell" }, { name: "Brush" }, { name: "Pea" },
-      { name: "Spike" }, { name: "Umbel" }
+      { name: "Actinomorphic (radial symmetry)" }, { name: "Zygomorphic (bilateral symmetry)" },
+      { name: "Campanulate (bell-shaped)" }, { name: "Cyanthiform (cup-shaped)" },
+      { name: "Crateriform (bowl-shaped)" }, { name: "Coronate (crown-like)" },
+      { name: "Urceolate (urn-shaped)" }, { name: "Tubulate (tube-shaped)" },
+      { name: "Stellate (star-shaped)" }, { name: "Salverform (trumpet-shaped)" },
+      { name: "Cruciform (cross-shaped)" }, { name: "Calceolate (slipper-shaped)" },
+      { name: "Papilionaceous (pea-like)" }, { name: "Ligulate (strap-shaped)" },
+      { name: "Tubular (long tube)" }, { name: "Rotate (wheel-shaped)" }
     ],
   }),
 
@@ -204,13 +211,13 @@ const schemas = {
       field.flowerShape(),
       field.flowerSize(),
       { 
-        name: "hasFruits", label: "Has Fruits?", type: "checkbox", required: false },
+        name: "isFruiting", label: "Fruiting?", type: "checkbox", required: false },
       { 
         name: "fruitColour", label: "Fruit Colour", type: "color-buttons", required: false,
-        conditional: "hasFruits", options: field.color().options || [] },
+        conditional: "isFruiting", options: field.color().options || [] },
       { 
         name: "fruitDescription", label: "Fruit Shape", type: "select", required: false,
-        conditional: "hasFruits", options: field.shape().options || [] },
+        conditional: "isFruiting", options: field.shape().options || [] },
       field.habitat()
     ],
     fungus: () => [

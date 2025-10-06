@@ -54,10 +54,11 @@ export async function POST(req: Request): Promise<Response> {
     if (!resp.ok) {
       throw new Error(`DeepSeek ${resp.status}: ${rawText}`);
     }
-
+    console.log("DeepSeek response:", rawText);
     const envelope = JSON.parse(rawText) as DSChatResponse;
+    console.log("DeepSeek envelope:", envelope);
     const content = envelope.choices?.[0]?.message?.content;
-
+    console.log("DeepSeek content:", content);
     const payload = toPayload(content);
 
     return new Response(JSON.stringify(payload), {
