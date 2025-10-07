@@ -18,7 +18,7 @@ module.exports = {
           WEATHER_API_KEY: process.env.WEATHER_API_KEY,
           WEATHER_API_HOST: process.env.WEATHER_API_HOST,
           DS_API_KEY: process.env.DS_API_KEY,
-          DS_HOST: process.env.DS_HOST,
+          DS_CHAT_HOST: process.env.DS_CHAT_HOST,
         },
         log_date_format: "YYYY-MM-DD HH:mm:ss",
       },
