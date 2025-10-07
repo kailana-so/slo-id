@@ -46,6 +46,8 @@ jobs:
           NEXT_PUBLIC_ALA_OCCURANCE_API: ${{ secrets.NEXT_PUBLIC_ALA_OCCURANCE_API }}
           WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
           WEATHER_API_HOST: ${{ secrets.WEATHER_API_HOST }}
+          DS_API_KEY: ${{ secrets.DS_API_KEY }}
+          DS_CHAT_HOST: ${{ secrets.DS_CHAT_HOST }}
         run: NODE_ENV=production yarn build
 
       - name: Sanity check build
@@ -79,10 +81,6 @@ jobs:
           set -euo pipefail
           PORT_FLAG=""
           if [[ -n "${SSH_PORT:-}" ]]; then PORT_FLAG="-P ${SSH_PORT}"; fi
-      
-          # Optional: quick non-verbose connectivity check (kept but quiet)
-          ssh -o StrictHostKeyChecking=no ${PORT_FLAG} \
-            "${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}" true
       
           # Upload bundle
           scp -o StrictHostKeyChecking=no ${PORT_FLAG} \
@@ -126,6 +124,8 @@ jobs:
           WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
           WEATHER_API_HOST=${{ secrets.WEATHER_API_HOST }}
           EMAIL_SIGNER=${{ secrets.EMAIL_SIGNER }}
+          DS_API_KEY=${{ secrets.DS_API_KEY }}
+          DS_CHAT_HOST=${{ secrets.DS_CHAT_HOST }}
           ENV
 
           yarn install --frozen-lockfile
