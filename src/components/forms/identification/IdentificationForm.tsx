@@ -272,13 +272,13 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                     {Array.isArray(suggestionDetails) && suggestionDetails.length > 0 
                     && (
                         <ul className="space-y-3">
-                            {suggestionDetails.map((s, i) => (
-                                <li key={`${s.name}-${i}`} className="rounded border p-3">
-                                <div className="font-medium">{s.name}</div>
-                                <div className="text-xs opacity-70">{s.native ? "Native" : "Introduced"}</div>
-                                {s.key_details?.length ? (
+                            {suggestionDetails.map((suggestion, idx) => (
+                                <li key={`${suggestion.name}-${idx}`} className="rounded border p-3">
+                                <div className="font-medium">{suggestion.name}</div>
+                                <div className="text-xs opacity-70">{suggestion.native ? "Native" : "Introduced"}</div>
+                                {suggestion.key_details?.length ? (
                                     <div className="mt-2 list-disc">
-                                        {s.key_details.map((k, j) => <div key={j}>{k}</div>)}
+                                        {suggestion.key_details.map((keyDetail, idx) => <div key={idx}>{keyDetail}</div>)}
                                     </div>
                                 ) : null}
                             </li>

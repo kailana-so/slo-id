@@ -165,11 +165,6 @@ export default function TakeNote() {
               setSnackbar={setSnackbar}
               type={formType}
             />
-            {/* <div className="pt-2 justify-items-start">
-              <div className="content-center gap-4 flex flex-row">
-                  <button type="button" className="flex items-center gap-4 suggestions" onClick={handleSuggestions}><h4>Get Suggestions<TipsAndUpdatesIcon /></h4></button>
-              </div>
-            </div> */}
           </>
         ) : (
           <div><p>Please select a category.</p></div>
