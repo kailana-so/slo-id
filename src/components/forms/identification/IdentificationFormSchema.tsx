@@ -1,6 +1,10 @@
 import type { IdentificationFormField } from "@/types/form";
 import type { FormType } from "@/types/groups";
 
+
+const noteBox =  { 
+  name: "identificationRemarks", label: "Identification Notes", type: "textarea", required: false 
+}
 // ── Field Builders ───────────────────────────────────────────────────────────
 const field = {
   size: (required = true): IdentificationFormField => ({
@@ -241,8 +245,14 @@ const schemas = {
 };
 
 // ── Main Schema Export ───────────────────────────────────────────────────────
-export const identificationFormSchema: Record<FormType, IdentificationFormField[]> = {
-  // Animals
+// helper
+const withNotes = (schema: IdentificationFormField[]): IdentificationFormField[] => [
+  ...schema,
+  noteBox,
+];
+
+// define base mapping without notes
+const baseSchemas: Record<FormType, IdentificationFormField[]> = {
   insect: schemas.animal.insect(),
   arachnid: schemas.animal.arachnid(),
   bird: schemas.animal.bird(),
@@ -254,23 +264,60 @@ export const identificationFormSchema: Record<FormType, IdentificationFormField[
   crustacean: schemas.animal.crustacean(),
   otherInvertebrate: schemas.animal.otherInvertebrate(),
 
-  // Plants & Fungi
   plant: schemas.organism.plant(),
   fungus: schemas.organism.fungus(),
 
-  // Geology
   rock: schemas.geology(),
   mineral: schemas.geology(),
   fossil: schemas.geology(),
   soil: schemas.geology(),
   landform: schemas.geology(),
 
-  // Evidence
-  "Tracks": schemas.evidence(),
-  "Scat": schemas.evidence(),
-  "Feather": schemas.evidence(),
-  "Shell": schemas.evidence(),
-  "Web": schemas.evidence(),
-  "Nest": schemas.evidence(),
-  "Remains": schemas.evidence(),
-} satisfies Record<string, IdentificationFormField[]>;
+  Tracks: schemas.evidence(),
+  Scat: schemas.evidence(),
+  Feather: schemas.evidence(),
+  Shell: schemas.evidence(),
+  Web: schemas.evidence(),
+  Nest: schemas.evidence(),
+  Remains: schemas.evidence(),
+};
+
+// auto-append noteBox
+export const identificationFormSchema: Record<FormType, IdentificationFormField[]> =
+  Object.fromEntries(
+    Object.entries(baseSchemas).map(([key, schema]) => [key, withNotes(schema)])
+  ) as Record<FormType, IdentificationFormField[]>;
+
+
+export const dwcUserObservationSchema: IdentificationFormField[] = [
+  { name: "scientificName", label: "Sci. Name", type: "text", required: true },
+  { name: "commonName", label: "Name", type: "text", required: true },
+  { name: "phylum", label: "Phylum", type: "text", required: false },
+  { name: "class", label: "Class", type: "text", required: false },
+  { name: "order", label: "Order", type: "text", required: false },
+  { name: "family", label: "Family", type: "text", required: false },
+  { name: "genus", label: "Genus", type: "text", required: false },
+  {
+    name: "basisOfRecord",
+    label: "Basis of Record",
+    type: "select",
+    required: false,
+    options: [
+      { name: "Human Observation" },
+      { name: "Machine Observation" },
+      { name: "Preserved Specimen" },
+      { name: "Fossil Specimen" },
+      { name: "Material Sample" },
+    ],
+  },
+    { name: "identificationRemarks", label: "Identification Notes", type: "textarea", required: false, isEditable: true },
+];
+
+// const dwcAdditionalFields = [
+//   { name: "kingdom", label: "Kingdom", type: "text", required: false },
+//   { name: "infraspecificEpithet", label: "Subspecies (if any)", type: "text", required: false },
+//   { name: "identifiedBy", label: "Identified By", type: "text", required: false },
+//   { name: "dateIdentified", label: "Date Identified", type: "date", required: false },
+//   { name: "scientificNameAuthorship", label: "Authority", type: "text", required: false },
+//   { name: "specificEpithet", label: "Species", type: "text", required: false },
+// ]

@@ -32,6 +32,7 @@ export interface IdentificationFormField {
     required: boolean;
     conditional?: string;
     options?: OptionField[]; 
+    isEditable?: boolean;
 }
 
 export interface IdentificationFormProps {

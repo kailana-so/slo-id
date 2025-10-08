@@ -397,7 +397,7 @@ svg[class*="MuiSvgIcon-root"] {
   color: rgb(107, 114, 128);
 }
 
-.image-modal {
+.generic-modal {
   position: fixed;
   inset: 0;
   z-index: 50;
@@ -407,12 +407,12 @@ svg[class*="MuiSvgIcon-root"] {
   background-color:var(--modal-opacity-bg);
 }
 
-.image-modal-content {
+.generic-modal-content {
   position: relative;
   /* padding: 1%; */
 }
 
-.image-modal-card {
+.generic-modal-card {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -422,15 +422,22 @@ svg[class*="MuiSvgIcon-root"] {
   border-radius: var(--border-radius);
 }
 
-.image-modal-image {
+.generic-modal-image {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   border-radius: var(--border-radius);
-  /* margin: 1%;  */
 }
 
-.image-modal-close {
+.generic-modal-map {
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: var(--border-radius);
+  z-index: 1;
+}
+
+
+.generic-modal-close {
   position: absolute;
   top: 0.4rem;
   right: 0.4rem;
@@ -441,11 +448,11 @@ svg[class*="MuiSvgIcon-root"] {
   justify-content: center;
 }
 
-.image-modal-close:hover {
+.generic-modal-close:hover {
   background-color: var(--brown-50);
 }
 
-.image-modal-loading {
+.generic-modal-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -476,7 +483,7 @@ svg[class*="MuiSvgIcon-root"] {
 	border: 1px solid var(--green-100);
 	padding: 0.5rem 0.75rem;
 	cursor: pointer;
-	z-index: 1003 !important;
+	z-index: 100 !important;
   border-right: none !important;
   border-radius: 6px 0 0 6px !important;
 	transition: right 0.3s ease !important;
@@ -496,7 +503,7 @@ svg[class*="MuiSvgIcon-root"] {
   width: 15rem;
   height: 100vh;             
   background-color: var(--background);
-  z-index: 1003;
+  z-index: 200;
   box-shadow: -6px 0 16px rgba(0,0,0,.08);
   transition: transform .3s ease;
   border: 1px solid var(--green-100);
@@ -524,4 +531,9 @@ svg[class*="MuiSvgIcon-root"] {
 	padding: 1rem;
 	position: relative;
 	z-index: 1;
+}
+
+.text-box {
+  border: 1px solid black;
+  border-radius: var(--border-radius);
 }

@@ -19,7 +19,7 @@ export default function BaseMap({ onMapReady, initialLat, initialLng }: BaseMapP
 	}, []);
 
 	useEffect(() => {
-		if (!isClient) return;
+		if (!isClient || typeof window === 'undefined') return;
 		
 		const init = async () => {
 		

@@ -2,10 +2,8 @@ import React, {useMemo, useState} from "react";
 import ActionButton from "@/components/common/ActionButton";
 import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 import {
-  IdentificationFormField,
   IdentificationFormProps,
 } from "@/types/form";
-import { safeValue } from "@/types/typeGuards";
 import dynamic from "next/dynamic";
 import { getEnvironmentalData } from "@/services/environmentService";
 import { getCurrentUserGeolocation, getNearestIdentifiableLocation } from "@/services/locationService";
@@ -14,6 +12,7 @@ import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import { getNoteSuggestions } from "@/services/generativeService";
 import { Suggestion } from "@/types/suggestions";
 import Spinner from "@/components/common/Spinner";
+import {renderFieldHelper} from "@/components/forms/identification/IdentificationForm.utils"
 
 const ImageSelector = dynamic(() => import('@/components/ImageSelector'), {
     ssr: false,
@@ -40,7 +39,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
 
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
     ) => {
         const { name, value, type } = e.target;
 
@@ -111,72 +110,6 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
         }
     };
 
-    const renderField = (field: IdentificationFormField) => {
-        const value = formData[field.name];
-
-        switch (field.type) {
-        case "checkbox":
-            return (
-            <label className="switch ml-4">
-                <input
-                type="checkbox"
-                name={field.name}
-                checked={!!value}
-                onChange={handleChange}
-                />
-                <span className="slider" />
-            </label>
-            );
-
-        case "select":
-            return (
-            <select
-                name={field.name}
-                required={field.required}
-                value={safeValue(value)}
-                onChange={handleChange}
-                className="max-w-40"
-            >
-                <option value=""></option>
-                {field.options?.map((option) => (
-                <option key={option.name} value={option.name}>
-                    {option.name}
-                </option>
-                ))}
-            </select>
-            );
-
-        case "color-buttons":
-            return (
-            <div>
-                {field.options?.map((color) => (
-                <button
-                    key={color.name}
-                    type="button"
-                    className={`color-box ${
-                        value === color.name ? "ring-highlight" : ""
-                    }`}
-                    style={{ backgroundColor: color.hex }}
-                    onClick={() => handleColorSelection(field.name, color.name)}
-                />
-                ))}
-            </div>
-            );
-
-        default:
-            return (
-            <input
-                className="ml-3"
-                type={field.type}
-                name={field.name}
-                required={field.required}
-                value={safeValue(value)}
-                onChange={handleChange}
-            />
-            );
-        }
-    };
-
     const canSuggest = useMemo(() =>
         schema.every(f => {
           if (!f.required) return true;
@@ -240,7 +173,7 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                     <div key={field.name} className={field.conditional ? "ml-4" : ""}>
                         <label className="block mb-2">
                         {field.label}
-                        {renderField(field)}
+                        {renderFieldHelper(field, formData, handleColorSelection, handleChange)}
                         </label>
                     </div>
                     ))}

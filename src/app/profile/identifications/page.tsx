@@ -9,6 +9,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Image from "next/image";
 import { SightingStatus } from "@/lib/db/dbHelpers";
 import DrawIcon from '@mui/icons-material/Draw';
+import { renderValue } from "@/components/NoteDetails.utils";
+import { identificationFormSchema } from "@/components/forms/identification/IdentificationFormSchema";
+import { IdentificationFormField } from "@/types/form";
 
 export default function Identify() {
     const { userData } = useProfile();
@@ -41,12 +44,8 @@ export default function Identify() {
 
     return (
         <section>
-            <div className="mb-4">
-                <h4> Use tools to accurately identify your notes.</h4>
-                <p> In keeping with the slow method, 1 active drafts limit.</p>
-            </div>
             <div key='view-ids'>
-            {allNotes.map((note) => (
+            {allNotes.length > 0 ? allNotes.map((note) => (
                 <div key={note.id} className="card">
                 <section 
                     className="aligned content-center"
@@ -55,10 +54,10 @@ export default function Identify() {
                     {note.imageId && fullImages[note.imageId] && (
                         <Image
                             src={fullImages[note.imageId]}
-                            width={100}
-                            height={100}
+                            width={200}
+                            height={200}
                             alt={`picture of ${note.name}`}
-                            className="object-cover rounded-sm" 
+                            className="object-cover rounded-sm pr-4" 
                         />
                     )}
                     <div>
@@ -69,8 +68,19 @@ export default function Identify() {
                         </p>
                     </div>
                 </section>
+                {/* Render note details */}
+                {note?.type && identificationFormSchema[note.type].map((field: IdentificationFormField) => (
+                    <p key={field.name}>
+                        <strong>{field.label}:</strong> {field.name ? renderValue(field.name, note[field.name]) : "No Value"}
+					</p>
+				))}
                 </div>
-            ))}
+            )) : (
+                <div className="mb-4">
+                    <h4> You dont have any Identifications yet</h4>
+                    <p>Start by taking a note and learning about the species to create a comprehensive identification</p>
+                </div>
+            )}
             {hasNextPage && validFetchMore && (
 				<div className="pt-4 flex justify-center">
 					<button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>

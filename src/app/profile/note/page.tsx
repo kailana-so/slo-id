@@ -13,10 +13,6 @@ import { identificationFormSchema} from "@/components/forms/identification/Ident
 import { groups, type TopGroup } from "@/types/groups";
 import type { FormType } from "@/types/groups";
 import type { FormData, UploadPayload } from "@/types/note";
-// import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
-// import { getNoteSuggestions } from "@/services/generativeService"
-
-
 
 type snackbarProps = {
   isOpen: boolean;

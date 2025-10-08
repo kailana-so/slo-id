@@ -46,13 +46,14 @@ const addSighting = async (
     }
 };
 
-const updateSighting = async (
-    noteId: string
+const updateSightingStatus = async (
+    noteId: string,
+    status: string
 ) => {
 
     const updates = {
         [DocumentTimestamp.UPDATED_AT]: Date.now(),
-        [SightingFields.Status]: SightingStatus.DRAFT
+        [SightingFields.Status]: status
     }
     try {
         await updateDoc(sightingsDoc(noteId), updates);
@@ -66,12 +67,12 @@ const getSightings = async (
     lastDoc?: QueryDocumentSnapshot
 ): Promise<GetNotesResult> => {
     
-    const sightingType = SightingStatus.SIGHTING
+    const sightingType = [SightingStatus.SIGHTING, SightingStatus.DRAFT]
 
     try {
         const baseConstraints: QueryConstraint[] = [
             where(SightingFields.UserId, "==", userId),
-            where(SightingFields.Status, "==", sightingType),
+            where(SightingFields.Status, "in", sightingType),
             orderBy(SightingFields.CreatedAt, "desc"),
         ];
         
@@ -163,7 +164,7 @@ const getIdentifications = async (
     lastDoc?: QueryDocumentSnapshot
 ): Promise<GetIdentificationsResult> => {
 
-    const idTypes = [SightingStatus.DRAFT, SightingStatus.IDENTIFICATION]
+    const idTypes = [SightingStatus.IDENTIFICATION]
     
     try {
         const baseConstraints: QueryConstraint[] = [
@@ -245,7 +246,7 @@ export {
     addSighting,
     getSightings,
     getUserSightingsCoords,
-    updateSighting,
+    updateSightingStatus,
     getIdentifications,
     getStatusCount
 };

@@ -34,10 +34,10 @@ export default function ImageModal({
   const showSpinner = isFetching || !decoded || !src;
 
   return (
-    <div className="image-modal" onClick={onClose}>
-      <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
-        <CloseIcon onClick={onClose} className="image-modal-close"/>
-        <div className="image-modal-card relative">
+    <div className="generic-modal" onClick={onClose}>
+      <div className="generic-modal-content" onClick={(e) => e.stopPropagation()}>
+        <CloseIcon onClick={onClose} className="generic-modal-close"/>
+        <div className="generic-modal-card relative">
           {showSpinner && (
             <div className="absolute inset-0 grid place-items-center z-10 pointer-events-none">
               <div className="spinner" />
@@ -54,7 +54,7 @@ export default function ImageModal({
               height={500}
               onLoad={() => setDecoded(true)}
               onLoadingComplete={() => setDecoded(true)}
-              className={`image-modal-image transition-opacity ${decoded ? "opacity-100" : "opacity-0"}`}
+              className={`generic-modal-image transition-opacity ${decoded ? "opacity-100" : "opacity-0"}`}
             />
           )}
 
@@ -67,7 +67,7 @@ export default function ImageModal({
               width={500}
               height={500}
               onLoad={() => setDecoded(true)}
-              className={`image-modal-image transition-opacity ${decoded ? "opacity-100" : "opacity-0"}`}
+              className={`generic-modal-image transition-opacity ${decoded ? "opacity-100" : "opacity-0"}`}
             />
           )}
         </div>
