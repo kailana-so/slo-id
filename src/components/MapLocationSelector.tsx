@@ -4,8 +4,12 @@ import type { Map, Marker, LeafletMouseEvent, Icon } from "leaflet";
 import L from "leaflet";
 import BaseMap from "@/components/BaseMap"; // adjust import path
 
-export default function MapLocationSelector() {
-  const [selected, setSelected] = useState<{ lat: number; lng: number } | null>(null);
+interface MapLocationSelectorProps {
+  location: { lat: number; lng: number } | null;
+  setLocation: (location: { lat: number; lng: number } | null) => void;
+}
+
+export default function MapLocationSelector({ location, setLocation }: MapLocationSelectorProps) {
   const [icon, setIcon] = useState<Icon | null>(null);
 
   useEffect(() => {
@@ -24,7 +28,7 @@ export default function MapLocationSelector() {
 
     map.on("click", (e: LeafletMouseEvent) => {
       const { lat, lng } = e.latlng;
-      setSelected({ lat, lng });
+      setLocation({ lat, lng });
 
       // remove previous marker
       if (marker) map.removeLayer(marker);
@@ -41,10 +45,10 @@ export default function MapLocationSelector() {
   return (
     <div style={{ width: "100vw", margin: 2}} className="generic-modal-map">
       <BaseMap onMapReady={handleMapReady} />
-      {selected && (
+      {location && (
         <div className="pl-4 mb-2">
           <h4>
-            <strong>{selected.lat.toFixed(5)}, {selected.lng.toFixed(5)}</strong> 
+            <strong>{location.lat.toFixed(5)}, {location.lng.toFixed(5)}</strong> 
           </h4>
         </div>
       )}

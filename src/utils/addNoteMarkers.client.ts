@@ -13,14 +13,18 @@ export const addNoteMarkers = async (map: L.Map, notes: MapPin[]) => {
 	notes.forEach(note => {
 		if (typeof note.latitude !== "number" || typeof note.longitude !== "number") return;
 
+		const popupContent = `
+			<div>
+				${note.thumbnailUrl ? `<img src="${note.thumbnailUrl}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;" />` : ''}
+				<div><strong>${note.type}</strong></div>
+				<div>${note.name || "Unnamed"}</div>
+				<div style="font-size: 12px; color: #666;">${format(note.createdAt, "dd MMM yyyy")}</div>
+			</div>
+		`;
+
 		L.marker([note.latitude, note.longitude], { icon })
 			.addTo(map)
-			.bindPopup(`
-				${note.type}
-				<br/>
-				${note.name || "Unnamed"}
-				<br/>
-				${format(note.createdAt, "dd MMM yyyy")}`);
+			.bindPopup(popupContent);
 
 		// TODO: use actual cords
 		const bboxes: L.LatLngBoundsExpression[] = [

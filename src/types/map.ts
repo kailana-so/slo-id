@@ -4,6 +4,8 @@ export interface MapPin {
     latitude: number;
     longitude: number;
     createdAt: number;
+    imageId?: string;
+    thumbnailUrl?: string | undefined;
 }
 
 export type LocationData = {

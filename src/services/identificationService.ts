@@ -140,14 +140,15 @@ const getUserSightingsCoords = async (
 				typeof data.createdAt !== "number"
 				) return null;
 
-				return {
-				id: doc.id,
-				latitude: data.latitude,
-				longitude: data.longitude,
-				createdAt: data.createdAt,
-				name: data.name,
-                type: data.type
-				};
+			return {
+                id: doc.id,
+                latitude: data.latitude,
+                longitude: data.longitude,
+                createdAt: data.createdAt,
+                name: data.name,
+                type: data.type,
+                imageId: data.imageId,
+                };
 			})
 			.filter(Boolean) as MapPin[];
 

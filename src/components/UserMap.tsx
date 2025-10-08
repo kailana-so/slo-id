@@ -1,6 +1,8 @@
 "use client";
 import { useProfile } from "@/providers/ProfileProvider";
 import { getUserSightingsCoords } from "@/services/identificationService";
+import { getImageURLs } from "@/services/imageService";
+import { ImageType } from "@/hooks/usePaginationCache";
 import dynamic from "next/dynamic";
 import { MapPin } from "@/types/map";
 import { useCallback, useEffect, useState } from "react";
@@ -16,6 +18,7 @@ export default function MapsPage() {
 	const { userData } = useProfile();
 	const [initialLat, setInitialLat] = useState<number | undefined>(undefined);
 	const [initialLng, setInitialLng] = useState<number | undefined>(undefined);
+	const [speciesInfo, setSpeciesInfo] = useState<{ name: string; scientificName: string; image?: string } | null>(null);
 
 	// Read URL parameters after component mounts to avoid hydration issues
 	useEffect(() => {
@@ -23,6 +26,9 @@ export default function MapsPage() {
 			const urlParams = new URLSearchParams(window.location.search);
 			const lat = urlParams.get('lat');
 			const lng = urlParams.get('lng');
+			const name = urlParams.get('name');
+			const scientificName = urlParams.get('scientificName');
+			const image = urlParams.get('image');
 			
 			if (lat && lng) {
 				const latitude = parseFloat(lat);
@@ -30,6 +36,13 @@ export default function MapsPage() {
 				if (!isNaN(latitude) && !isNaN(longitude)) {
 					setInitialLat(latitude);
 					setInitialLng(longitude);
+				if (name) {
+					setSpeciesInfo({ 
+						name: name,
+						scientificName: scientificName || 'Unknown',
+						...(image && { image })
+					});
+				}
 					console.log(`Setting map to species location: ${latitude}, ${longitude}`);
 				}
 			}
@@ -51,15 +64,38 @@ export default function MapsPage() {
 				iconAnchor: [16, 16],
 			});
 
-			Leaflet.marker([initialLat, initialLng], { icon: speciesIcon })
-				.addTo(map)
-				.bindPopup("Species Location");
+		const speciesPopupContent = `
+			<div>
+				${speciesInfo?.image ? `<img src="${speciesInfo.image}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;" />` : ''}
+				<div><strong>${speciesInfo?.name || 'Species Location'}</strong></div>
+				${speciesInfo?.scientificName ? `<div style="font-size: 12px; font-style: italic; color: #666;">${speciesInfo.scientificName}</div>` : ''}
+				<div style="font-size: 12px; color: #666;">${initialLat.toFixed(5)}, ${initialLng.toFixed(5)}</div>
+			</div>
+		`;
+		
+		Leaflet.marker([initialLat, initialLng], { icon: speciesIcon })
+			.addTo(map)
+			.bindPopup(speciesPopupContent);
 		}
 
 		const { notes }: { notes: MapPin[] } = await getUserSightingsCoords(userData.userId);
-		addNoteMarkers(map, notes);
+		
+		// Fetch thumbnail URLs for notes with images
+		const imageIds = notes.map(n => n.imageId).filter((id): id is string => !!id);
+		const imageUrls = await getImageURLs(userData.userId, imageIds, ImageType.THUMBNAIL);
+		const thumbnails = Object.fromEntries(
+			imageUrls.map(({ filename, url }: { filename: string; url: string }) => [filename, url])
+		);
+		
+		// Add thumbnail URLs to notes
+		const notesWithThumbnails = notes.map(note => ({
+			...note,
+			thumbnailUrl: note.imageId ? thumbnails[note.imageId] : undefined
+		}));
+		
+		addNoteMarkers(map, notesWithThumbnails);
 
-	}, [userData, initialLat, initialLng]);
+	}, [userData, initialLat, initialLng, speciesInfo]);
 
 	return <BaseMap 
 		onMapReady={handleMapReady} 

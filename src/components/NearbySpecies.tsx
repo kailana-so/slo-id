@@ -22,9 +22,17 @@ const NearbySpecies: React.FC<NearbySpeciesProps> = ({ species, loading, error, 
 
 
 
-  const handleSeeOnMap = (lat: number, lng: number) => {
-    // Navigate to the profile map page with coordinates as URL parameters
-    router.push(`${Routes.USERMAP}?lat=${lat}&lng=${lng}`);
+  const handleSeeOnMap = (occurrence: SpeciesOccurrence) => {
+    // Navigate to the profile map page with coordinates and species info as URL parameters
+    const params = new URLSearchParams({
+      lat: occurrence.decimalLatitude.toString(),
+      lng: occurrence.decimalLongitude.toString(),
+      name: occurrence.vernacularName || occurrence.scientificName || 'Unknown',
+      scientificName: occurrence.scientificName || '',
+      ...(occurrence.species && { species: occurrence.species }),
+      ...(occurrence.thumbnailUrl && { image: occurrence.thumbnailUrl })
+    });
+    router.push(`${Routes.USERMAP}?${params.toString()}`);
   };
 
   if (loading) {
@@ -96,7 +104,7 @@ const NearbySpecies: React.FC<NearbySpeciesProps> = ({ species, loading, error, 
                   <p><span className="font-medium">Sighted:</span> {formatDate(occurrence.year, occurrence.month)}</p>
                   <div className="content-center gap-4 flex flex-row pt-2">
                     <button 
-                        onClick={() => handleSeeOnMap(occurrence.decimalLatitude, occurrence.decimalLongitude)}
+                        onClick={() => handleSeeOnMap(occurrence)}
                     >
                         <h4>See on map</h4> 
                     </button>

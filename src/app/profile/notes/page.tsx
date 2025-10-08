@@ -26,8 +26,10 @@ export default function ViewNotes() {
     const { userData } = useProfile();
 	// const router = useRouter();
 	const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-	const [modalImage, setModalImage] = useState<{ src: string; alt: string; imageId: string } | null>(null);
+    const [modalImage, setModalImage] = useState<{ src: string; alt: string; imageId: string } | null>(null);
     const [modalLocationSelector, setModalLocationSelector] = useState<boolean>(false);
+    const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+    
 
 	const {
 		data,
@@ -63,6 +65,10 @@ export default function ViewNotes() {
         // await updateSighting(noteId)
         // router.push(Routes.IDS);
     };
+
+    const handleUpdateNote = async (noteId: string) => {
+        console.log("handleUpdateNote", noteId)
+    }
 
     const handleEditNote = async (noteId: string) => {
         console.log("handleEditNote", noteId)
@@ -135,6 +141,7 @@ export default function ViewNotes() {
                             handleClose={handleClose}
                             handleIdentify={handleIdentify}
                             handleEditNote={handleEditNote}
+                            handleUpdateNote={handleUpdateNote}
                             isActiveDraft={note.status === SightingStatus.DRAFT}
                             hasActiveDraft={hasActiveDraft}
                         />
@@ -160,7 +167,10 @@ export default function ViewNotes() {
                     isOpen={modalLocationSelector}
                     onClose={() => setModalLocationSelector(false)}
                 >
-                    <MapLocationSelector/>
+                    <MapLocationSelector 
+                        location={location}
+                        setLocation={setLocation}
+                    />
                 </GenericModal>
             </div>
         </section>

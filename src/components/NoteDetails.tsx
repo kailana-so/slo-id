@@ -13,6 +13,7 @@ interface NoteDetails {
   handleClose: () => void;
   handleIdentify: (noteId: string) => Promise<void>;
   handleEditNote: (noteId: string) => Promise<void>;
+  handleUpdateNote: (noteId: string) => Promise<void>;
   isActiveDraft: boolean;
   hasActiveDraft: boolean;
 }
@@ -22,8 +23,9 @@ const HIDDEN_FIELDS = ["id", "imageId"];
 export function NoteDetails({ 
 	note, 
 	handleClose, 
-	handleIdentify, 
+	// handleIdentify, 
 	handleEditNote,
+	handleUpdateNote,
 	isActiveDraft,
 	hasActiveDraft
 }: NoteDetails) {
@@ -68,7 +70,7 @@ export function NoteDetails({
 			<div className="flex items-end justify-between pt-4">
 				<CloseIcon onClick={handleClose}/>
 				{isActiveDraft && (
-					<button onClick={() => handleIdentify(note.id)} className="ml-auto">
+					<button onClick={() => handleUpdateNote(note.id)} className="ml-auto">
 						<div className="flex items-end disabled">
 							<h4>Save</h4>
 							<div className="ml-4">
