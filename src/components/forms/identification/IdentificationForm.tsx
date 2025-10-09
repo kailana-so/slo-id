@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import ActionButton from "@/components/common/ActionButton";
 import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 import {
@@ -36,6 +36,13 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
     const [suggestionDetails, setSuggestionDetails] = useState<Suggestion[]>([])
     const [suggestionsLoading, setSuggestionsLoading] = useState<boolean>(false)
     const [drawerOpen, setDrawerOpen] = useState(false);
+
+    // Add suggestions to formData when they're fetched
+    useEffect(() => {
+        if (suggestionDetails.length > 0) {
+            setFormData(prev => ({ ...prev, suggestions: suggestionDetails }));
+        }
+    }, [suggestionDetails, setFormData]);
 
 
     const handleChange = (
