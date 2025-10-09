@@ -46,8 +46,10 @@ jobs:
           NEXT_PUBLIC_ALA_OCCURANCE_API: ${{ secrets.NEXT_PUBLIC_ALA_OCCURANCE_API }}
           WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
           WEATHER_API_HOST: ${{ secrets.WEATHER_API_HOST }}
-          DS_API_KEY: ${{ secrets.DS_API_KEY }}
-          DS_CHAT_HOST: ${{ secrets.DS_CHAT_HOST }}
+          CC_API_KEY: ${{ secrets.CC_API_KEY }}
+          CC_HOST: ${{ secrets.CC_HOST }}
+          CC_MODEL: ${{ secrets.CC_MODEL }}
+          CC_VERSION: ${{ secrets.CC_VERSION }}
         run: NODE_ENV=production yarn build
 
       - name: Sanity check build
@@ -124,8 +126,10 @@ jobs:
           WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
           WEATHER_API_HOST=${{ secrets.WEATHER_API_HOST }}
           EMAIL_SIGNER=${{ secrets.EMAIL_SIGNER }}
-          DS_API_KEY=${{ secrets.DS_API_KEY }}
-          DS_CHAT_HOST=${{ secrets.DS_CHAT_HOST }}
+          CC_API_KEY=${{ secrets.CC_API_KEY }}
+          CC_HOST=${{ secrets.CC_HOST }}
+          CC_MODEL=${{ secrets.CC_MODEL }}
+          CC_VERSION=${{ secrets.CC_VERSION }}
           ENV
 
           yarn install --frozen-lockfile

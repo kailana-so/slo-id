@@ -13,9 +13,9 @@ const ActionButton: React.FC<ActionButtonProps> = ({ label, loading }) => {
             {loading ? (
                 <Spinner></Spinner>
             ): ( 
-                <button type="submit" disabled={loading}><h4>{label}</h4></button>
+                <button className="btn-primary" type="submit" disabled={loading}><h4>{label}</h4></button>
             )}   
-            <NavigateNextIcon></NavigateNextIcon>
+            {/* <NavigateNextIcon></NavigateNextIcon> */}
         </div>
     );
 };

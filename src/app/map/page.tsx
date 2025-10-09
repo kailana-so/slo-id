@@ -21,6 +21,7 @@ export default function MapsPage() {
 	const [speciesLoading, setSpeciesLoading] = useState(false);
 	const [speciesError, setSpeciesError] = useState<string | null>(null);
 	const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
+	const [markersMap, setMarkersMap] = useState<Map<string, L.Marker>>(new Map());
 
 	// 1. Fetch location on mount
 	useEffect(() => {
@@ -58,15 +59,19 @@ export default function MapsPage() {
 					iconSize: [16, 16],
 					iconAnchor: [16, 16],
 				});
+				const newMarkersMap = new Map<string, L.Marker>();
 				speciesData.forEach((occ) => {
 					if (occ.decimalLatitude && occ.decimalLongitude) {
-						Leaflet.marker([occ.decimalLatitude, occ.decimalLongitude], { icon: speciesIcon })
+						const marker = Leaflet.marker([occ.decimalLatitude, occ.decimalLongitude], { icon: speciesIcon })
 							.addTo(mapInstance)
 							.bindPopup(
 								`<strong>${occ.vernacularName || occ.scientificName}</strong><br/>${occ.scientificName}`
 							);
+						// Store marker with occurrence UUID as key
+						newMarkersMap.set(occ.uuid, marker);
 					}
 				});
+				setMarkersMap(newMarkersMap);
 			} catch (err) {
 				if (cancelled) return;
 				console.error('Error fetching nearby species:', err);
@@ -81,6 +86,19 @@ export default function MapsPage() {
 
 	const handleMapReady = (map: L.Map) => {
 		setMapInstance(map);
+	};
+
+	const handleSeeOnMap = (lat: number, lng: number, uuid: string) => {
+		if (!mapInstance) return;
+		// Pan to the location and zoom in
+		mapInstance.setView([lat, lng], 15);
+		// Open the specific marker's popup
+		const marker = markersMap.get(uuid);
+		if (marker) {
+			marker.openPopup();
+		}
+		// Close drawer to show the map
+		setDrawerOpen(false);
 	};
 
 	if (loading) {
@@ -150,6 +168,7 @@ export default function MapsPage() {
 								species={species}
 								loading={speciesLoading}
 								error={speciesError}
+								onSeeOnMap={handleSeeOnMap}
 							/>
 						</div>
 					</div>

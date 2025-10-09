@@ -183,6 +183,10 @@ body {
     background-color: var(--brown-10)
   }
 
+  .card-draft {
+    border-color: var(--brown-100);
+  }
+
   .card-alt {
     @apply p-4 rounded-[var(--border-radius)];
     background-color: var(--brown-10)
@@ -409,7 +413,6 @@ svg[class*="MuiSvgIcon-root"] {
 
 .generic-modal-content {
   position: relative;
-  /* padding: 1%; */
 }
 
 .generic-modal-card {
@@ -536,4 +539,17 @@ svg[class*="MuiSvgIcon-root"] {
 .text-box {
   border: 1px solid black;
   border-radius: var(--border-radius);
+}
+
+.btn-primary {
+  background-color: var(--brown-10);
+  border-radius: var(--border-radius);
+  padding: var(--padding);
+  /* margin-right: var(--margin-right); */
+  margin-left: var(--margin-left);
+}
+
+.btn-primary:hover {
+    background-color: var(--brown-50);
+    color: var(--brown-500);
 }

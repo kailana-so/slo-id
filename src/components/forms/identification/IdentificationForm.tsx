@@ -207,11 +207,11 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                         <ul className="space-y-3">
                             {suggestionDetails.map((suggestion, idx) => (
                                 <li key={`${suggestion.name}-${idx}`} className="rounded border p-3">
-                                <div className="font-medium">{suggestion.name}</div>
-                                <div className="text-xs opacity-70">{suggestion.native ? "Native" : "Introduced"}</div>
+                                <h4>{suggestion.name}</h4>
+                                <div className="opacity-70">{suggestion.native ? "Native" : "Introduced"}</div>
                                 {suggestion.key_details?.length ? (
                                     <div className="mt-2 list-disc">
-                                        {suggestion.key_details.map((keyDetail, idx) => <div key={idx}>{keyDetail}</div>)}
+                                        {suggestion.key_details.map((keyDetail, idx) => <><div key={idx}>{keyDetail}</div><br key={idx} /></>)}
                                     </div>
                                 ) : null}
                             </li>

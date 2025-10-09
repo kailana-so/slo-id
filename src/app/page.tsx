@@ -29,11 +29,9 @@ export default function HomePage() {
 			</p>
 			<div className="flex items-center justify-between pt-4">
 				<button onClick={handleRoute} className="ml-auto">
-					<div className="flex items-end">
+					<div className="flex items-end gap-2">
 						<h4>Identify</h4>
-						<div className="ml-4">
-							<NavigateNextIcon></NavigateNextIcon>
-						</div>
+						<NavigateNextIcon></NavigateNextIcon>
 					</div>
 				</button>
 			</div>

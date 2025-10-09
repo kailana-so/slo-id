@@ -91,7 +91,7 @@ const field = {
     name: "leafShape",
     label,
     type: "select",
-    required: false,
+    required: true,
     options: [
       { name: "Acicular (needle-like)" }, { name: "Cuneate (wedge-shaped)" }, { name: "Elliptic (oval)" },
       { name: "Filiform (thread-like)" }, { name: "Flabellate (fan-shaped)" }, { name: "Lanceolate (spear-shaped)" },

@@ -3,22 +3,28 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { formatDate } from '@/utils/helpers';
+import { formatDate, sentenceCase } from '@/utils/helpers';
 import { SpeciesOccurrence } from '@/types/species';
+import { MapPin } from '@/types/map';
 import { Routes } from '@/enums/routes';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ImageModal from './common/ImageModal';
+import { format } from 'date-fns';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-interface NearbySpeciesProps {
+interface UserSpeciesListProps {
   species: SpeciesOccurrence[];
+  userNotes: MapPin[];
   loading: boolean;
   error: string | null;
   onRetry: () => void;
 }
 
-const NearbySpecies: React.FC<NearbySpeciesProps> = ({ species, loading, error, onRetry }) => {
+const UserSpeciesList: React.FC<UserSpeciesListProps> = ({ species, userNotes, loading, error, onRetry }) => {
   const router = useRouter();
   const [modalImage, setModalImage] = useState<{ src: string; alt: string; imageId?: string; userId?: string } | null>(null);
+  const [userNotesExpanded, setUserNotesExpanded] = useState(false);
 
 
 
@@ -61,9 +67,75 @@ const NearbySpecies: React.FC<NearbySpeciesProps> = ({ species, loading, error, 
 
   return (
     <div>
+      {/* User Notes Section */}
+      {userNotes.length > 0 && (
+        <div className="mb-6">
+          <div 
+            className="mb-4 cursor-pointer flex justify-between content-end"
+            onClick={() => setUserNotesExpanded(!userNotesExpanded)}
+          >
+            <div>
+              <h4>Your Notes ({userNotes.length})</h4>
+              <p className="inline">Within 2km</p>
+            </div>
+            <div className="note-divider" style={{ width: "50%", margin: "0 5% 0 5%", marginTop: "12px" }}></div>
+            <span>{userNotesExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}</span>
+          </div>
+          {userNotesExpanded && <div>
+            {userNotes.map((note) => (
+              <div key={note.id} className="card">
+                <section className="aligned content-center">
+                  {note.thumbnailUrl && (
+                    <Image
+                      src={note.thumbnailUrl}
+                      width={50}
+                      height={50}
+                      alt={note.name || note.type}
+                      className="object-cover rounded-sm"
+                      onClick={() => setModalImage({
+                        src: note.thumbnailUrl!,
+                        alt: note.name || note.type
+                      })}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  )}
+                  <div>
+                    <h4>{sentenceCase(note.type)}</h4>
+                    {note.name && <p>{note.name}</p>}
+                    <p>{format(note.createdAt, "dd MMM yyyy")}</p>
+                    <div className="content-center gap-4 flex flex-row pt-2">
+                      <button 
+                        className="flex items-end gap-2"
+                        onClick={() => {
+                          const params = new URLSearchParams({
+                            lat: note.latitude.toString(),
+                            lng: note.longitude.toString(),
+                            type: note.type,
+                            ...(note.name && { name: note.name }),
+                            ...(note.thumbnailUrl && { image: note.thumbnailUrl }),
+                            date: format(note.createdAt, "dd MMM yyyy")
+                          });
+                          router.push(`${Routes.USERMAP}?${params.toString()}`);
+                        }}
+                      >
+                        <h4>See on map</h4> 
+                        <NavigateNextIcon></NavigateNextIcon>
+                      </button>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            ))}
+          </div>}
+        </div>
+      )}
+
+      {/* ALA Species Section */}
       <div className="mb-4">
         <h4>Nearby Species ({species.length})</h4>
-        <p>Within 2km of your location</p>
+        <p>Within 2km</p>
       </div>
       
       {species.length === 0 ? (
@@ -105,10 +177,11 @@ const NearbySpecies: React.FC<NearbySpeciesProps> = ({ species, loading, error, 
                   <div className="content-center gap-4 flex flex-row pt-2">
                     <button 
                         onClick={() => handleSeeOnMap(occurrence)}
+                        className="flex items-end gap-2"
                     >
                         <h4>See on map</h4> 
+                        <NavigateNextIcon></NavigateNextIcon>
                     </button>
-                    <NavigateNextIcon></NavigateNextIcon>
                   </div>
                 </div>
               </section>
@@ -127,4 +200,4 @@ const NearbySpecies: React.FC<NearbySpeciesProps> = ({ species, loading, error, 
   );
 };
 
-export default NearbySpecies; 
+export default UserSpeciesList; 

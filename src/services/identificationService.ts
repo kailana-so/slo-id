@@ -62,6 +62,46 @@ const updateSightingStatus = async (
     }
 };
 
+const updateSightingLocation = async (
+    noteId: string,
+    latitude: number,
+    longitude: number
+) => {
+    try {
+        const { getNearestIdentifiableLocation } = await import("@/services/locationService");
+        const { location } = await getNearestIdentifiableLocation(latitude, longitude);
+        
+        const updates = {
+            [DocumentTimestamp.UPDATED_AT]: Date.now(),
+            latitude,
+            longitude,
+            location
+        };
+        
+        await updateDoc(sightingsDoc(noteId), updates);
+    } catch (error) {
+        console.error("[updateSightingLocation] Error updating location: ", error);
+        throw error;
+    }
+};
+
+const updateSightingFields = async (
+    noteId: string,
+    fieldUpdates: Record<string, string | boolean>
+) => {
+    try {
+        const updates = {
+            [DocumentTimestamp.UPDATED_AT]: Date.now(),
+            ...fieldUpdates
+        };
+        
+        await updateDoc(sightingsDoc(noteId), updates);
+    } catch (error) {
+        console.error("[updateSightingFields] Error updating sighting fields: ", error);
+        throw error;
+    }
+};
+
 const getSightings = async (
 	userId: string,
     lastDoc?: QueryDocumentSnapshot
@@ -92,13 +132,19 @@ const getSightings = async (
             getStatusCount(userId, SightingStatus.DRAFT)
         ]);
 
-        // like marshal in go - casting
+        // like marshal in go - casting and sort to put draft first
         const notes: Note[] = documentSnapshots.docs
             .map(doc => ({
                 id: doc.id,
                 ...(doc.data() as { type: string } & Record<string, unknown>),
             }))          
-            .filter((note): note is Note => note.type != null);
+            .filter((note): note is Note => note.type != null)
+            .sort((a, b) => {
+                // Put draft at the top
+                if (a.status === SightingStatus.DRAFT) return -1;
+                if (b.status === SightingStatus.DRAFT) return 1;
+                return 0;
+            });
 
         // Get the last visible document
         const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1] || null;
@@ -155,6 +201,62 @@ const getUserSightingsCoords = async (
 		return { notes };
 	} catch (error) {
 		console.error("Error fetching sightings with location:", error);
+		return { notes: [] };
+	}
+};
+
+const getNearbyUserSightings = async (
+  userId: string,
+  latitude: number,
+  longitude: number,
+  radiusKm: number = 2
+): Promise<GetMapPinsResult> => {
+	try {
+		const q = query(
+			sightingsCollection(),
+			where("userId", "==", userId)
+		);
+
+		const snapshot = await getDocs(q);
+
+		// Filter by distance on the client side
+		const notes: MapPin[] = snapshot.docs
+			.map((doc) => {
+				const data = doc.data();
+				if (
+					typeof data.latitude !== "number" ||
+					typeof data.longitude !== "number" ||
+					typeof data.createdAt !== "number"
+				) return null;
+
+				// Calculate distance using Haversine formula
+				const R = 6371; // Earth's radius in km
+				const dLat = (data.latitude - latitude) * Math.PI / 180;
+				const dLon = (data.longitude - longitude) * Math.PI / 180;
+				const a = 
+					Math.sin(dLat/2) * Math.sin(dLat/2) +
+					Math.cos(latitude * Math.PI / 180) * Math.cos(data.latitude * Math.PI / 180) *
+					Math.sin(dLon/2) * Math.sin(dLon/2);
+				const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+				const distance = R * c;
+
+				if (distance > radiusKm) return null;
+
+				return {
+					id: doc.id,
+					latitude: data.latitude,
+					longitude: data.longitude,
+					createdAt: data.createdAt,
+					name: data.name,
+					type: data.type,
+					imageId: data.imageId,
+				};
+			})
+			.filter(Boolean) as MapPin[];
+
+		return { notes };
+	} catch (error) {
+		console.error("Error fetching nearby user sightings:", error);
 		return { notes: [] };
 	}
 };
@@ -247,7 +349,10 @@ export {
     addSighting,
     getSightings,
     getUserSightingsCoords,
+    getNearbyUserSightings,
     updateSightingStatus,
+    updateSightingLocation,
+    updateSightingFields,
     getIdentifications,
     getStatusCount
 };

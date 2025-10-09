@@ -19,6 +19,7 @@ export default function MapsPage() {
 	const [initialLat, setInitialLat] = useState<number | undefined>(undefined);
 	const [initialLng, setInitialLng] = useState<number | undefined>(undefined);
 	const [speciesInfo, setSpeciesInfo] = useState<{ name: string; scientificName: string; image?: string } | null>(null);
+	const [noteInfo, setNoteInfo] = useState<{ name: string; type: string; image?: string; date?: string } | null>(null);
 
 	// Read URL parameters after component mounts to avoid hydration issues
 	useEffect(() => {
@@ -28,6 +29,8 @@ export default function MapsPage() {
 			const lng = urlParams.get('lng');
 			const name = urlParams.get('name');
 			const scientificName = urlParams.get('scientificName');
+			const type = urlParams.get('type');
+			const date = urlParams.get('date');
 			const image = urlParams.get('image');
 			
 			if (lat && lng) {
@@ -36,14 +39,25 @@ export default function MapsPage() {
 				if (!isNaN(latitude) && !isNaN(longitude)) {
 					setInitialLat(latitude);
 					setInitialLng(longitude);
-				if (name) {
-					setSpeciesInfo({ 
-						name: name,
-						scientificName: scientificName || 'Unknown',
-						...(image && { image })
-					});
-				}
-					console.log(`Setting map to species location: ${latitude}, ${longitude}`);
+					
+					// Check if it's a user note or species
+					if (type) {
+						// User note
+						setNoteInfo({ 
+							name: name || '',
+							type: type,
+							...(date && { date }),
+							...(image && { image })
+						});
+					} else if (name) {
+						// Species occurrence
+						setSpeciesInfo({ 
+							name: name,
+							scientificName: scientificName || 'Unknown',
+							...(image && { image })
+						});
+					}
+					console.log(`Setting map to location: ${latitude}, ${longitude}`);
 				}
 			}
 		}
@@ -56,26 +70,45 @@ export default function MapsPage() {
 		const L = await import("leaflet");
 		const { default: Leaflet } = L;
 
-		// Add species location marker if coordinates are provided
+		// Add marker if coordinates are provided
 		if (initialLat && initialLng) {
-			const speciesIcon = Leaflet.icon({
-				iconUrl: "/imgs/species-pin.png",
+			// Choose icon based on whether it's a note or species
+			const iconUrl = noteInfo ? "/imgs/note-pin.png" : "/imgs/species-pin.png";
+			const markerIcon = Leaflet.icon({
+				iconUrl,
 				iconSize: [16, 16],
 				iconAnchor: [16, 16],
 			});
 
-		const speciesPopupContent = `
-			<div>
-				${speciesInfo?.image ? `<img src="${speciesInfo.image}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;" />` : ''}
-				<div><strong>${speciesInfo?.name || 'Species Location'}</strong></div>
-				${speciesInfo?.scientificName ? `<div style="font-size: 12px; font-style: italic; color: #666;">${speciesInfo.scientificName}</div>` : ''}
-				<div style="font-size: 12px; color: #666;">${initialLat.toFixed(5)}, ${initialLng.toFixed(5)}</div>
-			</div>
-		`;
+			let popupContent = '';
+			
+			if (noteInfo) {
+				// User note popup
+				popupContent = `
+					<div>
+						${noteInfo.image ? `<img src="${noteInfo.image}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;" />` : ''}
+						<div><strong>${noteInfo.type}</strong></div>
+						${noteInfo.name ? `<div>${noteInfo.name}</div>` : ''}
+						${noteInfo.date ? `<div style="font-size: 12px; color: #666;">${noteInfo.date}</div>` : ''}
+						<div style="font-size: 12px; color: #666;">${initialLat.toFixed(5)}, ${initialLng.toFixed(5)}</div>
+					</div>
+				`;
+			} else {
+				// Species popup
+				popupContent = `
+					<div>
+						${speciesInfo?.image ? `<img src="${speciesInfo.image}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;" />` : ''}
+						<div><strong>${speciesInfo?.name || 'Species Location'}</strong></div>
+						${speciesInfo?.scientificName ? `<div style="font-size: 12px; font-style: italic; color: #666;">${speciesInfo.scientificName}</div>` : ''}
+						<div style="font-size: 12px; color: #666;">${initialLat.toFixed(5)}, ${initialLng.toFixed(5)}</div>
+					</div>
+				`;
+			}
 		
-		Leaflet.marker([initialLat, initialLng], { icon: speciesIcon })
-			.addTo(map)
-			.bindPopup(speciesPopupContent);
+			Leaflet.marker([initialLat, initialLng], { icon: markerIcon })
+				.addTo(map)
+				.bindPopup(popupContent)
+				.openPopup();
 		}
 
 		const { notes }: { notes: MapPin[] } = await getUserSightingsCoords(userData.userId);
@@ -95,7 +128,7 @@ export default function MapsPage() {
 		
 		addNoteMarkers(map, notesWithThumbnails);
 
-	}, [userData, initialLat, initialLng, speciesInfo]);
+	}, [userData, initialLat, initialLng, speciesInfo, noteInfo]);
 
 	return <BaseMap 
 		onMapReady={handleMapReady} 

@@ -3,6 +3,8 @@
 import React from 'react';
 import { formatDate } from '@/utils/helpers';
 import { SpeciesOccurrence } from '@/types/species';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import Spinner from './common/Spinner';
 
 interface SimpleSpeciesListProps {
   latitude: number;
@@ -11,15 +13,17 @@ interface SimpleSpeciesListProps {
   species: SpeciesOccurrence[];
   loading: boolean;
   error: string | null;
+  onSeeOnMap?: (lat: number, lng: number, uuid: string) => void;
 }
 
-const SimpleSpeciesList: React.FC<SimpleSpeciesListProps> = ({species, loading, error }) => {
+const SimpleSpeciesList: React.FC<SimpleSpeciesListProps> = ({species, loading, error, onSeeOnMap }) => {
+
   if (loading) {
     return (
       <div className="card">
         <h4>Nearby Species</h4>
         <div className="flex items-center justify-center p-8">
-          <div className="spinner"></div>
+          <Spinner />
           <span className="ml-2">Finding species near you...</span>
         </div>
       </div>
@@ -60,6 +64,15 @@ const SimpleSpeciesList: React.FC<SimpleSpeciesListProps> = ({species, loading, 
                   <h4>{occurrence.vernacularName || occurrence.scientificName}</h4>
                   <p className="italic">{occurrence.scientificName}</p>
                   <p><span className="font-medium">Sighted:</span> {formatDate(occurrence.year, occurrence.month)}</p>
+                  {onSeeOnMap && occurrence.decimalLatitude && occurrence.decimalLongitude && (
+                      <button 
+                        onClick={() => onSeeOnMap(occurrence.decimalLatitude, occurrence.decimalLongitude, occurrence.uuid)}
+                        className="flex items-end gap-2"
+                      >
+                        <h4>See on map</h4> 
+                        <NavigateNextIcon />
+                      </button>
+                  )}
                 </div>
               </section>
             </div>

@@ -14,7 +14,7 @@ export type NotesViewModel = {
 
 export type IdsViewModel = {
     identifications: Note[];
-    fullImages: Record<string, string>;
+    thumbnails: Record<string, string>;
     lastDoc: QueryDocumentSnapshot | null;
     count: number;
 };
@@ -58,13 +58,13 @@ export const usePaginatedIds = (userId?: string) => {
         const { identifications, lastDoc, count} = await getIdentifications(userId!, cursor);
 
         const filenames = identifications.map(id => id.imageId).filter((id): id is string => !!id);
-        const imageUrls = await getImageURLs(userId!, filenames, ImageType.FULL);
+        const imageUrls = await getImageURLs(userId!, filenames, ImageType.THUMBNAIL);
 
-        const fullImages = Object.fromEntries(
+        const thumbnails = Object.fromEntries(
             imageUrls.map(({ filename, url }: { filename: string; url: string }) => [filename, url])
         );
 
-        return { identifications, fullImages, lastDoc, count };
+        return { identifications, thumbnails, lastDoc, count };
         },
         getNextPageParam: (lastPage) => lastPage.lastDoc ?? undefined,
     });

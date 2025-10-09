@@ -2,9 +2,8 @@ import ErrorResponse from "@/utils/errorResponse";
 import { Suggestion } from "@/types/suggestions"
 import { buildSystemPrompt, ObsType } from "@/lib/prompts/promptBuilder";
 
-
-type DSChatResponse = {
-  choices?: Array<{ message?: { content?: unknown } }>;
+type AnthropicResponse = {
+  content?: Array<{ text?: string }>;
 };
 
 function toPayload(raw: unknown): { suggestions: Suggestion[] } {
@@ -23,42 +22,43 @@ export async function POST(req: Request): Promise<Response> {
   const formData = await req.json();
 
   try {
-    const url =
-      process.env.DS_CHAT_HOST ??
-      "https://api.deepseek.com/v1/chat/completions";
+    const url = process.env.CC_HOST!;
+
+    const systemPrompt = buildSystemPrompt(formData.type as ObsType);
+    const userMessage = JSON.stringify(formData);
 
     const body = {
-      model: "deepseek-chat",
+      model: process.env.CC_MODEL!,
+      max_tokens: 400,
+      temperature: 0,
+      system: systemPrompt,
       messages: [
-        { role: "system", content: buildSystemPrompt(formData.type as ObsType) },
         {
           role: "user",
-          content: JSON.stringify(formData),
+          content: userMessage,
         },
       ],
-      response_format: { type: "json_object" as const },
-      stream: false,
     };
 
     const resp = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.DS_API_KEY!}`,
+        "x-api-key": process.env.CC_API_KEY!,
+        "anthropic-version": process.env.CC_VERSION!,
         "Content-Type": "application/json",
-        Accept: "application/json",
       },
       body: JSON.stringify(body),
     });
  
     const rawText = await resp.text();
     if (!resp.ok) {
-      throw new Error(`DeepSeek ${resp.status}: ${rawText}`);
+      throw new Error(`Anthropic ${resp.status}: ${rawText}`);
     }
-    console.log("DeepSeek response:", rawText);
-    const envelope = JSON.parse(rawText) as DSChatResponse;
-    console.log("DeepSeek envelope:", envelope);
-    const content = envelope.choices?.[0]?.message?.content;
-    console.log("DeepSeek content:", content);
+    console.log("Anthropic response:", rawText);
+    const envelope = JSON.parse(rawText) as AnthropicResponse;
+    console.log("Anthropic envelope:", envelope);
+    const content = envelope.content?.[0]?.text;
+    console.log("Anthropic content:", content);
     const payload = toPayload(content);
 
     return new Response(JSON.stringify(payload), {

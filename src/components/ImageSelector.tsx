@@ -30,7 +30,7 @@ const ImageSelector = ({ setFormData }: ImageSelectorProps) => {
     };
 
     return (
-            <div className="pt-1">
+            <div>
                 <label key="photo-upload">
                 <input
                     type="file"

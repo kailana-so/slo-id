@@ -47,9 +47,9 @@ export default function MapLocationSelector({ location, setLocation }: MapLocati
       <BaseMap onMapReady={handleMapReady} />
       {location && (
         <div className="pl-4 mb-2">
-          <h4>
+          <p>
             <strong>{location.lat.toFixed(5)}, {location.lng.toFixed(5)}</strong> 
-          </h4>
+          </p>
         </div>
       )}
     </div>
