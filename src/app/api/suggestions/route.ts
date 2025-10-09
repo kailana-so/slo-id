@@ -18,26 +18,15 @@ function toPayload(raw: unknown): { suggestions: Suggestion[] } {
   return { suggestions: [] };
 }
 
-export async function POST(req: Request): Promise<Response> {
-  const formData = await req.json();
-
+async function tryAnthropic(systemPrompt: string, userMessage: string): Promise<{ suggestions: Suggestion[] } | null> {
   try {
     const url = process.env.CC_HOST!;
-
-    const systemPrompt = buildSystemPrompt(formData.type as ObsType);
-    const userMessage = JSON.stringify(formData);
-
     const body = {
       model: process.env.CC_MODEL!,
-      max_tokens: 400,
-      temperature: 0,
+      max_tokens: 500,
+      temperature: 0.5,
       system: systemPrompt,
-      messages: [
-        {
-          role: "user",
-          content: userMessage,
-        },
-      ],
+      messages: [{ role: "user", content: userMessage }],
     };
 
     const resp = await fetch(url, {
@@ -51,15 +40,87 @@ export async function POST(req: Request): Promise<Response> {
     });
  
     const rawText = await resp.text();
+    
+    // Check if overloaded
+    if (!resp.ok && resp.status === 529) {
+      console.log("Anthropic overloaded (529), falling back to DeepSeek");
+      return null;
+    }
+    
     if (!resp.ok) {
       throw new Error(`Anthropic ${resp.status}: ${rawText}`);
     }
-    console.log("Anthropic response:", rawText);
+    
     const envelope = JSON.parse(rawText) as AnthropicResponse;
-    console.log("Anthropic envelope:", envelope);
     const content = envelope.content?.[0]?.text;
-    console.log("Anthropic content:", content);
-    const payload = toPayload(content);
+    return toPayload(content);
+  } catch (error) {
+    console.error("Anthropic error:", error);
+    return null;
+  }
+}
+
+async function tryDeepSeek(systemPrompt: string, userMessage: string): Promise<{ suggestions: Suggestion[] } | null> {
+  try {
+    const url = process.env.DS_CHAT_HOST ?? "https://api.deepseek.com/v1/chat/completions";
+    const body = {
+      model: "deepseek-chat",
+      max_tokens: 500,
+      temperature: 0,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userMessage },
+      ],
+      response_format: { type: "json_object" as const },
+    };
+
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.DS_API_KEY!}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const rawText = await resp.text();
+    if (!resp.ok) {
+      console.error(`DeepSeek ${resp.status}: ${rawText}`);
+      return null;
+    }
+    
+    const envelope = JSON.parse(rawText) as { choices?: Array<{ message?: { content?: unknown } }> };
+    const content = envelope.choices?.[0]?.message?.content;
+    return toPayload(content);
+  } catch (error) {
+    console.error("DeepSeek error:", error);
+    return null;
+  }
+}
+
+export async function POST(req: Request): Promise<Response> {
+  const formData = await req.json();
+
+  try {
+    const systemPrompt = buildSystemPrompt(formData.type as ObsType);
+    const userMessage = JSON.stringify(formData);
+
+    // Try DeepSeek first
+    let payload = await tryDeepSeek(systemPrompt, userMessage);
+    
+    // Fallback to Anthropic if DeepSeek failed
+    if (!payload) {
+      console.log("DeepSeek failed, using Anthropic fallback");
+      payload = await tryAnthropic(systemPrompt, userMessage);
+    }
+    
+    // If both failed, return empty
+    if (!payload) {
+      return new Response(JSON.stringify({ suggestions: [] }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+      });
+    }
 
     return new Response(JSON.stringify(payload), {
       status: 200,

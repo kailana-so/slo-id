@@ -50,6 +50,8 @@ jobs:
           CC_HOST: ${{ secrets.CC_HOST }}
           CC_MODEL: ${{ secrets.CC_MODEL }}
           CC_VERSION: ${{ secrets.CC_VERSION }}
+          DS_CHAT_HOST: ${{ secrets.DS_CHAT_HOST }}
+          DS_CHAT_API_KEY: ${{ secrets.DS_CHAT_API_KEY }}
         run: NODE_ENV=production yarn build
 
       - name: Sanity check build
@@ -130,6 +132,8 @@ jobs:
           CC_HOST=${{ secrets.CC_HOST }}
           CC_MODEL=${{ secrets.CC_MODEL }}
           CC_VERSION=${{ secrets.CC_VERSION }}
+          DS_CHAT_HOST=${{ secrets.DS_CHAT_HOST }}
+          DS_CHAT_API_KEY=${{ secrets.DS_CHAT_API_KEY }}
           ENV
 
           yarn install --frozen-lockfile

@@ -229,6 +229,7 @@ const schemas = {
       field.totalSize(),                    // replaces field.size()
       field.leafShape("Cap Shape"),         // same field, clearer label for fungi
       field.flowerShape("Fruiting Body Shape"), 
+      field.color(),
       field.habitat()
     ],
   },

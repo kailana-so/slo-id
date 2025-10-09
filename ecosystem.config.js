@@ -21,6 +21,8 @@ module.exports = {
           CC_HOST: process.env.CC_HOST,
           CC_MODEL: process.env.CC_MODEL,
           CC_VERSION: process.env.CC_VERSION,
+          DS_CHAT_HOST: process.env.DS_CHAT_HOST,
+          DS_CHAT_API_KEY: process.env.DS_CHAT_API_KEY,
         },
         log_date_format: "YYYY-MM-DD HH:mm:ss",
       },

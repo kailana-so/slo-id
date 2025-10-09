@@ -9,7 +9,8 @@ import { NoteDetails } from "@/components/NoteDetails";
 import { usePaginatedNotes } from "@/hooks/usePaginationCache";
 import { useQueryClient } from "@tanstack/react-query";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { Routes } from "@/enums/routes";
 import { updateSightingStatus, updateSightingLocation, updateSightingFields } from "@/services/identificationService";
 import { sentenceCase } from "@/utils/helpers";
 import ImageModal from "@/components/common/ImageModal";
@@ -29,7 +30,7 @@ const MapLocationSelector = dynamic(() => import("@/components/MapLocationSelect
 export default function ViewNotes() {
     const { userData } = useProfile();
 	const queryClient = useQueryClient();
-	// const router = useRouter();
+	const router = useRouter();
 	const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [modalImage, setModalImage] = useState<{ src: string; alt: string; imageId: string } | null>(null);
     const [modalLocationSelector, setModalLocationSelector] = useState<boolean>(false);
@@ -78,6 +79,7 @@ export default function ViewNotes() {
             });
             if (isComplete) {
                 setSelectedNote(null);
+                router.push(Routes.IDS);
             }
         } catch (error) {
             console.error("Failed to update note", error);
