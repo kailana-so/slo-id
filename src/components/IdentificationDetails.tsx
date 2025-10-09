@@ -4,7 +4,6 @@ import { identificationFormSchema, dwcUserObservationSchema } from "./forms/iden
 import { renderValue } from "./NoteDetails.utils";
 import { format } from "date-fns";
 import { sentenceCase } from "@/utils/helpers";
-import DrawIcon from '@mui/icons-material/Draw';
 import Image from "next/image";
 
 interface IdentificationDetailsProps {

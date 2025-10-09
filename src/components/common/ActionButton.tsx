@@ -1,6 +1,5 @@
 import React from 'react';
 import Spinner from "@/components/common/Spinner";
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 interface ActionButtonProps {
     label: string;

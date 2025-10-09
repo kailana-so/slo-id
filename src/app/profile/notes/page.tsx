@@ -80,6 +80,7 @@ export default function ViewNotes() {
                 setSelectedNote(null);
             }
         } catch (error) {
+            console.error("Failed to update note", error);
             setSnackbar({ isOpen: true, message: "Failed to update note", type: "error" });
         }
     }
@@ -96,6 +97,7 @@ export default function ViewNotes() {
             
             setSnackbar({ isOpen: true, message: "Converted to draft", type: "success" });
         } catch (error) {
+            console.error("Failed to convert to draft", error);
             setSnackbar({ isOpen: true, message: "Failed to convert to draft", type: "error" });
         }
     };
@@ -120,6 +122,7 @@ export default function ViewNotes() {
             setModalLocationSelector(false);
             setLocation(null);
         } catch (error) {
+            console.error("Failed to update location", error);
             setSnackbar({ isOpen: true, message: "Failed to update location", type: "error" });
         }
     };
@@ -178,7 +181,7 @@ export default function ViewNotes() {
                                     )}
                                 </div>
                                 <span 
-                                    onClick={(e) => {
+                                    onClick={() => {
                                         setSelectedNote(selectedNote?.id === note.id ? null : note);
                                     }}
                                     className="cursor-pointer"

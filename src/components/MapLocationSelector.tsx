@@ -40,7 +40,7 @@ export default function MapLocationSelector({ location, setLocation }: MapLocati
           .openPopup();
       }
     });
-  }, [icon]);
+  }, [icon, setLocation]);
 
   return (
     <div style={{ width: "100vw", margin: 2}} className="generic-modal-map">
