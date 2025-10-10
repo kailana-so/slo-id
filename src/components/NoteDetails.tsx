@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { IdentificationFormField } from "@/types/form";
 import { Note } from "@/types/note";
 import { identificationFormSchema } from "./forms/identification/IdentificationFormSchema";
@@ -6,7 +5,6 @@ import { renderValue } from "./NoteDetails.utils";
 import DWCIdDetails from "./DWCIdDetails";
 import SuggestionChips from "./SuggestionChips";
 import { Suggestion } from "@/types/suggestions";
-import { getNoteSuggestions } from "@/services/generativeService";
 
 
 interface NoteDetails {

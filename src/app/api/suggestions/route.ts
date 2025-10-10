@@ -102,16 +102,8 @@ export async function POST(req: Request): Promise<Response> {
   const formData = await req.json();
   try {
     // Filter out metadata fields that shouldn't be sent to AI
-    const { 
-      id, 
-      imageId, 
-      createdAt, 
-      updatedAt, 
-      status, 
-      userId, 
-      _topGroup,
-      individualStatus,
-      ...relevantFields 
+    // eslint-disable-next-line
+    const { id, imageId, createdAt, updatedAt, status, userId, _topGroup,individualStatus,...relevantFields 
     } = formData;
     
     const systemPrompt = buildSystemPrompt(formData.type as ObsType);

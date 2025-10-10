@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 import { Routes } from "@/enums/routes";
 import { updateSightingStatus, updateSightingLocation, updateSightingFields } from "@/services/identificationService";
 import { getNoteSuggestions } from "@/services/generativeService";
-import { Suggestion } from "@/types/suggestions";
 import type { FormData } from "@/types/note";
 import { sentenceCase } from "@/utils/helpers";
 import ImageModal from "@/components/common/ImageModal";
@@ -113,6 +112,7 @@ export default function ViewNotes() {
         setSuggestionsLoading(true);
         try {            
             // Extract only FormData fields (exclude id, createdAt, updatedAt, etc.)
+            // eslint-disable-next-line
             const { id, createdAt, updatedAt, status, userId, ...formDataFields } = noteData as Note & { 
                 status?: string; 
                 userId?: string;

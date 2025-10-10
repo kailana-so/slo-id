@@ -8,11 +8,9 @@ import dynamic from "next/dynamic";
 import { getEnvironmentalData } from "@/services/environmentService";
 import { getCurrentUserGeolocation, getNearestIdentifiableLocation } from "@/services/locationService";
 import Snackbar from "@/components/common/Snackbar";
-import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import { getNoteSuggestions } from "@/services/generativeService";
 import { Suggestion } from "@/types/suggestions";
-import Spinner from "@/components/common/Spinner";
-import {renderFieldHelper} from "@/components/forms/identification/IdentificationForm.utils";
+import { renderFieldHelper } from "@/components/forms/identification/IdentificationForm.utils";
 import SuggestionsDrawer from "@/components/SuggestionsDrawer";
 
 const ImageSelector = dynamic(() => import('@/components/ImageSelector'), {
