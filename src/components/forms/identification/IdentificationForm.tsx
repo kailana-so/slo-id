@@ -12,7 +12,8 @@ import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import { getNoteSuggestions } from "@/services/generativeService";
 import { Suggestion } from "@/types/suggestions";
 import Spinner from "@/components/common/Spinner";
-import {renderFieldHelper} from "@/components/forms/identification/IdentificationForm.utils"
+import {renderFieldHelper} from "@/components/forms/identification/IdentificationForm.utils";
+import SuggestionsDrawer from "@/components/SuggestionsDrawer";
 
 const ImageSelector = dynamic(() => import('@/components/ImageSelector'), {
     ssr: false,
@@ -189,45 +190,20 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                     <ActionButton label="Mark" loading={loading} />
                 </div>
             </form>
-            {/* Toggle button - always visible on right */}
-            {canSuggest && (
-                <button
-                    type="button"
-                    className={`suggestions-tab-toggle suggestions ${drawerOpen ? 'drawer-open' : ''}`}
-                    onClick={() => {
-                        if (!drawerOpen) {
-                            handleSuggestions(formData);
-                        } else {
-                            setDrawerOpen(false);
-                        }
-                    }}
-                >
-                    {suggestionsLoading ? <Spinner/> : <TipsAndUpdatesIcon />}
-                </button>
-            )}
-            
-            <div className={`suggestions-drawer ${drawerOpen ? "open" : "closed"}`}>
-                <div className="suggestions-content-wrapper">
-                <div className="suggestions-content">
-                    {Array.isArray(suggestionDetails) && suggestionDetails.length > 0 
-                    && (
-                        <ul className="space-y-3">
-                            {suggestionDetails.map((suggestion, idx) => (
-                                <li key={`${suggestion.name}-${idx}`} className="rounded border p-3">
-                                <h4>{suggestion.name}</h4>
-                                <div className="opacity-70">{suggestion.native ? "Native" : "Introduced"}</div>
-                                {suggestion.key_details?.length ? (
-                                    <div className="mt-2 list-disc">
-                                        {suggestion.key_details.map((keyDetail, idx) => <><div key={idx}>{keyDetail}</div><br key={idx} /></>)}
-                                    </div>
-                                ) : null}
-                            </li>
-                            ))}
-                        </ul>
-                    )}
-                    </div>
-                </div>
-			</div>
+            {/* Suggestions drawer and slider button */}
+            <SuggestionsDrawer 
+                suggestions={suggestionDetails} 
+                isOpen={drawerOpen}
+                isLoading={suggestionsLoading}
+                canSuggest={canSuggest}
+                suggestionsToggle={() => {
+                    if (!drawerOpen) {
+                        handleSuggestions(formData);
+                    } else {
+                        setDrawerOpen(false);
+                    }
+                }}
+            />
             {/* Local snackbar */}
             <Snackbar
                 message={snackbar.message}

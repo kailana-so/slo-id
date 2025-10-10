@@ -1,14 +1,20 @@
+import { useState } from "react";
 import { IdentificationFormField } from "@/types/form";
 import { Note } from "@/types/note";
 import { identificationFormSchema } from "./forms/identification/IdentificationFormSchema";
 import { renderValue } from "./NoteDetails.utils";
 import DWCIdDetails from "./DWCIdDetails";
+import SuggestionChips from "./SuggestionChips";
+import { Suggestion } from "@/types/suggestions";
+import { getNoteSuggestions } from "@/services/generativeService";
 
 
 interface NoteDetails {
   note: Note;
   handleEditNote: (noteId: string) => Promise<void>;
   handleUpdateNote: (noteId: string, updates: Record<string, string | boolean>, isComplete: boolean) => Promise<void>;
+  handleGenerateSuggestions: (noteId: string, noteData: Note) => Promise<void>;
+  suggestionsLoading: boolean;
   isActiveDraft: boolean;
   hasActiveDraft: boolean;
 }
@@ -19,10 +25,11 @@ export function NoteDetails({
 	note, 
 	handleEditNote,
 	handleUpdateNote,
+	handleGenerateSuggestions,
+	suggestionsLoading,
 	isActiveDraft,
 	hasActiveDraft
 }: NoteDetails) {
-
 	const typeSchema = identificationFormSchema[note.type];
 	const observedFields = typeSchema.filter(
 		(field: IdentificationFormField) =>
@@ -42,8 +49,13 @@ export function NoteDetails({
 								<strong>{field.label}:</strong>{" "}
 								{note[field.name] && renderValue(field.name, note[field.name])}
 							</p>
-					))}
-
+						))}
+			{/* Suggestions */}
+			<SuggestionChips 
+				suggestions={note.suggestions as Suggestion[] | undefined}
+				getSuggestions={() => handleGenerateSuggestions(note.id, note)}
+				suggestionsLoading={suggestionsLoading}
+			/>
 			</div>
 			{isActiveDraft && (
 				<DWCIdDetails note={note} onUpdate={handleUpdateNote} />

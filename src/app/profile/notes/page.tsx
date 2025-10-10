@@ -12,6 +12,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useRouter } from "next/navigation";
 import { Routes } from "@/enums/routes";
 import { updateSightingStatus, updateSightingLocation, updateSightingFields } from "@/services/identificationService";
+import { getNoteSuggestions } from "@/services/generativeService";
+import { Suggestion } from "@/types/suggestions";
+import type { FormData } from "@/types/note";
 import { sentenceCase } from "@/utils/helpers";
 import ImageModal from "@/components/common/ImageModal";
 import { SightingStatus } from "@/lib/db/dbHelpers";
@@ -36,8 +39,9 @@ export default function ViewNotes() {
     const [modalLocationSelector, setModalLocationSelector] = useState<boolean>(false);
     const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [snackbar, setSnackbar] = useState({ isOpen: false, message: "", type: "success" as "success" | "error" });
-
-	const {
+    const [suggestionsLoading, setSuggestionsLoading] = useState<boolean>(false);
+	
+    const {
 		data,
 		fetchNextPage,
 		hasNextPage,
@@ -102,6 +106,31 @@ export default function ViewNotes() {
             console.error("Failed to convert to draft", error);
             setSnackbar({ isOpen: true, message: "Failed to convert to draft", type: "error" });
         }
+    };
+
+    const handleGenerateSuggestions = async (noteId: string, noteData: Note) => {
+        console.log("handleGenerateSuggestions called", { noteId, noteData });
+        setSuggestionsLoading(true);
+        try {            
+            // Extract only FormData fields (exclude id, createdAt, updatedAt, etc.)
+            const { id, createdAt, updatedAt, status, userId, ...formDataFields } = noteData as Note & { 
+                status?: string; 
+                userId?: string;
+            };
+            
+            const suggestions = await getNoteSuggestions(formDataFields as FormData, noteData.type);
+            
+            if (suggestions && suggestions.length > 0) {
+                await updateSightingFields(noteId, { suggestions });
+                await queryClient.invalidateQueries({ queryKey: ["paginatedNotes", userData?.userId] });
+            } else {
+                setSnackbar({ isOpen: true, message: "No suggestions available", type: "error" });
+            }
+        } catch (error) {
+            console.error("Failed to get suggestions", error);
+            setSnackbar({ isOpen: true, message: "Failed to get suggestions", type: "error" });
+        }
+        setSuggestionsLoading(false);
     };
 
     const handleLocationUpdate = (note: Note) => {
@@ -212,6 +241,8 @@ export default function ViewNotes() {
                             note={note} 
                             handleEditNote={handleEditNote}
                             handleUpdateNote={handleUpdateNote}
+                            handleGenerateSuggestions={handleGenerateSuggestions}
+                            suggestionsLoading={suggestionsLoading}
                             isActiveDraft={note.status === SightingStatus.DRAFT}
                             hasActiveDraft={hasActiveDraft}
                         />

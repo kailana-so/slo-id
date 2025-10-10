@@ -37,7 +37,6 @@ export async function POST(
 			{ status: 200 }
 		);
 	} catch (err: unknown) {
-		console.log("err", err);
 		console.log("DNS default order:", dns.getDefaultResultOrder());
 		
 		return ErrorResponse("Failed to fetch geolocation", err, 500);

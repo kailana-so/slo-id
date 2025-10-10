@@ -490,6 +490,8 @@ svg[class*="MuiSvgIcon-root"] {
   border-right: none !important;
   border-radius: 6px 0 0 6px !important;
 	transition: right 0.3s ease !important;
+  background-color: var(--green-10);
+    box-shadow: -6px 0 16px rgba(0,0,0,.08);
 }
 
 
@@ -507,7 +509,6 @@ svg[class*="MuiSvgIcon-root"] {
   height: 100vh;             
   background-color: var(--background);
   z-index: 200;
-  box-shadow: -6px 0 16px rgba(0,0,0,.08);
   transition: transform .3s ease;
   border: 1px solid var(--green-100);
 	border-right: none;
@@ -534,6 +535,11 @@ svg[class*="MuiSvgIcon-root"] {
 	padding: 1rem;
 	position: relative;
 	z-index: 1;
+  background-color: var(--green-10);
+}
+
+.suggestions-content li {
+  background-color: var(--background);
 }
 
 .text-box {
@@ -545,11 +551,19 @@ svg[class*="MuiSvgIcon-root"] {
   background-color: var(--brown-10);
   border-radius: var(--border-radius);
   padding: var(--padding);
-  /* margin-right: var(--margin-right); */
   margin-left: var(--margin-left);
 }
 
 .btn-primary:hover {
     background-color: var(--brown-50);
     color: var(--brown-500);
+}
+
+.suggestion-item {
+  border: 1px solid var(--brown-100);
+  border-radius: var(--border-radius);
+  padding: var(--padding);
+  background-color: var(--brown-10);
+  color: var(--brown-900);
+  font-weight: bold;
 }

@@ -100,20 +100,29 @@ async function tryDeepSeek(systemPrompt: string, userMessage: string): Promise<{
 
 export async function POST(req: Request): Promise<Response> {
   const formData = await req.json();
-
   try {
+    // Filter out metadata fields that shouldn't be sent to AI
+    const { 
+      id, 
+      imageId, 
+      createdAt, 
+      updatedAt, 
+      status, 
+      userId, 
+      _topGroup,
+      individualStatus,
+      ...relevantFields 
+    } = formData;
+    
     const systemPrompt = buildSystemPrompt(formData.type as ObsType);
-    const userMessage = JSON.stringify(formData);
+    const userMessage = JSON.stringify(relevantFields);
 
     // Try DeepSeek first
     let payload = await tryDeepSeek(systemPrompt, userMessage);
-    
     // Fallback to Anthropic if DeepSeek failed
     if (!payload) {
-      console.log("DeepSeek failed, using Anthropic fallback");
       payload = await tryAnthropic(systemPrompt, userMessage);
     }
-    
     // If both failed, return empty
     if (!payload) {
       return new Response(JSON.stringify({ suggestions: [] }), {
