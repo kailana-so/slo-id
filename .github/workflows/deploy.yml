@@ -47,7 +47,7 @@ jobs:
             client/dist \
             server/dist \
             server/package.json \
-            server/yarn.lock
+            yarn.lock
 
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.8.0
