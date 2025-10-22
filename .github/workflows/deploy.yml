@@ -1,4 +1,4 @@
-name: Deploy Slo-id (build in CI)
+name: Deploy Slo-id
 
 on:
   push:
@@ -7,10 +7,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: .
 
     steps:
       - name: Checkout
@@ -22,56 +18,36 @@ jobs:
           node-version: 20
           cache: yarn
 
-      - name: Install deps (include devDependencies)
-        run: yarn install --frozen-lockfile --production=false
+      - name: Install root deps
+        run: yarn install --frozen-lockfile
 
-      - name: Assert CSS toolchain present
-        run: |
-          node -e "require.resolve('tailwindcss/package.json')"
-          node -e "require.resolve('postcss/package.json')"
-          node -e "require.resolve('autoprefixer/package.json')"
-
-      - name: Build (CI)
+      - name: Build client (Vite)
         env:
-          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
-          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
-          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
-          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
-          NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
-          NEXT_PUBLIC_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_MEASUREMENT_ID }}
-          NEXT_PUBLIC_AWS_REGION: ${{ secrets.NEXT_PUBLIC_AWS_REGION }}
-          NEXT_PUBLIC_IMAGE_BUCKET: ${{ secrets.NEXT_PUBLIC_IMAGE_BUCKET }}
-          NEXT_PUBLIC_X_SYSTEM_KEY: ${{ secrets.NEXT_PUBLIC_X_SYSTEM_KEY }}
-          NEXT_PUBLIC_ALA_OCCURANCE_API: ${{ secrets.NEXT_PUBLIC_ALA_OCCURANCE_API }}
-          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
-          WEATHER_API_HOST: ${{ secrets.WEATHER_API_HOST }}
-          CC_API_KEY: ${{ secrets.CC_API_KEY }}
-          CC_HOST: ${{ secrets.CC_HOST }}
-          CC_MODEL: ${{ secrets.CC_MODEL }}
-          CC_VERSION: ${{ secrets.CC_VERSION }}
-          DS_CHAT_HOST: ${{ secrets.DS_CHAT_HOST }}
-          DS_CHAT_API_KEY: ${{ secrets.DS_CHAT_API_KEY }}
-        run: NODE_ENV=production yarn build
-
-      - name: Sanity check build
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_MEASUREMENT_ID: ${{ secrets.VITE_MEASUREMENT_ID }}
+          VITE_ALA_OCCURANCE_API: ${{ secrets.VITE_ALA_OCCURANCE_API }}
+          VITE_X_SYSTEM_KEY: ${{ secrets.VITE_X_SYSTEM_KEY }}
         run: |
-          test -f .next/BUILD_ID
-          test -f .next/prerender-manifest.json
+          cd client
+          yarn build
 
-      - name: Create build bundle
-        shell: bash
+      - name: Build server (tsc)
         run: |
-          set -euo pipefail
-          CFG="$(ls -1 next.config.* 2>/dev/null || true)"
-          tar -czf build.tgz \
-            .next \
-            public \
-            package.json \
-            yarn.lock \
-            ecosystem.config.js \
-            tsconfig.json \
-            $CFG
+          cd server
+          yarn build
+
+      - name: Create deployment bundle
+        run: |
+          tar -czf slo-id-deploy.tgz \
+            client/dist \
+            server/dist \
+            server/package.json \
+            server/yarn.lock
 
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.8.0
@@ -82,71 +58,59 @@ jobs:
         env:
           SSH_PORT: ${{ secrets.DROPLET_SSH_PORT }}
         run: |
-          set -euo pipefail
           PORT_FLAG=""
           if [[ -n "${SSH_PORT:-}" ]]; then PORT_FLAG="-P ${SSH_PORT}"; fi
-      
-          # Upload bundle
           scp -o StrictHostKeyChecking=no ${PORT_FLAG} \
-            build.tgz \
-            "${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/tmp/slo-id-build.tgz"
-      
+            slo-id-deploy.tgz \
+            "${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:/tmp/slo-id-deploy.tgz"
 
-      - name: SSH – deploy artifacts & reload
+      - name: SSH – deploy & run
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} <<'SSH'
           set -euo pipefail
 
           APP_DIR=/var/www/slo-id
-          BUNDLE=/tmp/slo-id-build.tgz
+          BUNDLE=/tmp/slo-id-deploy.tgz
 
           command -v yarn >/dev/null 2>&1 || sudo npm i -g yarn@1.22.22
           command -v pm2  >/dev/null 2>&1 || sudo npm i -g pm2
 
           mkdir -p "$APP_DIR"
           tar -xzf "$BUNDLE" -C "$APP_DIR"
-
           cd "$APP_DIR"
 
-          cat > .env.production <<ENV
-          NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
-          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
-          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
-          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
-          NEXT_PUBLIC_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
-          NEXT_PUBLIC_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_MEASUREMENT_ID }}
-          NEXT_PUBLIC_AWS_REGION=${{ secrets.NEXT_PUBLIC_AWS_REGION }}
-          NEXT_PUBLIC_IMAGE_BUCKET=${{ secrets.NEXT_PUBLIC_IMAGE_BUCKET }}
-          NEXT_PUBLIC_X_SYSTEM_KEY=${{ secrets.NEXT_PUBLIC_X_SYSTEM_KEY }}
-          NEXT_PUBLIC_ALA_OCCURANCE_API=${{ secrets.NEXT_PUBLIC_ALA_OCCURANCE_API }}
-          AWS_UPLOAD_LAMBDA=${{ secrets.AWS_UPLOAD_LAMBDA }}
-          AWS_BUCKET=${{ secrets.AWS_BUCKET }}
+          # Server env
+          cat > .env <<ENV
+          NODE_ENV=production
+          PORT=3001
+          CLIENT_URL=${{ secrets.CLIENT_URL }}
+          AWS_REGION=${{ secrets.AWS_REGION }}
           AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          NOMINATION_API_HOST=${{ secrets.NOMINATION_API_HOST }}
-          WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
-          WEATHER_API_HOST=${{ secrets.WEATHER_API_HOST }}
-          EMAIL_SIGNER=${{ secrets.EMAIL_SIGNER }}
+          AWS_BUCKET=${{ secrets.AWS_BUCKET }}
           CC_API_KEY=${{ secrets.CC_API_KEY }}
           CC_HOST=${{ secrets.CC_HOST }}
           CC_MODEL=${{ secrets.CC_MODEL }}
           CC_VERSION=${{ secrets.CC_VERSION }}
+          DS_API_KEY=${{ secrets.DS_API_KEY }}
           DS_CHAT_HOST=${{ secrets.DS_CHAT_HOST }}
-          DS_CHAT_API_KEY=${{ secrets.DS_CHAT_API_KEY }}
+          WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
+          WEATHER_API_HOST=${{ secrets.WEATHER_API_HOST }}
+          NOMINATION_API_HOST=${{ secrets.NOMINATION_API_HOST }}
+          EMAIL_SIGNER=${{ secrets.EMAIL_SIGNER }}
+          VITE_X_SYSTEM_KEY=${{ secrets.VITE_X_SYSTEM_KEY }}
           ENV
 
-          yarn install --frozen-lockfile
+          cd server
+          yarn install --frozen-lockfile --production
 
-          test -f .next/BUILD_ID
-          test -f .next/prerender-manifest.json
-
+          # Start or reload via pm2 directly (no ecosystem file needed)
           if pm2 describe slo-id >/dev/null 2>&1; then
-            pm2 reload ecosystem.config.js --only slo-id
+            pm2 reload slo-id --update-env --kill-timeout 4000
           else
-            pm2 start ecosystem.config.js --only slo-id
+            pm2 start "node dist/index.js" --name slo-id
           fi
 
           pm2 save
-          echo "✅ Deploy complete (CI-built artifacts)"
+          echo "✅ Deploy complete"
           SSH
