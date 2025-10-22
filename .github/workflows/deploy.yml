@@ -91,7 +91,7 @@ jobs:
 
           echo "Writing environment..."
           cd "$APP_DIR"
-          cat > server/.env <<ENV
+          cat > server/dist/.env <<ENV
           NODE_ENV=production
           PORT=3002
           CLIENT_URL=${{ secrets.CLIENT_URL }}
