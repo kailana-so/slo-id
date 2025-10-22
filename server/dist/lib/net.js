@@ -11,4 +11,3 @@ const ipv4Agent = new Agent({
 });
 setGlobalDispatcher(ipv4Agent);
 console.log("🌐 Forcing IPv4 for fetch");
-//# sourceMappingURL=net.js.map

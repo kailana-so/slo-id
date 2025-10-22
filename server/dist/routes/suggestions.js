@@ -2,7 +2,6 @@ import { Router } from 'express';
 import ErrorResponse from '../utils/errorResponse.js';
 import { buildSystemPrompt } from '../lib/prompts/promptBuilder.js';
 const router = Router();
-
 function toPayload(raw) {
     const obj = typeof raw === "string" ? JSON.parse(raw) : raw;
     if (obj &&
@@ -87,13 +86,14 @@ async function tryDeepSeek(systemPrompt, userMessage) {
 router.post('/', async (req, res) => {
     const formData = req.body;
     try {
-        // Filter out metadata fields that shouldn't be sent to AI
+        // Filter out metadata fields and only send essential identification data
         // eslint-disable-next-line
-        const { id, imageId, createdAt, updatedAt, status, userId, _topGroup, individualStatus, ...relevantFields } = formData;
-        const systemPrompt = buildSystemPrompt(formData.type);
-        const userMessage = JSON.stringify(relevantFields);
-
-        console.log('systemPrompt JS', systemPrompt);
+        const { id, imageId, createdAt, updatedAt, status, userId, _topGroup, ...allFields } = formData;
+        console.log('[all fields TS]', allFields);
+        const systemPrompt = `${buildSystemPrompt(formData.type)} 
+        \n The user is trying to identify ${_topGroup} of type ${formData.type}.`;
+        const userMessage = JSON.stringify(allFields);
+        console.log('systemPrompt', systemPrompt);
         console.log('userMessage', userMessage);
         // Try DeepSeek first
         let payload = await tryDeepSeek(systemPrompt, userMessage);

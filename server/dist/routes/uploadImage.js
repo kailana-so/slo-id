@@ -2,16 +2,22 @@ import { Router } from 'express';
 import ErrorResponse from '../utils/errorResponse.js';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 const router = Router();
-const s3 = new S3Client({
-    region: process.env.AWS_REGION || "ap-southeast-2",
-    credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    },
-});
-const BUCKET = process.env.AWS_BUCKET || "slo-id-images";
+// AWS S3 client will be initialized inside the route handler
 router.post('/', async (req, res) => {
     try {
+        // Initialize S3 client inside the route handler to ensure env vars are loaded
+        const s3 = new S3Client({
+            region: process.env.AWS_REGION || "ap-southeast-2",
+            credentials: {
+                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+            },
+        });
+        const BUCKET = process.env.AWS_BUCKET || "slo-id-images";
+        console.log('Upload route - AWS Region:', process.env.AWS_REGION);
+        console.log('Upload route - AWS Access Key ID:', process.env.AWS_ACCESS_KEY_ID ? 'Present' : 'Missing');
+        console.log('Upload route - AWS Secret Access Key:', process.env.AWS_SECRET_ACCESS_KEY ? 'Present' : 'Missing');
+        console.log('Upload route - AWS Bucket:', process.env.AWS_BUCKET);
         const { userId, thumbnailImageFile, fullImageFile } = req.body;
         if (!userId || !thumbnailImageFile || !fullImageFile) {
             return res.status(400).json({ error: "Missing userId or image files" });

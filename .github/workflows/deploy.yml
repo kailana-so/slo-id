@@ -83,14 +83,17 @@ jobs:
 
           echo "📦 Extracting bundle..."
           mkdir -p "$APP_DIR"
-          rm -rf "$APP_DIR/client" "$APP_DIR/server"
+          rm -rf "$APP_DIR/client" "$APP_DIR/server" "$APP_DIR/.next" "$APP_DIR/out"
           tar -xzf "$BUNDLE" -C "$APP_DIR"
+          
+          echo "🧹 Clearing any cached files..."
+          sudo rm -rf /var/cache/nginx/* 2>/dev/null || true
 
           echo "🔐 Writing environment..."
           cd "$APP_DIR"
           cat > .env <<ENV
           NODE_ENV=production
-          PORT=3001
+          PORT=3002
           CLIENT_URL=${{ secrets.CLIENT_URL }}
           AWS_REGION=${{ secrets.AWS_REGION }}
           AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
