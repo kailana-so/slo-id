@@ -101,8 +101,8 @@ jobs:
           VITE_X_SYSTEM_KEY=${{ secrets.VITE_X_SYSTEM_KEY }}
           ENV
 
-          cd server
-          yarn install --frozen-lockfile --production
+          cd "$APP_DIR"
+          yarn workspaces focus server --production || (cd server && yarn install --production)
 
           # Start or reload via pm2 directly (no ecosystem file needed)
           if pm2 describe slo-id >/dev/null 2>&1; then
