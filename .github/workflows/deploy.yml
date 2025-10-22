@@ -81,17 +81,17 @@ jobs:
           command -v yarn >/dev/null 2>&1 || sudo npm i -g yarn@1.22.22
           command -v pm2  >/dev/null 2>&1 || sudo npm i -g pm2
 
-          echo "📦 Extracting bundle..."
+          echo "Extracting bundle..."
           mkdir -p "$APP_DIR"
-          rm -rf "$APP_DIR/client" "$APP_DIR/server" "$APP_DIR/.next" "$APP_DIR/out"
+          rm -rf "$APP_DIR/client" "$APP_DIR/server/dist" "$APP_DIR/server/package.json" "$APP_DIR/yarn.lock"
           tar -xzf "$BUNDLE" -C "$APP_DIR"
-          
+
           echo "🧹 Clearing any cached files..."
           sudo rm -rf /var/cache/nginx/* 2>/dev/null || true
 
-          echo "🔐 Writing environment..."
+          echo "Writing environment..."
           cd "$APP_DIR"
-          cat > .env <<ENV
+          cat > server/.env <<ENV
           NODE_ENV=production
           PORT=3002
           CLIENT_URL=${{ secrets.CLIENT_URL }}
@@ -112,12 +112,16 @@ jobs:
           VITE_X_SYSTEM_KEY=${{ secrets.VITE_X_SYSTEM_KEY }}
           ENV
 
-          echo "📚 Installing server dependencies..."
+          echo "Installing server dependencies..."
           cp "$APP_DIR/yarn.lock" "$APP_DIR/server/yarn.lock"
           cd "$APP_DIR/server"
-          yarn install --production --frozen-lockfile || { echo "❌ Yarn install failed"; exit 1; }
+          sudo rm -rf node_modules
+          yarn install --frozen-lockfile --production
 
-          echo "🚀 Starting server..."
+          echo "Verifying dependencies..."
+          node -e "require('iconv-lite').encodingExists('utf8')" || { echo '❌ iconv-lite missing'; exit 1; }
+
+          echo "🚀 Restarting server..."
           if pm2 describe slo-id >/dev/null 2>&1; then
             pm2 reload slo-id --update-env --kill-timeout 4000
           else
@@ -125,5 +129,5 @@ jobs:
           fi
 
           pm2 save
-          echo "✅ Deploy complete"
+          echo "[SUCCESS] Deploy complete"
           SSH
