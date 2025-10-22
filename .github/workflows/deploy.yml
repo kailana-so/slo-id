@@ -7,6 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
@@ -33,16 +34,19 @@ jobs:
           VITE_ALA_OCCURANCE_API: ${{ secrets.VITE_ALA_OCCURANCE_API }}
           VITE_X_SYSTEM_KEY: ${{ secrets.VITE_X_SYSTEM_KEY }}
         run: |
+          set -e
           cd client
           yarn build
 
       - name: Build server (tsc)
         run: |
+          set -e
           cd server
           yarn build
 
       - name: Create deployment bundle
         run: |
+          set -e
           tar -czf slo-id-deploy.tgz \
             client/dist \
             server/dist \
@@ -58,6 +62,7 @@ jobs:
         env:
           SSH_PORT: ${{ secrets.DROPLET_SSH_PORT }}
         run: |
+          set -e
           PORT_FLAG=""
           if [[ -n "${SSH_PORT:-}" ]]; then PORT_FLAG="-P ${SSH_PORT}"; fi
           scp -o StrictHostKeyChecking=no ${PORT_FLAG} \
@@ -66,6 +71,7 @@ jobs:
 
       - name: SSH – deploy & run
         run: |
+          set -euo pipefail
           ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} <<'SSH'
           set -euo pipefail
 
@@ -75,11 +81,13 @@ jobs:
           command -v yarn >/dev/null 2>&1 || sudo npm i -g yarn@1.22.22
           command -v pm2  >/dev/null 2>&1 || sudo npm i -g pm2
 
+          echo "📦 Extracting bundle..."
           mkdir -p "$APP_DIR"
+          rm -rf "$APP_DIR/client" "$APP_DIR/server"
           tar -xzf "$BUNDLE" -C "$APP_DIR"
-          cd "$APP_DIR"
 
-          # Server env
+          echo "🔐 Writing environment..."
+          cd "$APP_DIR"
           cat > .env <<ENV
           NODE_ENV=production
           PORT=3001
@@ -101,10 +109,12 @@ jobs:
           VITE_X_SYSTEM_KEY=${{ secrets.VITE_X_SYSTEM_KEY }}
           ENV
 
-          cd "$APP_DIR"
-          yarn workspaces focus server --production || (cd server && yarn install --production)
+          echo "📚 Installing server dependencies..."
+          cp "$APP_DIR/yarn.lock" "$APP_DIR/server/yarn.lock"
+          cd "$APP_DIR/server"
+          yarn install --production --frozen-lockfile || { echo "❌ Yarn install failed"; exit 1; }
 
-          # Start or reload via pm2 directly (no ecosystem file needed)
+          echo "🚀 Starting server..."
           if pm2 describe slo-id >/dev/null 2>&1; then
             pm2 reload slo-id --update-env --kill-timeout 4000
           else
