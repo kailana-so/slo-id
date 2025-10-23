@@ -28,7 +28,8 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
         isOpen: false,
         message: "",
         type: "success" as "success" | "error",
-      });
+    });
+    const [isUploading, setIsUploading] = useState(false);
     const [suggestionDetails, setSuggestionDetails] = useState<Suggestion[]>([])
     const [suggestionsLoading, setSuggestionsLoading] = useState<boolean>(false)
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -180,9 +181,9 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                         </label>
                     </div>
                     ))}
-                <ImageSelector setFormData={setFormData} />
+                <ImageSelector setFormData={setFormData} setIsUploading={setIsUploading} />
                 <div className="pt-2 justify-items-end">
-                    <ActionButton label="Mark" loading={loading} />
+                    <ActionButton label="Mark" loading={loading || isUploading} />
                 </div>
             </form>
             {/* Suggestions drawer and slider button */}

@@ -9,24 +9,32 @@ import { FormData } from "@/types/note";
 
 type ImageSelectorProps = {
     setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+    setIsUploading?: (uploading: boolean) => void;
 };
 
-const ImageSelector = ({ setFormData }: ImageSelectorProps) => {
+const ImageSelector = ({ setFormData, setIsUploading }: ImageSelectorProps) => {
 
     const handleImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const imageId = uuidv4();
 
         if (!event.target.files || !event.target.files[0]) return;
-        let file = event.target.files[0];
-    
-        file = await convertImage(file) // Convert HEIC if needed
-    
-        const { fullImageFile, thumbnailImageFile } = await compressImage(file, imageId); // TODO: Compress image - to be move to a BG process
-        setFormData((prev) => ({
-            ...prev,
-            imageFiles: { fullImageFile, thumbnailImageFile },
-            imageId
-        }));
+        
+        setIsUploading?.(true);
+        
+        try {
+            let file = event.target.files[0];
+        
+            file = await convertImage(file) // Convert HEIC if needed
+        
+            const { fullImageFile, thumbnailImageFile } = await compressImage(file, imageId); // TODO: Compress image - to be move to a BG process
+            setFormData((prev) => ({
+                ...prev,
+                imageFiles: { fullImageFile, thumbnailImageFile },
+                imageId
+            }));
+        } finally {
+            setIsUploading?.(false);
+        }
     };
 
     return (
