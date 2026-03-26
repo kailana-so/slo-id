@@ -2,24 +2,14 @@
   "name": "slo-id-monorepo",
   "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "scripts": {
-    "dev": "concurrently \"yarn dev:server\" \"yarn dev:client\"",
     "dev:client": "yarn workspace slo-id-client dev",
-    "dev:server": "yarn workspace slo-id-server dev",
-    "build": "yarn workspace slo-id-client build && yarn workspace slo-id-server build",
     "build:client": "yarn workspace slo-id-client build",
-    "build:server": "yarn workspace slo-id-server build",
-    "start": "concurrently \"yarn start:server\" \"yarn start:client\"",
-    "start:client": "yarn workspace slo-id-client start",
-    "start:server": "yarn workspace slo-id-server start",
-    "test": "yarn workspace slo-id-client test",
-    "lint": "yarn workspace slo-id-client lint && yarn workspace slo-id-server lint",
-    "install:all": "yarn install"
+    "lint:client": "yarn workspace slo-id-client lint"
   },
+  "workspaces": [
+    "client"
+  ],
   "devDependencies": {
     "concurrently": "^8.2.2"
   }

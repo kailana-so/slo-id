@@ -4,8 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { getUser } from "@/services/userService";
 import { useAuth } from "@/providers/AuthProvider";
 import { ProfileProps } from "@/types/user";
-import { retry } from "@/utils/retry"
-
+import { retry } from "@/utils/retry";
 
 type ProfileContextType = {
     userData: ProfileProps | null;
@@ -23,20 +22,20 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         if (!user) {
-          setUserData(null);
-          setLoading(false);
-          return;
+            setUserData(null);
+            setLoading(false);
+            return;
         }
-      
+
         const load = async () => {
-          setLoading(true);
-          const data = await retry(() => getUser(user.uid));
-          setUserData(data);
-          setLoading(false);
+            setLoading(true);
+            const data = await retry(() => getUser());
+            setUserData(data);
+            setLoading(false);
         };
-      
+
         load();
-      }, [user]);
+    }, [user]);
 
     return (
         <ProfileContext.Provider value={{ userData, loading }}>
@@ -45,11 +44,8 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     );
 }
 
-// Hook to use the context
 export function useProfile() {
     const context = useContext(ProfileContext);
-    if (context === undefined) {
-        throw new Error("useProfile must be used within a ProfileProvider");
-    }
+    if (context === undefined) throw new Error("useProfile must be used within a ProfileProvider");
     return context;
 }

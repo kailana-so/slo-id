@@ -1,12 +1,11 @@
 export interface MapPin {
     id: string;
-    name: string; 
-    type: string
+    name: string;
+    type: string;
     latitude: number;
     longitude: number;
-    createdAt: number;
-    imageId?: string;
-    thumbnailUrl?: string | undefined;
+    created_at: string;
+    thumbnailUrl?: string;
 }
 
 export type LocationData = {

@@ -1,5 +1,5 @@
 import { IdentificationFormField } from "@/types/form";
-import { Note } from "@/types/note";
+import { Note, NoteFormType } from "@/types/note";
 import { identificationFormSchema, dwcUserObservationSchema } from "./forms/identification/IdentificationFormSchema";
 import { renderValue } from "./NoteDetails.utils";
 import { format } from "date-fns";
@@ -29,7 +29,7 @@ export const IdentificationDetails: React.FC<IdentificationDetailsProps> = ({ no
             />
           ) : (
             <img
-              src={note.type === "insect" ? "/imgs/slo-id2.png" : "/imgs/slo-id1.png"}
+              src={note.type === NoteFormType.INSECT ? "/imgs/slo-id2.png" : "/imgs/slo-id1.png"}
               width={200}
               height={200}
               alt="placeholder"
@@ -40,7 +40,7 @@ export const IdentificationDetails: React.FC<IdentificationDetailsProps> = ({ no
         <div>
           <div className='badge-item unselected flex items-center gap-2'>
             {/* <DrawIcon fontSize="small" /> */}
-            <h4>{`${sentenceCase(note.type)}`}</h4>
+            <h4>{`${sentenceCase(note.type ?? "")}`}</h4>
           </div>
         </div>
       </div>
@@ -50,18 +50,18 @@ export const IdentificationDetails: React.FC<IdentificationDetailsProps> = ({ no
         <div className="flex justify-between items-center mb-2">
           <h4>Identified:</h4>
           <p>
-            {note.updatedAt ? format(note.updatedAt, "dd MMM yyyy hh:mm a") : "No Date"}
+            {note.updated_at ? format(new Date(note.updated_at), "dd MMM yyyy hh:mm a") : "No Date"}
           </p>
         </div>
         {dwcUserObservationSchema
-          .filter((field: IdentificationFormField) => 
-            note[field.name] !== undefined && 
-            note[field.name] !== null &&
-            String(note[field.name]).trim() !== ''
+          .filter((field: IdentificationFormField) =>
+            note.fields[field.name] !== undefined &&
+            note.fields[field.name] !== null &&
+            String(note.fields[field.name]).trim() !== ''
           )
           .map((field: IdentificationFormField) => (
             <p key={field.name}>
-              <strong>{field.label}:</strong> {renderValue(field.name, note[field.name])}
+              <strong>{field.label}:</strong> {renderValue(field.name, note.fields[field.name])}
             </p>
           ))
         }
@@ -72,18 +72,18 @@ export const IdentificationDetails: React.FC<IdentificationDetailsProps> = ({ no
         <div className="flex justify-between items-center mb-2">
           <h4>Observed:</h4> 
           <p>
-            {note.createdAt ? format(note.createdAt, "dd MMM yyyy hh:mm a") : "No Date"}
+            {note.created_at ? format(new Date(note.created_at), "dd MMM yyyy hh:mm a") : "No Date"}
           </p>
         </div>
         {note?.type && identificationFormSchema[note.type]
-          .filter((field: IdentificationFormField) => 
-            note[field.name] !== undefined && 
-            note[field.name] !== null &&
+          .filter((field: IdentificationFormField) =>
+            note.fields[field.name] !== undefined &&
+            note.fields[field.name] !== null &&
             !HIDDEN_FIELDS.includes(field.name)
           )
           .map((field: IdentificationFormField) => (
             <p key={field.name}>
-              <strong>{field.label}:</strong> {renderValue(field.name, note[field.name])}
+              <strong>{field.label}:</strong> {renderValue(field.name, note.fields[field.name])}
             </p>
           ))
         }

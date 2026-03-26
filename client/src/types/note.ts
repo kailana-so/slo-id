@@ -1,63 +1,85 @@
-import { identificationFormSchema } from "@/components/forms/identification/IdentificationFormSchema";
 import { EnvironmentalData } from "./environment";
 import { LocationData } from "./map";
-import { Suggestion } from "./suggestions";
 
-export type FieldType = "text" | "select" | "checkbox" | "color-buttons";
+export const MediaType = {
+    PHOTO: "photo",
+    VIDEO: "video",
+    AUDIO: "audio",
+} as const;
 
-export interface OptionField {
-  name: string;
-  hex?: string;
-}
+export type MediaType = typeof MediaType[keyof typeof MediaType];
 
-export interface IdentificationFormField {
-  name: string;
-  label: string;
-  type: FieldType;
-  required: boolean;
-  conditional?: string;
-  options?: OptionField[];
-}
+export type MediaItem = {
+    key: string;
+    media_type: MediaType;
+    thumbnail_key?: string;  // photos only — S3 key for the compressed thumbnail
+};
 
-export type FormType = keyof typeof identificationFormSchema;
+export const SightingStatus = {
+    SIGHTING:       "sighting",
+    DRAFT:          "draft",
+    IDENTIFICATION: "identification",
+} as const;
 
-export type FieldNames<T extends FormType> =
-  (typeof identificationFormSchema)[T][number]["name"];
+export type SightingStatus = typeof SightingStatus[keyof typeof SightingStatus];
 
-export type NoteBase = {
+export const NoteFormType = {
+    INSECT:  "insect",
+    PLANT:   "plant",
+    REPTILE: "reptile",
+    BIRD:    "bird",
+} as const;
+
+export type FormType = typeof NoteFormType[keyof typeof NoteFormType];
+
+export type Note = {
     id: string;
-    type: FormType;
+    user_id: string | null;
+    type: FormType | null;
+    status: SightingStatus;
     name?: string;
-    createdAt?: number;
-    updatedAt?: number;
-    imageId?: string;
+    media: MediaItem[];
+    latitude?: number;
+    longitude?: number;
     location?: LocationData;
+    environment?: EnvironmentalData;
+    fields: Record<string, string | boolean>;
+    created_at: string;
+    updated_at: string;
 };
 
-export type NoteByType<T extends FormType> = NoteBase & {
-    [K in FieldNames<T>]?: string | boolean;
+export type NoteCreate = {
+    type?: FormType;
+    media?: MediaItem[];
+    latitude?: number;
+    longitude?: number;
+    location?: LocationData;
+    environment?: EnvironmentalData;
 };
 
-export type Note =
-    | NoteByType<"insect">
-    | NoteByType<"plant">
-    | NoteByType<"reptile">
-    | NoteByType<"bird">
-    // | NoteByType<"mineral">;
+export type NoteUpdate = {
+    name?: string;
+    type?: FormType;
+    status?: SightingStatus;
+    media?: MediaItem[];
+    latitude?: number;
+    longitude?: number;
+    location?: LocationData;
+    environment?: EnvironmentalData;
+    fields?: Record<string, string | boolean>;
+};
 
 export type UploadImage = {
-	name: string;
-	type: string;
-	content: string; 
-}
+    name: string;
+    type: string;
+    content: string;
+};
 
 export type UploadPayload = {
-	thumbnailImageFile: UploadImage;
-	fullImageFile: UploadImage;
-}
+    thumbnailImageFile: UploadImage;
+    fullImageFile: UploadImage;
+};
 
-export type FormDataValue = string | boolean | number | File | UploadPayload | EnvironmentalData | LocationData | Suggestion[];
+export type FormDataValue = string | boolean | number | File | UploadPayload | EnvironmentalData | LocationData;
 
 export type FormData = Record<string, FormDataValue>;
-    
-  

@@ -1,4 +1,4 @@
-import { commonHeaders } from "@/lib/commonHeaders";
+import { apiFetch } from "@/lib/api";
 import { LocationData } from "@/types/map";
 import { getGeolocation } from "@/utils/getLocation.client";
 
@@ -11,19 +11,15 @@ const getNearestIdentifiableLocation = async (
     latitude: number,
     longitude: number,
 ): Promise<{location: LocationData}> => {
-	
+
 	const key = `${latitude},${longitude}`;
 
 	// Check cache first
 	const cached = locationCache.get(key);
 	if (cached) return { location: cached };
 
-	const res = await fetch("/api/geolocate", {
+	const res = await apiFetch("/api/geolocate/", {
         method: "POST",
-        headers: { 
-            "Content-Type": "application/json",
-            ...commonHeaders()
-        },
         body: JSON.stringify({ lat: latitude, lng: longitude }),
     });
 

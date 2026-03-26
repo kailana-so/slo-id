@@ -1,4 +1,4 @@
-import { commonHeaders } from "@/lib/commonHeaders"; 
+import { apiFetch } from "@/lib/api";
 import { EnvironmentalData } from "@/types/environment";
 
 const getEnvironmentalData = async (
@@ -6,12 +6,8 @@ const getEnvironmentalData = async (
     lng: number,
 ): Promise<{ environment: EnvironmentalData }> => {
 
-    const res = await fetch("/api/weather", {
+    const res = await apiFetch("/api/weather/", {
         method: "POST",
-        headers: { 
-            "Content-Type": "application/json",
-            ...commonHeaders()
-        },
         body: JSON.stringify({ lat, lng }),
     });
     

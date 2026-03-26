@@ -101,7 +101,7 @@ const UserSpeciesList: React.FC<UserSpeciesListProps> = ({ species, userNotes, l
                   <div>
                     <h4>{sentenceCase(note.type)}</h4>
                     {note.name && <p>{note.name}</p>}
-                    <p>{format(note.createdAt, "dd MMM yyyy")}</p>
+                    <p>{format(new Date(note.created_at), "dd MMM yyyy")}</p>
                     <div className="content-center gap-4 flex flex-row pt-2">
                       <button 
                         className="flex items-end gap-2"
@@ -112,7 +112,7 @@ const UserSpeciesList: React.FC<UserSpeciesListProps> = ({ species, userNotes, l
                             type: note.type,
                             ...(note.name && { name: note.name }),
                             ...(note.thumbnailUrl && { image: note.thumbnailUrl }),
-                            date: format(note.createdAt, "dd MMM yyyy")
+                            date: format(new Date(note.created_at), "dd MMM yyyy")
                           });
                           navigate(`${Routes.USERMAP}?${params.toString()}`);
                         }}

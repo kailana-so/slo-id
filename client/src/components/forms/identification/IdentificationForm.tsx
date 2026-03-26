@@ -1,15 +1,17 @@
-import {useEffect, useMemo, useState} from "react";
+import {useMemo, useState} from "react";
 import ActionButton from "@/components/common/ActionButton";
 import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 import {
   IdentificationFormProps,
 } from "@/types/form";
-import ImageSelector from "@/components/ImageSelector";
 import { getEnvironmentalData } from "@/services/environmentService";
 import { getCurrentUserGeolocation, getNearestIdentifiableLocation } from "@/services/locationService";
 import Snackbar from "@/components/common/Snackbar";
-import { getNoteSuggestions } from "@/services/generativeService";
 import { Suggestion } from "@/types/suggestions";
+
+// Suggestions are disabled — will be rebuilt with the new AI backend
+const getNoteSuggestions = async (_data: unknown, _type: string): Promise<Suggestion[]> => [];
+
 import { renderFieldHelper } from "@/components/forms/identification/IdentificationForm.utils";
 import SuggestionsDrawer from "@/components/SuggestionsDrawer";
 
@@ -29,17 +31,10 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
         message: "",
         type: "success" as "success" | "error",
     });
-    const [isUploading, setIsUploading] = useState(false);
-    const [suggestionDetails, setSuggestionDetails] = useState<Suggestion[]>([])
+const [suggestionDetails, setSuggestionDetails] = useState<Suggestion[]>([])
     const [suggestionsLoading, setSuggestionsLoading] = useState<boolean>(false)
     const [drawerOpen, setDrawerOpen] = useState(false);
 
-    // Add suggestions to formData when they're fetched
-    useEffect(() => {
-        if (suggestionDetails.length > 0) {
-            setFormData(prev => ({ ...prev, suggestions: suggestionDetails }));
-        }
-    }, [suggestionDetails, setFormData]);
 
 
     const handleChange = (
@@ -181,9 +176,8 @@ const IdentificationForm: React.FC<IdentificationFormProps> = ({
                         </label>
                     </div>
                     ))}
-                <ImageSelector setFormData={setFormData} setIsUploading={setIsUploading} />
                 <div className="pt-2 justify-items-end">
-                    <ActionButton label="Mark" loading={loading || isUploading} />
+                    <ActionButton label="Mark" loading={loading} />
                 </div>
             </form>
             {/* Suggestions drawer and slider button */}

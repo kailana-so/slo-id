@@ -3,7 +3,7 @@ import { FormData } from "@/types/note";
 
 export type FormSubmitEvent = React.FormEvent<HTMLFormElement>;
 
-export type  AuthFormProps = {
+export type AuthFormProps = {
     title: string;
     email: string;
     setEmail: (email: string) => void;
@@ -15,8 +15,6 @@ export type  AuthFormProps = {
     isSignUp?: boolean;
     name?: string;
     setName?: (name: string) => void;
-    refCode?: string;
-    setRefCode?: (refCode: string) => void;
 }
 
 

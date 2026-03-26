@@ -12,7 +12,7 @@ interface DWCIdDetailsProps {
 }
 
 export const DWCIdDetails: React.FC<DWCIdDetailsProps> = ({ note, onUpdate }) => {
-  const [formData, setFormData] = useState<Record<string, string | boolean>>(note as Record<string, string | boolean>);
+  const [formData, setFormData] = useState<Record<string, string | boolean>>(note.fields);
   const [isEditing, setIsEditing] = useState(false);
 
   // Check if all required fields are complete

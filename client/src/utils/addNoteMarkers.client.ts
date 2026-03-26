@@ -18,7 +18,7 @@ export const addNoteMarkers = async (map: L.Map, notes: MapPin[]) => {
 				${note.thumbnailUrl ? `<img src="${note.thumbnailUrl}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;" />` : ''}
 				<div><strong>${note.type}</strong></div>
 				<div>${note.name || "Unnamed"}</div>
-				<div style="font-size: 12px; color: #666;">${format(note.createdAt, "dd MMM yyyy")}</div>
+				<div style="font-size: 12px; color: #666;">${format(new Date(note.created_at), "dd MMM yyyy")}</div>
 			</div>
 		`;
 

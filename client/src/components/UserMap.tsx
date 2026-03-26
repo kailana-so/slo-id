@@ -1,7 +1,5 @@
 import { useProfile } from "@/providers/ProfileProvider";
 import { getUserSightingsCoords } from "@/services/identificationService";
-import { getImageURLs } from "@/services/imageService";
-import { ImageType } from "@/hooks/usePaginationCache";
 import BaseMap from "@/components/BaseMap";
 import { MapPin } from "@/types/map";
 import { useCallback, useEffect, useState } from "react";
@@ -107,22 +105,8 @@ export default function MapsPage() {
 				.openPopup();
 		}
 
-		const { notes }: { notes: MapPin[] } = await getUserSightingsCoords(userData.userId);
-		
-		// Fetch thumbnail URLs for notes with images
-		const imageIds = notes.map(n => n.imageId).filter((id): id is string => !!id);
-		const imageUrls = await getImageURLs(userData.userId, imageIds, ImageType.THUMBNAIL);
-		const thumbnails = Object.fromEntries(
-			imageUrls.map(({ filename, url }: { filename: string; url: string }) => [filename, url])
-		);
-		
-		// Add thumbnail URLs to notes
-		const notesWithThumbnails = notes.map(note => ({
-			...note,
-			thumbnailUrl: note.imageId ? thumbnails[note.imageId] : undefined
-		}));
-		
-		addNoteMarkers(map, notesWithThumbnails);
+		const { notes }: { notes: MapPin[] } = await getUserSightingsCoords();
+	addNoteMarkers(map, notes);
 
 	}, [userData, initialLat, initialLng, speciesInfo, noteInfo]);
 

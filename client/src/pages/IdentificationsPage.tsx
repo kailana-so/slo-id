@@ -4,7 +4,7 @@ import { usePaginatedIds } from "@/hooks/usePaginationCache";
 import { useProfile } from "@/providers/ProfileProvider";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import IdentificationDetails from "@/components/IdentificationDetails";
-import { Note } from "@/types/note";
+import { Note, NoteFormType } from "@/types/note";
 
 export default function IdentificationsPage() {
     const { userData } = useProfile();
@@ -17,7 +17,7 @@ export default function IdentificationsPage() {
 		isFetchingNextPage,
 		isLoading,
 		error
-	} = usePaginatedIds(userData?.userId);
+	} = usePaginatedIds(userData?.id);
 
 	if (!userData) return null;
 	if (isLoading) return <Spinner />;
@@ -29,8 +29,6 @@ export default function IdentificationsPage() {
 
     const allNotes = data?.pages.flatMap(page => page.identifications) ?? [];
     const totalCount = data?.pages[0]?.count ?? 0;
-    const allThumbnails = Object.assign({}, ...(data?.pages.map(p => p.thumbnails) ?? []));
-
     const validFetchMore = allNotes.length < totalCount
 
     return (
@@ -49,7 +47,7 @@ export default function IdentificationsPage() {
                         onClick={() => setSelectedNote(null)}>
                             <IdentificationDetails 
                                 note={note} 
-                                thumbnailUrl={note.imageId ? allThumbnails[note.imageId] : undefined}
+                                thumbnailUrl={undefined}
                             />
                         </div>
                     ) : (
@@ -58,17 +56,9 @@ export default function IdentificationsPage() {
                         className="cursor-pointer card"
                         onClick={() => setSelectedNote(note)}
                     >
-                        {note.imageId && allThumbnails[note.imageId] ? (
+                        {false ? null : (
                             <img
-                                src={allThumbnails[note.imageId]}
-                                width={200}
-                                height={200}
-                                alt={`picture of ${note.name || note.scientificName}`}
-                                className="object-cover rounded-sm w-full aspect-square" 
-                            />
-                        ) : (
-                            <img
-                                src={note.type === "insect" ? "/imgs/slo-id2.png" : "/imgs/slo-id1.png"}
+                                src={note.type === NoteFormType.INSECT ? "/imgs/slo-id2.png" : "/imgs/slo-id1.png"}
                                 width={200}
                                 height={200}
                                 alt="placeholder"
@@ -76,9 +66,9 @@ export default function IdentificationsPage() {
                             />
                         )}
                         <div className="mt-2">
-                            <h4>{note.scientificName || note.commonName || note.type}</h4>
-                            {note.commonName && note.scientificName && (
-                                <p>{note.commonName}</p>
+                            <h4>{String(note.fields.scientificName || note.fields.commonName || note.type || "")}</h4>
+                            {note.fields.commonName && note.fields.scientificName && (
+                                <p>{String(note.fields.commonName)}</p>
                             )}
                         </div>
                     </div>

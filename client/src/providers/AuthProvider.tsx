@@ -1,31 +1,36 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "@/lib/adapters/firebase.client"; 
-import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth"; 
+import { supabase } from "@/lib/adapters/supabase.client";
+import { User } from "@supabase/supabase-js";
 import { LayoutProps } from "@/types/layout";
 import Spinner from "@/components/common/Spinner";
 
 interface AuthContextType {
-    user: FirebaseUser | null;
+    user: User | null;
     loading: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined); // Define context type
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: LayoutProps) => {
-    const [user, setUser] = useState<FirebaseUser | null>(null); // Initialise user state
-    const [loading, setLoading] = useState(true); // Initialise loading state
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser); // Update user state
+        // Set initial session
+        supabase.auth.getSession().then(({ data }) => {
+            setUser(data.session?.user ?? null);
             setLoading(false);
         });
-        return () => unsubscribe();
+
+        // Listen for auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
-    if (loading) {
-        return <Spinner/>; 
-    }
+    if (loading) return <Spinner />;
 
     return (
         <AuthContext.Provider value={{ user, loading }}>
@@ -36,8 +41,6 @@ export const AuthProvider = ({ children }: LayoutProps) => {
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    if (!context) {
-        console.log("User context not found");
-    }
+    if (!context) console.log("User context not found");
     return context;
 };

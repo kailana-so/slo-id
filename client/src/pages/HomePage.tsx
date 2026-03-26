@@ -8,7 +8,7 @@ export default function HomePage() {
 	const navigate = useNavigate();
 	
 	const handleRoute = () => {
-		if (userData?.userId) {
+		if (userData?.id) {
 			return navigate(Routes.TAKENOTE);
 		} 
 		return navigate(Routes.SIGNUP);

@@ -1,19 +1,17 @@
-
-import { User as FirebaseUser } from "firebase/auth"; // Import Firebase User type
+import { User as SupabaseUser } from "@supabase/supabase-js";
 
 export type UserProps = {
-    userId: string;
-    username: string | null;
-    email: string | null;
-    friendlyId: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
+    id: string;
+    username: string;
+    email: string;
+    created_at: string;
+    updated_at: string;
+};
 
 export type ProfileProps = {
-    userId: string;
+    id: string;
     username: string;
-    friendlyId: string;
-}
+    email: string;
+};
 
-export type User = FirebaseUser | null; // The user can be a Firebase user or null
+export type User = SupabaseUser | null;
