@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     # Supabase
     supabase_url: str
-    supabase_service_role_key: str  # server-side only, never exposed to client
+    supabase_service_role_key: str  # server-side only
 
     # AWS S3
     aws_region: str = "ap-southeast-2"
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     nominatim_api_host: str
     weather_api_host: str
     weather_api_key: str
-    email_signer: str               # User-Agent string for Nominatim
+    email_signer: str  # User-Agent string for Nominatim
 
 
 settings = Settings()
